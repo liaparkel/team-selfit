@@ -6,8 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class SelfitApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(SelfitApplication.class, args);
-    }
+	public static void main(String[] args) {
+
+		SpringApplication.run(SelfitApplication.class, args);
+	}
 
 }
