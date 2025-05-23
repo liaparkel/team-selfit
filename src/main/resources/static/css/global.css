@@ -30,14 +30,14 @@ a {
 }
 
 /* ========== Layout Base ========== */
-body {
+html, body {
     line-height: 1.5;
     min-height: 100vh;
     height: 100%;
 }
 
 #container {
-    min-height: 100vh;
+    height: 100%;
     width: 100%;
     max-width: 1440px;
     margin: 0 auto;
@@ -116,5 +116,82 @@ body {
 
 .logout-btn:hover {
     background-color: var(--color-3-20);
+}
+
+#section1 {
+    width: 20%;
+    border-right: 1px solid var(--bg2);
+    padding: 0.5rem 1.5rem;
+    height: 100%;
+}
+
+/* 전체 메뉴 컨테이너 */
+.sideBar {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 대시보드 그룹 */
+.dashBoard {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 메뉴 아이템 기본 스타일 */
+.sideBar p {
+    font-size: 16px;
+    margin: 0.5rem 0;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+/* 식단·운동 등 하위 메뉴는 들여쓰기 */
+.foodNote,
+.exerciseNote,
+.calorieCal,
+.checkList {
+    margin-left: 1.5rem;
+}
+
+/* 호버 및 활성화 시 배경색 */
+.dashBoard p:hover,
+.community p:hover,
+.myPage p:hover {
+    background-color: var(--color-4-20);
+}
+
+.foodNote p:hover,
+.exerciseNote p:hover,
+.calorieCal p:hover,
+.checkList p:hover {
+    background-color: var(--color-4-20);
+}
+
+/* 현재 위치(active) 클래스 설정 시 */
+.sideBar__item--active > p,
+.foodNote--active > p {
+    background-color: var(--color-4-20);
+}
+
+/* 커뮤니티·마이페이지 메뉴 */
+.community,
+.myPage {
+    display: flex;
+    flex-direction: column;
+}
+
+.community p,
+.myPage p {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+}
+
+/* active/hover 동일하게 적용 */
+.community p:hover,
+.myPage p:hover {
+    background-color: var(--color-4-20);
 }
 
