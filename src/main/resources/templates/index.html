@@ -4,30 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>selfit - 건강 관리 서비스</title>
-    <link rel="stylesheet" href="./css/global.css">
+    <link rel="stylesheet" href="/css/global.css">
+    <script src="js/header.js"></script>
 </head>
 <body>
 
 <div id="container">
     <div id="header">
-        <div class="header_container">
-            <!-- 로고 영역 -->
-            <div class="logo-section">
+        <div class="leftMenu">
+            <div class="logoBox">
                 <a href="#" class="logo-link">
                     <img src="/img/logo_img.png" alt="selfit 로고" class="logo-img">
                 </a>
             </div>
+        </div>
+        <div class="rightMenu">
+            <div class="memberInfo">
+                <div class="memberImg">
+                    <a href="#">
+                        <img src="/img/memberImg.png" alt="member 기본이미지" class="memberDefault">
 
-            <!-- 사용자 정보 영역 -->
-            <div class="user-section">
-                <span class="username">감명하고 싶은 송인지님</span>
+                    </a>
+                </div>
+                <div class="goal">
+                    <p>감량</p>
+                </div>
+                <div class="memberName">
+                    <p>하고 싶은 송민지님</p>
+                </div>
+            </div>
+            <div class="logoutBox">
                 <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
             </div>
         </div>
     </div>
-
-
 </div>
-<script src="js/header.js"></script>
+
 </body>
 </html>
