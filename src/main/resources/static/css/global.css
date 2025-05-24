@@ -119,14 +119,14 @@ html, body {
 }
 
 #section1 {
-    width: 20%;
-    border-right: 1px solid var(--bg2);
     padding: 0.5rem 1.5rem;
     height: 100%;
 }
 
 /* 전체 메뉴 컨테이너 */
 .sideBar {
+    width: 20%;
+    border-right: 1px solid var(--bg2);
     display: flex;
     flex-direction: column;
 }
