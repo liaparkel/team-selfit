@@ -6,6 +6,15 @@ const pageSize = 10;
 let currentPage = 1;
 console.log("board.js 진입");
 
+document.querySelectorAll('input[name="sort"]').forEach(radio => {
+    radio.addEventListener('mousedown', function () {
+        this._wasChecked = this.checked;
+    });
+    radio.addEventListener('click', function () {
+        if (this._wasChecked) this.checked = false;
+    });
+});
+
 // 25개의 mock 포스트 생성 함수
 function generatePosts(prefix, authorPrefix) {
     return Array.from({length: 25}, (_, i) => ({
