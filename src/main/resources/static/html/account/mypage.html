@@ -70,8 +70,8 @@
             <div class="content-header">
                 <div class="page-title">회원 정보</div>
                 <div class="header-buttons">
-                    <div class="edit-btn">회원탈퇴</div>
-                    <div class="settings-btn">
+                    <div class="edit-btn" id="withdrawBtn">회원탈퇴</div>
+                    <div class="settings-btn" id="editBtn">
                         <div class="settings-icon">⚙</div>
                         <div>수정</div>
                     </div>
@@ -127,6 +127,52 @@
                         <!-- 페이지네이션이 여기에 동적으로 추가됩니다 -->
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 회원탈퇴 확인 모달 -->
+<div class="modal fade" id="withdrawConfirmModal" tabindex="-1" aria-labelledby="withdrawConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="withdrawConfirmModalLabel">회원탈퇴</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="mb-3">
+                    <i class="bi bi-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
+                </div>
+                <h6 class="mb-3">정말로 회원을 탈퇴하시겠습니까?</h6>
+                <p class="text-muted small">탈퇴 시 모든 데이터가 삭제되며 복구할 수 없습니다.</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-danger" id="confirmWithdrawBtn">확인</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 비밀번호 확인 모달 -->
+<div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="passwordModalLabel">비밀번호 확인</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="passwordInput" class="form-label">현재 비밀번호를 입력해주세요</label>
+                    <input type="password" class="form-control" id="passwordInput" placeholder="비밀번호를 입력하세요">
+                    <div class="invalid-feedback" id="passwordError"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn" id="confirmPasswordBtn">확인</button>
             </div>
         </div>
     </div>
