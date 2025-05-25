@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('.board-title').textContent = data.boardTitle;
         document.querySelector('.nickName').textContent = data.nickName;
         document.querySelector('.board-body').textContent = data.boardContents;
-        document.querySelector('.profile-img').setAttribute('src', data.memberImage);
         document.querySelector('.board-image img').setAttribute('src', data.boardImage);
         document.querySelector('.board-date').innerHTML = `<i class="bi bi-clock"></i> ${data.boardDate}`;
         document.querySelector('.view-count').innerHTML = `<i class="bi bi-eye"></i> ${data.viewCount}`;
@@ -46,16 +45,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const boardDetail = getBoardetail();
     renderPostDetail(boardDetail);
 
-    // =====================
-    // 댓글 mock + pagination
-    // =====================
-
     const mockComments = Array.from({length: 25}, (_, i) => ({
         id: i + 1,
         writerNickName: `유저${i + 1}`,
-        badgeImage: '/img/logo_img.png',
         profileImage: '/img/memberImg.png',
-        commentDate: `2024-12-${String(1 + i % 31).padStart(2, '0')}`,
+        commentDate: `2024-12-${String(i + 1).padStart(2, '0')}`,
         commentContent: `${i + 1}번째 댓글입니다!`
     }));
 
@@ -94,14 +88,11 @@ document.addEventListener('DOMContentLoaded', function () {
             div.className = 'comment';
             div.innerHTML = `
                 <img src="${comment.profileImage}" alt="프로필 이미지" class="comment-profile-img">
-                <div>
+                <div class="comment-right">
                     <div class="comment-nickName-date">
-                        <div class="comment-nickName">
-                            ${comment.writerNickName}
-                        </div>
+                        <div class="comment-nickName">${comment.writerNickName}</div>
                         <div class="comment-date">${comment.commentDate}</div>
                     </div>
-                    
                     <div class="comment-box">
                         <div class="comment-text">${comment.commentContent}</div>
                     </div>
