@@ -31,8 +31,13 @@
 }
 
 .board-write-filter .write .btn {
-    background-color: var(--color-4-20);
-    color: #000000;
+    background-color: var(--color-3);
+    color: var(--bg1);
+}
+
+.board-write-filter .write .btn:hover {
+    background-color: var(--color-3-20);
+    color: var(--bg1);
 }
 
 .board-write-filter .filter {
@@ -45,7 +50,9 @@
 .board-write-filter .filter input[type="radio"] {
     margin-right: 4px;
     gap: 8px;
+    accent-color: var(--color-3);
 }
+
 
 /* 컬럼(헤더) */
 .board-column {
@@ -93,13 +100,25 @@
 }
 
 .board-pagination button {
-    border: 1px solid #ced4da;
+    border: 1px solid #ccc;
     background-color: #fff;
-    color: #495057;
-    padding: 4px 8px;
-    font-size: 0.9rem;
+    color: var(--bg3);
+    padding: 4px 12px;
+    font-size: 16px;
     border-radius: 4px;
     cursor: pointer;
+}
+
+.search-result {
+    width: 100%;
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.searchTotal {
+    width: 50%;
 }
 
 .board-pagination button.current {
