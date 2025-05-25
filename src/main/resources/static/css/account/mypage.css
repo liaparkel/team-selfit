@@ -1,0 +1,230 @@
+@import url('../global.css');
+
+.sideBar {
+    float: left;   
+}
+
+.maincontent {
+    width: 80%;
+    float: right;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #333;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.edit-btn {
+    background-color: var(--danger);
+    color: white;
+    width: 91px;
+    height: 38px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-btn:hover {
+    background-color: var(--color-3);
+}
+
+.settings-btn {
+    background-color: white;
+    border: 1px solid var(--bg2);
+    width: 91px;
+    height: 38px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.3s;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.settings-btn:hover {
+    background-color: var(--color-3);
+    color: white;
+}
+
+.settings-icon {
+    font-size: 16px;
+}
+
+/* 회원 정보 섹션 */
+.member-info-section {
+    background-color: white;
+    border-radius: 12px;
+    padding: 40px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    gap: 40px;
+}
+
+.profile-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 200px;
+}
+
+.profile-section .bi-person-circle {
+    font-size: 130px;
+    color: var(--bg2);
+}
+
+.info-grid {
+    flex: 1;
+    display: grid;
+    gap: 20px;
+}
+
+.info-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 2fr;
+    gap: 20px;
+    align-items: center;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #666;
+    font-size: 14px;
+}
+
+.info-value {
+    color: #333;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+/* 북마크 섹션 */
+.bookmark-section {
+    background-color: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.bookmark-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 25px;
+    color: #333;
+}
+
+.bookmark-item {
+    padding: 15px 0;
+    border-bottom: 1px solid var(--bg1);
+    color: #666;
+    line-height: 1.6;
+    cursor: pointer;
+    transition: color 0.3s;
+    font-size: 14px;
+}
+
+.bookmark-item:hover {
+    color: var(--color-3);
+}
+
+.bookmark-item:last-child {
+    border-bottom: none;
+}
+
+.pagination-wrapper {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.page-btn {
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--bg2);
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.3s;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.page-btn:hover {
+    background-color: var(--color-3);
+    color: white;
+    border-color: var(--color-3);
+}
+
+.page-btn.active {
+    background-color: var(--color-3);
+    color: white;
+    border-color: var(--color-3);
+}
+
+.page-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.page-btn.disabled:hover {
+    background-color: white;
+    color: #333;
+    border-color: var(--bg2);
+}
+
+/* 입력 필드 */
+.form-control {
+  border-radius: 8px;
+  border: 1px solid var(--bg2);
+  padding: 12px 16px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+.form-control:focus {
+  border-color: var(--color-3);
+  box-shadow: 0 0 0 0.2rem rgba(51, 193, 129, 0.25);
+}
+
+#confirmPasswordBtn {
+    background-color: var(--color-3);
+    color: var(--bg1);
+}
+
+#confirmWithdrawBtn {
+    background-color: var(--danger);
+    border: var(--danger);
+}

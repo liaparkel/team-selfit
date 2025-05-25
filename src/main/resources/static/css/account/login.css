@@ -1,0 +1,227 @@
+@import url('../entry-global.css');
+
+/* 콘텐츠 래퍼 */
+.content-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    z-index: 4;
+}
+
+/* header */
+.header-frame {
+    width: 100%;
+    height: 256px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.logoBox {
+    width: 250px;
+    height: auto;
+}
+
+.logo-img {
+    width: 100%;
+    height: 100%;
+}
+
+.header-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--bg3);
+    text-align: center;
+}
+
+/* 메인 콘텐츠 프레임 */
+.main-content-frame {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 로그인 폼 영역 */
+.login-form-container {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    margin-top: -200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-fields-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 48px;
+    background: #f8f9fa;
+    border: 2px solid var(--bg1);
+    border-right: none;
+    border-radius: 12px 0 0 12px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+}
+
+.input-field {
+    width: 100%;
+    padding: 16px 16px 16px 64px;
+    border: 2px solid var(--bg1);
+    border-radius: 12px;
+    font-size: 16px;
+    background: #fff;
+    transition: all 0.3s ease;
+    outline: none;
+    position: relative;
+    z-index: 1;
+}
+
+.input-field:focus {
+    /* border-color: var(--color-4-20); */
+    box-shadow: 0 0 0 0.1rem var(--color-4-10);
+}
+
+.input-field:focus ~ .input-icon,
+.input-wrapper:focus-within .input-icon {
+    /* border-color: var(--color-4-20); */
+    background: #f0f8ff;
+}
+
+.input-field::placeholder {
+    color: var(--bg2);
+}
+
+/* 링크 영역 - 오른쪽 정렬, 작은 글씨 */
+.form-links {
+    width: 100%;
+    text-align: right;
+}
+
+.form-links a {
+    color: #999;
+    font-size: 12px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.form-links a:hover {
+    color: var(--color-4);
+}
+
+.form-links .separator {
+    margin: 0 6px;
+    color: #ddd;
+    font-size: 12px;
+}
+
+/* 버튼 래퍼 - 가운데 정렬 */
+.button-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+    margin-bottom: 20px;
+
+}
+
+/* 로그인 버튼 - 크기 줄임, 가운데 정렬 */
+.btn-login {
+    width: 260px;
+    height: 50px;
+    padding: 14px;
+    background: var(--color-3);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-login:hover {
+    background: var(--color-3-10);
+    color: white;
+    box-shadow: 0 4px 12px rgba(51, 193, 129, 0.3);
+}
+
+/* 구분선 */
+.divider {
+    width: 100%;
+    position: relative;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #e0e0e0 20%, #e0e0e0 80%, transparent);
+}
+
+.divider-text {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0 20px;
+    color: #999;
+    font-size: 14px;
+    position: relative;
+    z-index: 1;
+}
+
+/* 소셜 로그인 섹션 */
+.social-login-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.social-login-title {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.g_id_signin > div {
+    width: 260px !important;
+    height: 50px !important;
+}
