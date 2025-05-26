@@ -11,6 +11,7 @@
     />
     <link rel="stylesheet" href="/css/board/board.css">
     <script src="/js/board/board.js"></script>
+    <script src="/js/header.js"></script>
 </head>
 <body>
 <div id="container">
@@ -42,27 +43,44 @@
         </div>
     </div>
     <div id="section1">
-        <div class="sideBar">
-            <div class="dashBoard">
-                <i class="bi bi-clipboard-data"></i>대시 보드
-                <div class="foodNote">
-                    <p>식단 기록</p>
+        <div class="sideBar" th:fragment="sidebar">
+            <div class="menu">
+                <!-- 대시보드 그룹 -->
+                <div class="menu-item has-children" data-group="dashboard">
+                    <div class="menu-label">
+                        <i class="toggle-icon bi bi-chevron-right"></i>
+                        <i class="bi bi-clipboard-data"></i>
+                        대시보드
+                    </div>
+                    <div class="submenu">
+                        <div class="submenu-item">식단 기록</div>
+                        <div class="submenu-item">운동 기록</div>
+                        <div class="submenu-item">칼로리 계산</div>
+                        <div class="submenu-item">체크리스트</div>
+                    </div>
                 </div>
-                <div class="exerciseNote">
-                    <p>운동 기록</p>
+
+                <!-- 커뮤니티 그룹 -->
+                <div class="menu-item has-children" data-group="community">
+                    <div class="menu-label">
+                        <i class="toggle-icon bi bi-chevron-right"></i>
+                        <i class="bi bi-chat-dots"></i>
+                        커뮤니티
+                    </div>
+                    <div class="submenu">
+                        <div class="submenu-item">식단</div>
+                        <div class="submenu-item">운동</div>
+                        <div class="submenu-item">자유</div>
+                    </div>
                 </div>
-                <div class="calorieCal">
-                    <p>칼로리 계산</p>
+
+                <!-- 마이페이지 (하위메뉴 없음) -->
+                <div class="menu-item">
+                    <div class="menu-label">
+                        <i class="bi bi-person-circle"></i>
+                        마이페이지
+                    </div>
                 </div>
-                <div class="checkList">
-                    <p>체크리스트</p>
-                </div>
-            </div>
-            <div class="community">
-                <p>커뮤니티</p>
-            </div>
-            <div class="myPage">
-                <p>마이페이지</p>
             </div>
         </div>
         <div class="board-info">
