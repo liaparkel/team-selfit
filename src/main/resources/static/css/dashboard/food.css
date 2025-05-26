@@ -1,25 +1,14 @@
-/* 메인 콘텐츠 영역 */
-#main-content {
-    width: 80%;
-    float: right;
-    padding: 2rem;
-    position: relative;
-}
-
-/* 사이드바 영역 */
-#section1 {
-    float: left;
-}
-
+@import url('../global.css');
 /* 음식 입력 패널 */
 #food-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
     width: 520px;
-    position: fixed;
-    top: 10vh; /* ← 뷰포트 기준으로 위에서 10% */
-    right: 30px;
-    display: none;
-    z-index: 900;
+    max-width: 100%; /* ✅ 넘치지 않도록 */
     background-color: #f8f9fa;
+    z-index: 10;
+    display: none; /* JS로 toggle */
 }
 
 .panel-date {
@@ -192,4 +181,31 @@
     color: #33C181;
     background-color: white;
     margin-left: 8px;
+}
+
+.calendar-panel-wrap {
+    width: 100%;
+}
+
+.calendar-panel-inner {
+    position: relative;
+    width: 100%;
+}
+
+/* FullCalendar 이벤트 스타일 강제 적용 */
+.fc-event {
+    background-color: var(--color-4) !important;
+    color: #000 !important;
+    border: none !important;
+    font-weight: 500;
+    font-size: 0.8rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* 이벤트 내부 텍스트까지 전부 검정으로 */
+.fc-event-title,
+.fc-event-time,
+.fc-event .fc-event-main {
+    color: #000 !important;
 }

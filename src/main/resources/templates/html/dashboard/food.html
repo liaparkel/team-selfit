@@ -2,13 +2,11 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=01.0">
     <title>selfit - 건강 관리 서비스</title>
 
-    <!-- CSS / JS -->
-    <link rel="stylesheet" href="../../../static/css/global.css"/>
-    <link rel="stylesheet" href="../../../static/css/dashboard/food.css"/>
-    <script src="../../js/header.js"></script>
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/dashboard/food.css"/>
 
     <!-- Bootstrap 및 아이콘 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
@@ -23,139 +21,99 @@
 
 <div id="container">
     <!-- 헤더 영역 -->
-    <div id="header">
-        <div class="leftMenu">
-            <div class="logoBox">
-                <a href="#" class="logo-link">
-                    <img src="../../../static/img/logo_img.png" alt="selfit 로고" class="logo-img">
-                </a>
-            </div>
-        </div>
-        <div class="rightMenu">
-            <div class="memberInfo">
-                <div class="memberImg">
-                    <a href="#">
-                        <img src="../../../static/img/memberImg.png" alt="member 기본이미지" class="memberDefault">
-                    </a>
-                </div>
-                <div class="goal">
-                    <p>감량</p>
-                </div>
-                <div class="memberName">
-                    <p>하고 싶은 송민지님</p>
-                </div>
-            </div>
-            <div class="logoutBox">
-                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
-            </div>
-        </div>
-    </div>
+    <div th:replace="~{fragments/layout :: header}"></div>
     <!-- 사이드바 영역 -->
     <div id="section1">
-        <div class="sideBar">
-            <div class="dashBoard">
-                <p>대시보드</p>
-                <div class="foodNote">
-                    <p>식단 기록</p>
-                </div>
-                <div class="exerciseNote">
-                    <p>운동 기록</p>
-                </div>
-                <div class="calorieCal">
-                    <p>칼로리 계산</p>
-                </div>
-                <div class="checkList">
-                    <p>체크리스트</p>
-                </div>
-            </div>
-            <div class="community">
-                <p>커뮤니티</p>
-            </div>
-            <div class="myPage">
-                <p>마이페이지</p>
-            </div>
-        </div>
-    </div>
-    <!-- 메인 콘텐츠 영역 -->
-    <div id="main-content">
-        <!-- 섭취 칼로리 차트 영역 -->
-        <div id="chart">
-            <h1 class="mb-4">식단 관리 기록</h1>
+        <div th:replace="~{fragments/layout :: sidebar}"></div>
+        <!-- 메인 콘텐츠 영역 -->
+        <div class="main-content">
+            <!-- 섭취 칼로리 차트 영역 -->
+            <div id="chart">
+                <h1 class="mb-4">식단 관리 기록</h1>
 
-            <!-- 📌 연도 선택 드롭다운 (동적 생성용) -->
-            <div class="dropdown mb-3 text-end">
-                <button class="btn btn-outline-success dropdown-toggle" type="button"
-                        data-bs-toggle="dropdown" aria-expanded="false" id="yearDropdownBtn">
-                    <!-- 이 값은 JS에서 자동 설정됨 -->
-                </button>
-                <ul class="dropdown-menu" id="yearDropdownMenu">
-                    <!-- 여기 내용은 JS에서 자동 삽입 -->
-                </ul>
-            </div>
-
-            <div id="food-chart"></div>
-        </div>
-
-
-        <!-- 식단 캘린더 영역 -->
-        <div id="calendar" class="mt-5"></div>
-
-        <!-- 음식 입력 패널 -->
-        <div id="food-panel" class="card shadow-sm p-3">
-            <!-- 패널 닫기 버튼 -->
-            <i class="bi bi-x-lg" id="close-panel-btn" role="button" aria-label="패널 닫기"></i>
-
-            <!-- 선택한 날짜 출력 영역 -->
-            <div id="panel-date" class="panel-date">2025.05.03</div>
-
-            <!-- 음식 입력 영역 (이름, 먹은 양, 단위, 등록 버튼) -->
-            <div class="d-flex gap-2 align-items-center mb-3">
-                <!-- 음식명 입력 + 자동완성 -->
-                <div class="position-relative flex-grow-1">
-                    <input type="text" id="food-name" class="form-control" placeholder="음식명" autocomplete="off">
-                    <i class="bi bi-search position-absolute top-50 end-0 translate-middle-y me-3 text-secondary"
-                       role="button"></i>
-                    <ul id="autocomplete-list" class="list-group position-absolute w-100 mt-1 shadow-sm d-none"></ul>
+                <!-- 연도 선택 드롭다운 (동적 생성용) -->
+                <div class="dropdown mb-3 text-end">
+                    <button class="btn btn-outline-success dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown" aria-expanded="false" id="yearDropdownBtn">
+                        <!-- 이 값은 JS에서 자동 설정됨 -->
+                    </button>
+                    <ul class="dropdown-menu" id="yearDropdownMenu">
+                        <!-- 여기 내용은 JS에서 자동 삽입 -->
+                    </ul>
                 </div>
 
-                <!-- 먹은 양 -->
-                <input type="number" id="food-amount" class="form-control food-amount-input" placeholder="먹은 양" min="1"
-                       step="1">
-
-                <!-- 단위 -->
-                <span id="food-unit" class="unit-label">단위</span>
-
-                <!-- 등록 버튼 -->
-                <button id="add-food-btn" class="btn btn-success">등록</button>
+                <div id="food-chart"></div>
             </div>
 
-            <!-- 리스트 헤더 영역 -->
-            <div class="food-header fw-bold text-secondary border-bottom pb-1 mb-2 small">
-                <div class="cell-name">음식</div>
-                <div class="cell-amount">양</div>
-                <div class="cell-kcal">칼로리</div>
-                <div class="cell-action"></div>
-            </div>
+            <div class="food-panel-wrapper">
+                <div class="calendar-panel-inner">
+                    <!-- 음식 입력 패널 -->
+                    <div id="food-panel" class="card shadow-sm p-3">
+                        <!-- 패널 닫기 버튼 -->
+                        <i class="bi bi-x-lg" id="close-panel-btn" role="button" aria-label="패널 닫기"></i>
 
-            <!-- 음식 리스트 출력 영역 -->
-            <div id="food-list" class="d-flex flex-column gap-2 mb-3"></div>
+                        <!-- 선택한 날짜 출력 영역 -->
+                        <div id="panel-date" class="panel-date">2025.05.03</div>
 
-            <!-- 총 칼로리 출력 영역 -->
-            <div class="text-end fw-bold">총 <span id="total-cal">0</span> kcal</div>
-        </div>
+                        <!-- 음식 입력 영역 (이름, 먹은 양, 단위, 등록 버튼) -->
+                        <div class="d-flex gap-2 align-items-center mb-3">
+                            <!-- 음식명 입력 + 자동완성 -->
+                            <div class="position-relative flex-grow-1">
+                                <input type="text" id="food-name" class="form-control" placeholder="음식명"
+                                       autocomplete="off">
+                                <i class="bi bi-search position-absolute top-50 end-0 translate-middle-y me-3 text-secondary"
+                                   role="button"></i>
+                                <ul id="autocomplete-list"
+                                    class="list-group position-absolute w-100 mt-1 shadow-sm d-none"></ul>
+                            </div>
 
-        <!-- 삭제 확인용 모달 -->
-        <div class="modal fade" id="delete-modal" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">삭제 확인</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+                            <!-- 먹은 양 -->
+                            <input type="number" id="food-amount" class="form-control food-amount-input"
+                                   placeholder="먹은 양"
+                                   min="1"
+                                   step="1">
+
+                            <!-- 단위 -->
+                            <span id="food-unit" class="unit-label">단위</span>
+
+                            <!-- 등록 버튼 -->
+                            <button id="add-food-btn" class="btn btn-success">등록</button>
+                        </div>
+
+                        <!-- 리스트 헤더 영역 -->
+                        <div class="food-header fw-bold text-secondary border-bottom pb-1 mb-2 small">
+                            <div class="cell-name">음식</div>
+                            <div class="cell-amount">양</div>
+                            <div class="cell-kcal">칼로리</div>
+                            <div class="cell-action"></div>
+                        </div>
+
+                        <!-- 음식 리스트 출력 영역 -->
+                        <div id="food-list" class="d-flex flex-column gap-2 mb-3"></div>
+
+                        <!-- 총 칼로리 출력 영역 -->
+                        <div class="text-end fw-bold">총 <span id="total-cal">0</span> kcal</div>
                     </div>
-                    <div class="modal-body">이 기록을 정말 삭제하시겠습니까?</div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                        <button type="button" class="btn btn-danger" id="confirm-delete-btn">삭제</button>
+                </div>
+            </div>
+            <!-- 식단 캘린더 영역 -->
+            <div id="calendar" class="mt-5"></div>
+            <br>
+
+            <!-- 삭제 확인용 모달 -->
+            <div class="modal fade" id="delete-modal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">삭제 확인</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="닫기"></button>
+                        </div>
+                        <div class="modal-body">이 기록을 정말 삭제하시겠습니까?</div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                            <button type="button" class="btn btn-danger" id="confirm-delete-btn">삭제</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -167,6 +125,6 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 <!-- JS -->
-<script src="../../js/dashboard/food.js"></script>
+<script src="/js/dashboard/food.js"></script>
 </body>
 </html>
