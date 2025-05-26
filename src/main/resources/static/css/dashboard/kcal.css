@@ -1,0 +1,157 @@
+@import url("../global.css");
+
+/* ===== 메인 콘텐츠 ===== */
+#main-content {
+    width: 80%;
+    float: right;
+    padding: 2rem;
+    position: relative;
+}
+
+/* ===== 차트 카드 ===== */
+.chart-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.chart-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.chart-card .card-header {
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.chart-area {
+    height: 350px;
+}
+
+/* ===== 범례 ===== */
+.legend {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.legend .dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin: 0 5px;
+}
+
+.legend .intake {
+    background-color: #33C181;
+}
+
+.legend .burn {
+    background-color: #11C6CF;
+}
+
+/* ===== 캘린더 ===== */
+#calendar {
+    margin-top: 2rem;
+}
+
+/* ===== 패널 영역 ===== */
+.kcal-panel-wrapper {
+    width: 100%;
+}
+
+.calendar-panel-inner {
+    position: relative;
+}
+
+#kcal-panel {
+    position: fixed;
+    top: 10vh;
+    right: 30px;
+    width: 320px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 999;
+}
+
+#close-panel-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 1.25rem;
+    color: #6c757d;
+    cursor: pointer;
+}
+
+#close-panel-btn:hover {
+    color: #000;
+}
+
+.panel-date {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/* ===== 패널 내용 정렬 ===== */
+#kcal-panel .d-flex {
+    font-size: 0.95rem;
+    padding: 0 0.25rem;
+}
+
+#kcal-panel .text-end {
+    font-size: 1rem;
+}
+
+/* ===== FullCalendar 기본 색상 조정 ===== */
+.fc-daygrid-day-number,
+.fc-col-header-cell-cushion {
+    color: #222 !important;
+}
+
+.fc .fc-button {
+    background-color: #33c181;
+    border-color: #33c181;
+    color: #fff;
+}
+
+.fc .fc-button:hover {
+    background-color: #2aae6c;
+    border-color: #2aae6c;
+}
+
+.fc .fc-button:focus {
+    background-color: #2aae6c;
+    border-color: #2aae6c;
+    color: #fff;
+}
+
+.fc a {
+    text-decoration: none;
+    color: #33c181;
+}
+
+.fc a:hover {
+    color: #2aae6c;
+}
+
+.fc-day-today {
+    background-color: #f0fdf4 !important;
+}
+
+.fc-event {
+    background-color: var(--color-4) !important;
+    color: #000 !important;
+    font-weight: 500;
+    font-size: 0.8rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+}

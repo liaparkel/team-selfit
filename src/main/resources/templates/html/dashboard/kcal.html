@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>selfit - 칼로리 계산</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/dashboard/kcal.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+</head>
+<body>
+<div id="container">
+    <!-- 헤더 영역 -->
+    <div th:replace="~{fragments/layout :: header}"></div>
+    <!-- 사이드바 영역 -->
+    <div id="section1">
+        <div th:replace="~{fragments/layout :: sidebar}"></div>
+
+        <!-- 메인 콘텐츠 영역 -->
+        <div id="main-content">
+
+            <!-- 🔹 칼로리 그래프 영역 -->
+            <div class="card chart-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div class="fw-bold">칼로리 그래프</div>
+                    <div class="legend">
+                        <span class="dot intake"></span> 섭취
+                        <span class="dot burn"></span> 기초대사량+운동
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="kcal-chart" class="chart-area"></div>
+                </div>
+            </div>
+
+            <!-- 🔹 달력 -->
+            <div class="calendar-wrapper mt-5">
+                <div id="calendar"></div>
+            </div>
+
+            <!-- 🔹 패널 -->
+            <div class="kcal-panel-wrapper">
+                <div class="calendar-panel-inner">
+                    <div id="kcal-panel" class="card shadow-sm p-3">
+                        <i class="bi bi-x-lg" id="close-panel-btn" role="button" aria-label="패널 닫기"></i>
+                        <div class="panel-date fw-bold" id="panel-date">2025.05.03</div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>기초대사량</span><span id="bmr">1,700kcal</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>소모 칼로리</span><span id="burned">1,000kcal</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>섭취 칼로리</span><span id="intake">3,000kcal</span>
+                        </div>
+                        <div class="text-end fw-bold text-danger mt-3">
+                            <span id="result">300kcal 더 섭취하셨습니다.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="/js/dashboard/kcal.js"></script>
+</body>
+</html>
