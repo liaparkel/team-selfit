@@ -308,21 +308,3 @@
 .fc-event .fc-event-main {
     color: #000 !important;
 }
-
-/* 반응형 디자인 */
-@media (max-width: 768px) {
-    .chart-header {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: stretch;
-    }
-
-    .chart-selectors {
-        justify-content: center;
-        gap: 0.5rem;
-    }
-
-    .chart-container {
-        height: 350px;
-    }
-}
