@@ -1,3 +1,5 @@
+@import url('../global.css');
+
 /* ========== 기본 레이아웃 ========== */
 #section1 {
     display: flex !important;
