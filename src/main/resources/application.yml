@@ -22,13 +22,8 @@ spring:
         show_sql: true
         format_sql: true
 
-  #Model Location
-mybatis:
-  #  type-aliases-package: com.oopsw.asimple.dao
-  mapper-locations: classpath:mappers/*.xml
-
   thymeleaf:
-    prefix: classpath:/templates/
+    prefix: classpath:/templates/html/
     suffix: .html
     cache: false
     check-template-location: true
@@ -47,4 +42,5 @@ mybatis:
 #            scope:
 #              - profile
 #              - email
-
+mybatis:
+  mapper-locations: classpath:mappers/*.xml

@@ -145,7 +145,7 @@ $(() => {
                     handleWithdraw()
                 } else if (currentAction === "edit") {
                     // 회원정보 수정 페이지로 이동
-                    window.location.href = "./mypage-update.html"
+                    window.location.href = "/account/mypage-update"
                 }
             })
             .catch((error) => {

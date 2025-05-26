@@ -1,16 +1,5 @@
 @import url('../global.css');
 
-.sideBar {
-    float: left;   
-}
-
-.maincontent {
-    width: 80%;
-    float: right;
-    padding: 20px;
-    overflow-y: auto;
-}
-
 .content-header {
     display: flex;
     justify-content: space-between;
@@ -80,7 +69,7 @@
     border-radius: 12px;
     padding: 40px;
     margin-bottom: 30px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     gap: 40px;
 }
@@ -127,7 +116,7 @@
     background-color: white;
     border-radius: 12px;
     padding: 30px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .bookmark-title {
@@ -207,16 +196,16 @@
 
 /* 입력 필드 */
 .form-control {
-  border-radius: 8px;
-  border: 1px solid var(--bg2);
-  padding: 12px 16px;
-  font-size: 14px;
-  transition: border-color 0.3s;
+    border-radius: 8px;
+    border: 1px solid var(--bg2);
+    padding: 12px 16px;
+    font-size: 14px;
+    transition: border-color 0.3s;
 }
 
 .form-control:focus {
-  border-color: var(--color-3);
-  box-shadow: 0 0 0 0.2rem rgba(51, 193, 129, 0.25);
+    border-color: var(--color-3);
+    box-shadow: 0 0 0 0.2rem rgba(51, 193, 129, 0.25);
 }
 
 #confirmPasswordBtn {
