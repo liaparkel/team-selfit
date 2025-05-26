@@ -112,10 +112,19 @@
     background-color: #eafaf3;
 }
 
-#add-food-btn:hover {
-    background-color: #2aae6c;
-    border-color: #2aae6c;
+#add-food-btn {
+    background-color: #33C181 !important;
+    border-color: #33C181 !important;
+    color: #fff !important;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 }
+
+#add-food-btn:hover {
+    background-color: #2aae6c !important;
+    border-color: #2aae6c !important;
+    color: #fff !important;
+}
+
 
 /* 패널 닫기 버튼 */
 #close-panel-btn {

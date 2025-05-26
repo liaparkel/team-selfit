@@ -1,534 +1,192 @@
-@import url('../global.css');
-
-/* ========== 기본 레이아웃 ========== */
-#section1 {
-    display: flex !important;
-    height: calc(100vh - 80px);
-    padding: 0 !important;
-}
-
-.sideBar {
-    width: 240px !important;
-    min-width: 240px !important;
-    flex-shrink: 0 !important;
-    height: 100% !important;
-    overflow-y: auto !important;
-    background: white !important;
-    border-right: 1px solid var(--bg2, #d9d9d9) !important;
-    padding: 1.5rem 0 !important;
-}
-
-.content {
-    flex: 1 !important;
-    height: 100% !important;
-    overflow: hidden !important;
-    padding: 2rem !important;
-    background-color: var(--bg1, #f9f9fa) !important;
-    display: flex;
-    flex-direction: column;
-}
-
-/* ========== 체크리스트 헤더 ========== */
-.checklist-header {
-    margin-bottom: 2rem;
-    flex-shrink: 0;
-}
-
-.page-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #111827;
-    margin: 0;
-}
-
-/* ========== 콘텐츠 그리드 (shrink 효과용) ========== */
-.content-grid {
-    display: grid;
-    grid-template-columns: 1fr 0fr; /* 기본: 캘린더만 표시 */
-    gap: 1.5rem;
-    flex: 1;
-    overflow: hidden;
-    transition: grid-template-columns 0.3s ease;
-}
-
-/* 패널이 열렸을 때 그리드 변경 */
-.content-grid.panel-open {
-    grid-template-columns: 1fr 400px; /* 캘린더 + 패널 */
-}
-
-.calendar-section {
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
-
-/* ========== 캘린더 컨테이너 ========== */
-.calendar-container {
-    background: white;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    flex: 1;
-    overflow: hidden;
-}
-
-/* ========== FullCalendar 기본 스타일 ========== */
-.fc {
-    font-family: 'Noto Sans KR', sans-serif !important;
-}
-
-.fc-toolbar-title {
-    font-size: 1.25rem !important;
-    font-weight: 600 !important;
-    color: #111827 !important;
-}
-
-.fc-button {
-    background-color: var(--color-2, #22dfcd) !important;
-    border-color: var(--color-2, #22dfcd) !important;
-    color: white !important;
-    border-radius: 6px !important;
-    font-weight: 500 !important;
-    font-size: 0.875rem !important;
-}
-
-.fc-button:hover {
-    background-color: var(--color-1, #1dd1c1) !important;
-    border-color: var(--color-1, #1dd1c1) !important;
-}
-
-.fc-button:disabled {
-    background-color: #d1d5db !important;
-    border-color: #d1d5db !important;
-}
-
-.fc-daygrid-day {
+/* 메인 콘텐츠 영역 */
+#main-content {
+    width: 80%;
+    float: right;
+    padding: 2rem;
     position: relative;
-    min-height: 120px !important;
-    border: 1px solid #e5e7eb !important;
-    cursor: pointer !important;
-    transition: background-color 0.2s ease !important;
 }
 
-.fc-daygrid-day:hover {
-    background-color: #f9fafb !important;
+/* 사이드바 영역 */
+#section1 {
+    float: left;
 }
 
-.fc-daygrid-day-number {
-    font-weight: 500;
-    color: #374151;
-    padding: 0.5rem;
-    font-size: 0.875rem;
-}
-
-.fc-day-today {
-    background-color: #f0fdfa !important;
-}
-
-.fc-day-today .fc-daygrid-day-number {
-    color: var(--color-2, #22dfcd);
-    font-weight: 600;
-}
-
-/* ========== 체크리스트 아이템 표시 ========== */
-.checklist-items {
-    position: absolute;
-    top: 30px;
-    left: 4px;
-    right: 4px;
-    bottom: 4px;
-    overflow: hidden;
-    z-index: 5;
-    pointer-events: none;
-}
-
-.checklist-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 4px;
-    font-size: 0.75rem;
-    color: #374151;
-    margin-bottom: 3px;
-    padding: 2px 4px;
-    line-height: 1.3;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 3px;
-}
-
-.checklist-item.completed {
-    color: #6b7280;
-    text-decoration: line-through;
-}
-
-.checkbox {
-    font-size: 0.7rem;
-    color: #6b7280;
-    flex-shrink: 0;
-    margin-top: 1px;
-}
-
-.item-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    flex: 1;
-    font-weight: 400;
-}
-
-/* ========== 체크리스트 사이드 패널 (콘텐츠 내부) ========== */
-.checklist-panel {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    opacity: 0;
-    transform: translateX(20px);
-    transition: all 0.3s ease;
-}
-
-.checklist-panel.open {
-    opacity: 1;
-    transform: translateX(0);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-}
-
-.panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem;
-    border-bottom: 1px solid #f3f4f6;
-    background: white;
-    flex-shrink: 0;
-    border-radius: 12px 12px 0 0;
+/* 체크 입력 패널 */
+#check-panel {
+    width: 520px;
+    position: fixed;
+    top: 10vh;
+    right: 30px;
+    display: none;
+    z-index: 900;
+    background-color: #f8f9fa;
 }
 
 .panel-date {
     font-size: 1.25rem;
-    font-weight: 600;
-    color: #111827;
-    margin: 0;
-}
-
-.panel-actions {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-}
-
-.register-btn {
-    background-color: var(--color-2, #22dfcd);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    font-size: 0.875rem;
-}
-
-.register-btn:hover {
-    background-color: var(--color-1, #1dd1c1);
-}
-
-.close-btn {
-    width: 32px;
-    height: 32px;
-    border: none;
-    background: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 1.5rem;
-    color: #6b7280;
-    border-radius: 6px;
-}
-
-.close-btn:hover {
-    background: #f3f4f6;
-    color: #374151;
-}
-
-.panel-content {
-    flex: 1;
-    padding: 1.5rem;
-    overflow-y: auto;
-}
-
-.panel-description {
-    color: #6b7280;
-    margin-bottom: 1.5rem;
-    font-size: 0.9rem;
-}
-
-/* ========== 체크리스트 표시 영역 ========== */
-.checklist-display-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+    font-weight: bold;
     margin-bottom: 1rem;
 }
 
-.checklist-display-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
-    background-color: #f9fafb;
+#check-name {
+    flex: 1;
+    min-width: 0;
 }
 
-.checklist-display-item input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    border: 2px solid #d1d5db;
-    border-radius: 4px;
-    cursor: pointer;
-    position: relative;
-    appearance: none;
-    transition: all 0.2s ease;
+#add-check-btn {
+    min-width: 60px;
     flex-shrink: 0;
 }
 
-.checklist-display-item input[type="checkbox"]:checked {
-    background: var(--color-2, #22dfcd);
-    border-color: var(--color-2, #22dfcd);
-}
-
-.checklist-display-item input[type="checkbox"]:checked::after {
-    content: '✓';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.checklist-display-item .item-label {
-    flex: 1;
-    font-size: 0.9rem;
-    color: #374151;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    line-height: 1.4;
-}
-
-.checklist-display-item input[type="checkbox"]:checked + .item-label {
-    text-decoration: line-through;
-    color: #9ca3af;
-}
-
-.item-actions {
-    display: flex;
-    gap: 0.25rem;
-}
-
-.action-btn {
-    background: none;
-    border: none;
-    padding: 0.25rem;
-    border-radius: 4px;
-    cursor: pointer;
-    color: #6b7280;
-    transition: all 0.2s;
-}
-
-.action-btn:hover {
-    background-color: #f3f4f6;
-    color: #374151;
-}
-
-.delete-btn:hover {
-    color: #ef4444;
-    background-color: #fef2f2;
-}
-
-.add-item-btn {
-    width: 100%;
-    padding: 0.75rem;
-    border: 2px dashed #d1d5db;
-    background: none;
-    border-radius: 6px;
-    color: #6b7280;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
+/* 리스트 출력 영역 */
+.check-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
     align-items: center;
-    justify-content: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+}
+
+.check-row-even {
+    background-color: #e3f5f6;
+}
+
+.check-row-odd {
+    background-color: #cdeff2;
+}
+
+.cell-action {
+    display: flex;
+    justify-content: end;
     gap: 0.5rem;
 }
 
-.add-item-btn:hover {
-    border-color: var(--color-2, #22dfcd);
-    color: var(--color-2, #22dfcd);
-    background-color: #f0fdfa;
+.check-row.editing {
+    outline: 2px dashed #33C181;
+    background-color: #eafaf3;
 }
 
-/* ========== 모달 스타일 ========== */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+#add-check-btn:hover {
+    background-color: #2aae6c;
+    border-color: #2aae6c;
+}
+
+#close-panel-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 1.25rem;
+    color: #6c757d;
+    cursor: pointer;
+}
+
+#close-panel-btn:hover {
+    color: #000;
+}
+
+.fc-daygrid-day-number {
+    color: #222 !important;
+}
+
+.fc-col-header-cell-cushion {
+    color: #444 !important;
+}
+
+.fc .fc-button {
+    background-color: #33C181;
+    border-color: #33C181;
+    color: #fff;
+}
+
+.fc .fc-button:hover {
+    background-color: #2aae6c;
+    border-color: #2aae6c;
+}
+
+.fc a {
+    text-decoration: none;
+    color: #33C181;
+}
+
+.fc a:hover {
+    color: #2aae6c;
+}
+
+.fc .fc-button:focus {
+    background-color: #2aae6c;
+    border-color: #2aae6c;
+    color: #fff;
+}
+
+.fc-day-today {
+    background-color: #eee !important;
+}
+
+.chart-toolbar-select {
+    font-size: 0.75rem;
+    height: 28px;
+    padding: 0 8px;
+    border-radius: 4px;
+    border: 1px solid #33C181;
+    color: #33C181;
+    background-color: white;
+    margin-left: 8px;
+}
+
+.fc-event {
+    background: none !important;
+    border: none !important;
+}
+
+.add-check-btn {
+    background-color: #33C181;
+    border-color: #33C181;
+}
+
+#add-check-btn {
+    background-color: #33C181 !important;
+    border-color: #33C181 !important;
+    color: #fff !important;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+#add-check-btn:hover {
+    background-color: #2aae6c !important;
+    border-color: #2aae6c !important;
+    color: #fff !important;
+}
+
+.check-item-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: #111;
+    font-weight: 500;
+    padding: 1px 0;
+}
+
+.check-icon {
+    width: 18px;
+    height: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 2000;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background: #fff;
+    font-size: 0.7rem;
 }
 
-.modal-container {
-    background: white;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 400px;
-    overflow: hidden;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-    position: relative;
-}
-
-.modal-header {
-    display: flex;
-    justify-content: flex-end;
-    padding: 1rem 1rem 0;
-}
-
-.modal-close-btn {
-    width: 32px;
-    height: 32px;
-    border: none;
-    background: transparent;
+.toggle-check {
+    width: 20px;
+    height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 1.5rem;
-    color: #6b7280;
-    border-radius: 6px;
-}
-
-.modal-close-btn:hover {
-    background: #f3f4f6;
-    color: #374151;
-}
-
-.modal-content {
-    padding: 0 2rem 2rem;
-}
-
-.modal-input-container {
-    margin-bottom: 2rem;
-}
-
-.modal-input {
-    width: 100%;
-    padding: 1rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    font-size: 1rem;
-    color: #374151;
-    outline: none;
-    transition: border-color 0.2s ease;
-    box-sizing: border-box;
-}
-
-.modal-input:focus {
-    border-color: var(--color-2, #22dfcd);
-    box-shadow: 0 0 0 3px rgba(34, 223, 205, 0.1);
-}
-
-.modal-input::placeholder {
-    color: #9ca3af;
-}
-
-.modal-register-btn {
-    width: 100%;
-    padding: 1rem;
-    background-color: var(--color-2, #22dfcd);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.modal-register-btn:hover {
-    background-color: var(--color-1, #1dd1c1);
-}
-
-/* ========== 반응형 디자인 ========== */
-@media (max-width: 1200px) {
-    .content-grid.panel-open {
-        grid-template-columns: 1fr 350px;
-    }
-}
-
-@media (max-width: 768px) {
-    #section1 {
-        flex-direction: column !important;
-        height: auto !important;
-    }
-
-    .sideBar {
-        width: 100% !important;
-        height: auto !important;
-        border-right: none !important;
-        border-bottom: 1px solid var(--bg2, #d9d9d9) !important;
-    }
-
-    .content {
-        padding: 1rem !important;
-        height: auto !important;
-    }
-
-    .content-grid {
-        grid-template-columns: 1fr !important;
-        grid-template-rows: 1fr auto;
-        gap: 1rem;
-    }
-
-    .content-grid.panel-open {
-        grid-template-columns: 1fr !important;
-        grid-template-rows: 1fr 300px;
-    }
-
-    .fc-daygrid-day {
-        min-height: 100px !important;
-    }
-
-    .checklist-item {
-        font-size: 0.7rem;
-    }
-
-    .calendar-container {
-        padding: 1rem;
-    }
-
-    .modal-container {
-        width: 95%;
-        margin: 1rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .fc-daygrid-day {
-        min-height: 80px !important;
-    }
-
-    .checklist-item {
-        font-size: 0.65rem;
-    }
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background: #fff;
+    font-size: 0.75rem;
+    color: #33C181;
 }
