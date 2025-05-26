@@ -81,8 +81,21 @@
         <!-- 섭취 칼로리 차트 영역 -->
         <div id="chart">
             <h1 class="mb-4">식단 관리 기록</h1>
+
+            <!-- 📌 연도 선택 드롭다운 (동적 생성용) -->
+            <div class="dropdown mb-3 text-end">
+                <button class="btn btn-outline-success dropdown-toggle" type="button"
+                        data-bs-toggle="dropdown" aria-expanded="false" id="yearDropdownBtn">
+                    <!-- 이 값은 JS에서 자동 설정됨 -->
+                </button>
+                <ul class="dropdown-menu" id="yearDropdownMenu">
+                    <!-- 여기 내용은 JS에서 자동 삽입 -->
+                </ul>
+            </div>
+
             <div id="food-chart"></div>
         </div>
+
 
         <!-- 식단 캘린더 영역 -->
         <div id="calendar" class="mt-5"></div>
