@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oopsw.selfit.repository.DashboardRepository">
+    <select id="getFoodWeightByName" parameterType="String" resultType="String">
+        SELECT FOOD_WEIGHT
+        FROM FOOD
+        WHERE FOOD_NAME = #{foodName}
+    </select>
+    <select id="getBmrById" parameterType="int" resultType="com.oopsw.selfit.dto.Member">
+        SELECT MEMBER_ID, GENDER, BIRTHDAY, HEIGHT, WEIGHT
+        FROM MEMBER
+        WHERE MEMBER_ID = #{memberId};
+    </select>
+    <select id="getIntakeKcalByIdDate" parameterType="com.oopsw.selfit.dto.Food" resultType="com.oopsw.selfit.dto.Food">
+        SELECT FN.INTAKE_DATE as intakeDate, SUM(FI.INTAKE_KCAL) AS intakeSum
+        FROM FOOD_NOTE FN
+        JOIN FOOD_INFO FI ON FN.FOOD_NOTE_ID = FI.FOOD_NOTE_ID
+        WHERE FN.MEMBER_ID = #{memberId} AND FN.INTAKE_DATE = #{intakeDate};
+    </select>
+    <select id="getExerciseKcalByIdDate" parameterType="com.oopsw.selfit.dto.Exercise" resultType="com.oopsw.selfit.dto.Exercise">
+        SELECT EN.EXERCISE_DATE as exerciseDate, SUM(EI.EXERCISE_KCAL) AS exerciseSum
+        FROM EXERCISE_NOTE EN
+        JOIN EXERCISE_INFO EI ON EN.EXERCISE_NOTE_ID = EI.EXERCISE_NOTE_ID
+        WHERE EN.MEMBER_ID = #{memberId} AND EN.EXERCISE_DATE = #{exerciseDate};
+    </select>
+    <select id="getYearIntakeKcal" parameterType="map" resultType="com.oopsw.selfit.dto.Food">
+        SELECT FN.INTAKE_DATE as intakeDate, SUM(FI.INTAKE_KCAL) as intakeSum
+        FROM FOOD_NOTE FN
+        JOIN FOOD_INFO FI ON FN.FOOD_NOTE_ID = FI.FOOD_NOTE_ID
+        WHERE FN.MEMBER_ID = #{memberId} AND YEAR(FN.INTAKE_DATE) = #{intakeYear}
+        GROUP BY FN.INTAKE_DATE
+        ORDER BY FN.INTAKE_DATE;
+    </select>
+    <select id="getYearExerciseKcal" parameterType="map" resultType="com.oopsw.selfit.dto.Exercise">
+        SELECT EN.EXERCISE_DATE AS exerciseDate, SUM(EI.EXERCISE_KCAL) as exerciseSum
+        FROM EXERCISE_NOTE EN
+        JOIN EXERCISE_INFO EI ON EN.EXERCISE_NOTE_ID = EI.EXERCISE_NOTE_ID
+        WHERE EN.MEMBER_ID = #{memberId} AND YEAR(EN.EXERCISE_DATE) = #{exerciseYear}
+        GROUP BY EN.EXERCISE_DATE
+        ORDER BY EN.EXERCISE_DATE
+    </select>
+    <select id="getIntakeDetail" parameterType="com.oopsw.selfit.dto.Food" resultType="com.oopsw.selfit.dto.Food">
+        SELECT FN.INTAKE_DATE AS intakeDate, F.FOOD_NAME AS foodName, FI.INTAKE, FI.INTAKE_KCAL AS intakeKcal, F.UNIT_KCAL AS unitKcal
+        FROM FOOD_INFO FI
+        INNER JOIN FOOD F ON FI.FOOD_ID = F.FOOD_ID
+        INNER JOIN FOOD_NOTE FN ON FN.FOOD_NOTE_ID = FI.FOOD_NOTE_ID
+        WHERE FN.MEMBER_ID = #{memberId} AND FN.INTAKE_DATE = #{intakeDate}
+    </select>
+    <select id="getAutoComplete" parameterType="String" resultType="String">
+        SELECT FOOD_NAME
+        FROM FOOD
+        WHERE FOOD_NAME LIKE CONCAT('%', #{partWord}, '%');
+    </select>
+    <insert id="addFoodList" parameterType="com.oopsw.selfit.dto.Food">
+        INSERT INTO FOOD_NOTE (INTAKE_DATE, MEMBER_ID)
+        VALUES (#{intakeDate}, #{memberId})
+    </insert>
+    <delete id="removeFoodList" parameterType="com.oopsw.selfit.dto.Food">
+        DELETE FROM FOOD_NOTE
+        WHERE MEMBER_ID = #{memberId} AND INTAKE_DATE = #{intakeDate};
+    </delete>
+    <insert id="addFood" parameterType="com.oopsw.selfit.dto.Food">
+        INSERT INTO FOOD_INFO (INTAKE, INTAKE_KCAL, FOOD_NOTE_ID, FOOD_ID)
+        VALUES (#{intake}, #{intakeKcal}, #{foodNoteId}, #{foodId});
+    </insert>
+    <select id="getFood" parameterType="com.oopsw.selfit.dto.Food" resultType="com.oopsw.selfit.dto.Food">
+        SELECT FN.INTAKE_DATE AS intakeDate, F.FOOD_NAME AS foodName, FI.INTAKE, FI.INTAKE_KCAL AS intakeKcal, F.UNIT_KCAL AS unitKcal
+        FROM FOOD_INFO FI
+        INNER JOIN FOOD F ON FI.FOOD_ID = F.FOOD_ID
+        INNER JOIN FOOD_NOTE FN ON FN.FOOD_NOTE_ID = FI.FOOD_NOTE_ID
+        WHERE FN.MEMBER_ID = #{memberId} AND FN.INTAKE_DATE = #{intakeDate} AND FI.FOOD_INFO_ID = #{foodInfoId};
+    </select>
+</mapper>
