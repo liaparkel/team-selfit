@@ -1,1 +1,131 @@
 @import url('../global.css');
+
+/* 게시판 컨테이너 */
+#section1 {
+    display: flex;
+}
+
+
+/* 게시판 콘텐츠 영역: flex 나머지 채우기 */
+#section1 .board-info {
+    flex: 1;
+    /* 필요에 따라 padding 등을 추가하세요 */
+    padding-left: 50px;
+}
+
+/* 제목 및 글쓰기 버튼 영역 */
+.board-title {
+    display: flex;
+    font-size: 32px;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+}
+
+/* 글쓰기/필터 영역 */
+.board-write-filter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.board-write-filter .write .btn {
+    background-color: var(--color-3);
+    color: var(--bg1);
+}
+
+.board-write-filter .write .btn:hover {
+    background-color: var(--color-3-20);
+    color: var(--bg1);
+}
+
+.board-write-filter .filter {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+
+.board-write-filter .filter input[type="radio"] {
+    margin-right: 4px;
+    gap: 8px;
+    accent-color: var(--color-3);
+}
+
+
+/* 컬럼(헤더) */
+.board-column {
+    display: grid;
+    grid-template-columns: 1fr 120px 80px 100px;
+    align-items: center;
+    border-bottom: 1px solid var(--bg2);
+    padding: 8px 0;
+    font-weight: 600;
+    background-color: var(--bg2);
+}
+
+.board-column > div {
+    padding: 0 8px;
+}
+
+/* 리스트(행) */
+.board-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.board-list > .board-list {
+    /* JS로 생성된 각 행이 동일 클래스명(board-list)으로 생성됩니다 */
+    display: grid;
+    grid-template-columns: 1fr 120px 80px 100px;
+    align-items: center;
+    border-bottom: 1px solid var(--bg2);
+    padding: 10px 0;
+}
+
+.board-list > .board-list > div {
+    padding: 0 8px;
+    font-size: 0.9rem;
+}
+
+
+/* 페이지네이션 */
+.board-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    margin-top: 16px;
+}
+
+.board-pagination button {
+    border: 1px solid #ccc;
+    background-color: #fff;
+    color: var(--bg3);
+    padding: 4px 12px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.search-result {
+    width: 100%;
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.searchTotal {
+    width: 50%;
+}
+
+.board-pagination button.current {
+    background-color: var(--color-3);
+    color: #ffffff;
+}
+
+.board-pagination button:hover:not(.current) {
+    background-color: var(--color-3-20);
+}

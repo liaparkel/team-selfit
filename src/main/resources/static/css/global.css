@@ -3,14 +3,14 @@
     --color-2: #22DFCD;
     --color-3: #33C181;
     --color-4: #4CD889;
-    --color-1-10: #25E3ED;
-    --color-2-10: #4EE5D7;
-    --color-3-10: #54D299;
-    --color-4-10: #75E1A4;
-    --color-1-20: #55EAF1;
-    --color-2-20: #7BECE1;
-    --color-3-20: #7DDDB2;
-    --color-4-20: #A0EAC0;
+    --color-1-10: #11C6CF19;
+    --color-2-10: #22DFCD19;
+    --color-3-10: #33C18119;
+    --color-4-10: #4CD88919;
+    --color-1-20: #11C6CF33;
+    --color-2-20: #22DFCD33;
+    --color-3-20: #33C18133;
+    --color-4-20: #4CD88933;
     --bg1: #F9F9FA;
     --bg2: #D9D9D9;
     --bg3: #3E3E3E;
@@ -119,79 +119,79 @@ html, body {
 }
 
 #section1 {
+    display: flex;
     padding: 0.5rem 1.5rem;
     height: 100%;
 }
 
-/* 전체 메뉴 컨테이너 */
 .sideBar {
     width: 20%;
+    height: 100%;
     border-right: 1px solid var(--bg2);
+}
+
+/* 토글 아이콘 기본 (숨김 불필요 시 그대로) */
+.sideBar .toggle-icon {
+    transition: transform 0.2s ease;
+}
+
+/* .has-children 만 보이게 (선택사항) */
+.sideBar .menu-item.has-children .toggle-icon {
+    visibility: visible;
+}
+
+/* 토글 열렸을 때 90° 회전 */
+.sideBar .menu-item.open .toggle-icon {
+    transform: rotate(90deg);
+}
+
+.sideBar .menu {
     display: flex;
     flex-direction: column;
 }
 
-/* 대시보드 그룹 */
-.dashBoard {
-    display: flex;
-    flex-direction: column;
-}
-
-/* 메뉴 아이템 기본 스타일 */
-.sideBar p {
-    font-size: 16px;
-    margin: 0.5rem 0;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    font-size: 1rem;
+/* 각 메뉴 아이템 */
+.sideBar .menu-item {
     cursor: pointer;
+    padding: 0.75rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
     transition: background 0.2s;
 }
 
-/* 식단·운동 등 하위 메뉴는 들여쓰기 */
-.foodNote,
-.exerciseNote,
-.calorieCal,
-.checkList {
-    margin-left: 1.5rem;
+.sideBar .menu-item:hover,
+.sideBar .menu-item.active {
 }
 
-/* 호버 및 활성화 시 배경색 */
-.dashBoard p:hover,
-.community p:hover,
-.myPage p:hover {
-    background-color: var(--color-4-20);
-}
-
-.foodNote p:hover,
-.exerciseNote p:hover,
-.calorieCal p:hover,
-.checkList p:hover {
-    background-color: var(--color-4-20);
-}
-
-/* 현재 위치(active) 클래스 설정 시 */
-.sideBar__item--active > p,
-.foodNote--active > p {
-    background-color: var(--color-4-20);
-}
-
-/* 커뮤니티·마이페이지 메뉴 */
-.community,
-.myPage {
+/* 메뉴 라벨(아이콘+텍스트) */
+.sideBar .menu-label {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
 }
 
-.community p,
-.myPage p {
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
+/* 서브메뉴(접었다 펼침) */
+.sideBar .submenu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease;
+    padding-left: 1.5rem;
 }
 
-/* active/hover 동일하게 적용 */
-.community p:hover,
-.myPage p:hover {
+.sideBar .menu-item.open > .submenu {
+    max-height: 500px; /* 충분히 큰 값 */
+}
+
+/* 서브메뉴 아이템 */
+.sideBar .submenu-item {
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+.sideBar .submenu-item:hover {
     background-color: var(--color-4-20);
 }
 
