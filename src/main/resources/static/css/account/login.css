@@ -131,7 +131,7 @@
 }
 
 .form-links a {
-    color: #999;
+    color: var(--bg2);
     font-size: 12px;
     text-decoration: none;
     transition: color 0.3s ease;
