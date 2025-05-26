@@ -1,0 +1,186 @@
+/* 메인 콘텐츠 영역 */
+#main-content {
+    width: 80%;
+    float: right;
+    padding: 2rem;
+    position: relative;
+}
+
+/* 사이드바 영역 */
+#section1 {
+    float: left;
+}
+
+/* 음식 입력 패널 */
+#food-panel {
+    width: 520px;
+    position: fixed;
+    top: 10vh; /* ← 뷰포트 기준으로 위에서 10% */
+    right: 30px;
+    display: none;
+    z-index: 900;
+    background-color: #f8f9fa;
+}
+
+.panel-date {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+#food-name {
+    flex: 1;
+    min-width: 0;
+}
+
+.food-amount-input {
+    width: 100px !important;
+    min-width: 0 !important;
+    flex-shrink: 0;
+}
+
+.unit-label {
+    width: 20px;
+    text-align: center;
+    line-height: 38px;
+    flex-shrink: 0;
+}
+
+#add-food-btn {
+    min-width: 60px;
+    flex-shrink: 0;
+}
+
+#autocomplete-list {
+    max-height: 180px;
+    overflow-y: auto;
+    background-color: #fff;
+    z-index: 10;
+    border-radius: 0.375rem;
+}
+
+#autocomplete-list li {
+    cursor: pointer;
+}
+
+#autocomplete-list li.active {
+    background-color: #e9ecef;
+    color: inherit;
+}
+
+/* 리스트 헤더 (음식명/양/칼로리) 정렬 */
+.food-header {
+    display: grid;
+    grid-template-columns: 240px 70px 80px 50px;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: #6c757d;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 4px; /* 헤더와 리스트 분리용 */
+}
+
+/* 리스트 아이템 */
+.food-row {
+    display: grid;
+    grid-template-columns: 240px 70px 80px 50px;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+}
+
+/* 리스트 배경 색상 (줄마다 색 다르게) */
+.food-row-even {
+    background-color: #e3f5f6;
+}
+
+.food-row-odd {
+    background-color: #cdeff2;
+}
+
+/* 수정/삭제 아이콘 정렬 영역 */
+.cell-action {
+    display: flex;
+    justify-content: end;
+    gap: 0.5rem;
+}
+
+/* 식단 수정 중에는 수정 표시 */
+.food-row.editing {
+    outline: 2px dashed #33C181;
+    background-color: #eafaf3;
+}
+
+#add-food-btn:hover {
+    background-color: #2aae6c;
+    border-color: #2aae6c;
+}
+
+/* 패널 닫기 버튼 */
+#close-panel-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 1.25rem;
+    color: #6c757d;
+    cursor: pointer;
+}
+
+#close-panel-btn:hover {
+    color: #000;
+}
+
+/* FullCalendar 날짜 및 요일 */
+.fc-daygrid-day-number {
+    color: #222 !important;
+}
+
+.fc-col-header-cell-cushion {
+    color: #444 !important;
+}
+
+/* FullCalendar 이동 버튼 */
+.fc .fc-button {
+    background-color: #33C181;
+    border-color: #33C181;
+    color: #fff;
+}
+
+.fc .fc-button:hover {
+    background-color: #2aae6c;
+    border-color: #2aae6c;
+}
+
+/* FullCalendar 링크 밑줄 제거 및 색상 */
+.fc a {
+    text-decoration: none;
+    color: #33C181;
+}
+
+.fc a:hover {
+    color: #2aae6c;
+}
+
+.fc .fc-button:focus {
+    background-color: #2aae6c;
+    border-color: #2aae6c;
+    color: #fff;
+}
+
+/* FullCalendar 오늘 날짜 배경색 */
+.fc-day-today {
+    background-color: #eee !important;
+}
+
+/* ApexCharts toolbar 연도 선택 드롭다운 */
+.chart-toolbar-select {
+    font-size: 0.75rem;
+    height: 28px;
+    padding: 0 8px;
+    border-radius: 4px;
+    border: 1px solid #33C181;
+    color: #33C181;
+    background-color: white;
+    margin-left: 8px;
+}

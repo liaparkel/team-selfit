@@ -1,0 +1,92 @@
+@import url('../global.css');
+
+
+#section1 {
+    display: flex;
+}
+
+.write-info {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 30px;
+}
+
+/* 제목 입력 필드 */
+input[type="text"] {
+    width: 100%;
+    padding: 12px 0;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-top: 15px;
+}
+
+/* 카테고리 선택 */
+select {
+    width: 250px;
+    padding: 12px 0;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: var(--bg1);
+}
+
+/* 에디터 전체 박스 */
+.editor-box {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+
+
+/* 본문 입력창 */
+textarea {
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    font-size: 14px;
+    line-height: 1.6;
+    resize: none;
+    height: 350px;
+    border-radius: 0 0 6px 6px;
+}
+
+
+/* 이미지 업로드 박스 */
+.image-upload-box {
+    background-color: var(--color-2-20);
+    border: 1px dashed #ccc;
+    padding: 40px 0;
+    text-align: center;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    transition: background-color 0.2s;
+}
+
+.preview-image {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+
+.image-upload-box:hover {
+
+    background-color: var(--color-2-10);
+}
+
+/* 제출 버튼 */
+.btn {
+    display: flex;
+    align-items: flex-end;
+    background-color: var(--color-3);
+}
+
+.btn:hover {
+    background-color: var(--color-3-20);
+}
