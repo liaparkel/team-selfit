@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>selfit - 건강 관리 서비스</title>
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/dashboard/dashboard.css">
+    <script src="/js/header.js" defer></script>
+    <script src="/js/dashboard/dashboard.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+</head>
+<body>
+
+<div id="container">
+    <div id="header">
+        <div class="leftMenu">
+            <div class="logoBox">
+                <a href="#" class="logo-link">
+                    <img src="/img/logo_img.png" alt="selfit 로고" class="logo-img">
+                </a>
+            </div>
+        </div>
+        <div class="rightMenu">
+            <div class="memberInfo">
+                <div class="memberImg">
+                    <a href="#">
+                        <img src="/img/memberImg.png" alt="member 기본이미지" class="memberDefault">
+                    </a>
+                </div>
+                <div class="goal">
+                    <p>감량</p>
+                </div>
+                <div class="memberName">
+                    <p>하고 싶은 송민지님</p>
+                </div>
+            </div>
+            <div class="logoutBox">
+                <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+            </div>
+        </div>
+    </div>
+    <div id="section1">
+        <div class="sideBar">
+            <div class="dashBoard">
+                <p>대시보드</p>
+                <div class="foodNote">
+                    <p>식단 기록</p>
+                </div>
+                <div class="exerciseNote">
+                    <p>운동 기록</p>
+                </div>
+                <div class="calorieCal">
+                    <p>칼로리 계산</p>
+                </div>
+                <div class="checkList">
+                    <p>체크리스트</p>
+                </div>
+            </div>
+            <div class="community">
+                <p>커뮤니티</p>
+            </div>
+            <div class="myPage">
+                <p>마이페이지</p>
+            </div>
+        </div>
+
+        <!-- 메인 콘텐츠 컨테이너 -->
+        <div class="main-container">
+            <div class="content">
+                <!-- 체크리스트 토글 버튼 -->
+                <div class="content-header">
+                    <h1 class="page-title">대시보드</h1>
+                    <button class="checklist-toggle-btn" onclick="toggleChecklist()">체크리스트</button>
+                </div>
+
+                <!-- 상단 영역 (패널 영향 받음) -->
+                <div class="top-section">
+                    <div class="grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">칼로리 분석</h2>
+                            </div>
+                            <div class="card-content">
+                                <div class="circular-progress">
+                                    <!-- 차트 전용 영역 -->
+                                    <div class="chart-area"></div>
+                                    <!-- 텍스트 정보 영역 -->
+                                    <div class="progress-info">
+                                        <div class="progress-item">
+                                            <div class="progress-dot dot-intake"></div>
+                                            <span>섭취</span>
+                                            <strong>1300 kcal</strong>
+                                        </div>
+                                        <div class="progress-item">
+                                            <div class="progress-dot dot-exercise"></div>
+                                            <span>운동</span>
+                                            <strong>1250 kcal</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="right-cards">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">식단</h3>
+                                </div>
+                                <div class="card-content">
+                                    <div class="list-item">
+                                        <span>• 오뚜기 햇반</span>
+                                        <strong>350kcal</strong>
+                                    </div>
+                                    <div class="list-item">
+                                        <span>• 돈까스 정식</span>
+                                        <strong>850kcal</strong>
+                                    </div>
+                                    <div class="list-item">
+                                        <span>• 오일 파스타</span>
+                                        <strong>500kcal</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">운동</h3>
+                                </div>
+                                <div class="card-content">
+                                    <div class="list-item">
+                                        <span>• 벤치 프레스</span>
+                                        <strong>350kcal</strong>
+                                    </div>
+                                    <div class="list-item">
+                                        <span>• 풀업</span>
+                                        <strong>850kcal</strong>
+                                    </div>
+                                    <div class="list-item">
+                                        <span>• 계단 오르기</span>
+                                        <strong>500kcal</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 체크리스트 패널 (그리드 내부에 배치) -->
+                        <div id="checklistPanel" class="checklist-panel">
+                            <div class="checklist-header">
+                                <h2>체크 리스트</h2>
+                                <button class="close-btn" onclick="toggleChecklist()">
+                                    <span>›</span>
+                                </button>
+                            </div>
+                            <div class="checklist-content">
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check1" checked>
+                                    <label for="check1">건강 칼로리미터 설정하기</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check2" checked>
+                                    <label for="check2">물소화 가기</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check3">
+                                    <label for="check3">물 간 먹기</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check4">
+                                    <label for="check4">운동 계획 세우기</label>
+                                </div>
+                                <div class="checklist-item">
+                                    <input type="checkbox" id="check5">
+                                    <label for="check5">식단 기록하기</label>
+                                </div>
+                            </div>
+                            <div class="checklist-footer">
+                                <button class="add-item-btn">새 항목 추가</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 하단 영역 (패널 영향 안받음) -->
+                <div class="bottom-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">기록 비교</h2>
+                            <div class="chart-header">
+                                <div class="chart-legend"></div>
+                                <div class="chart-selectors">
+                                    <select class="compare-selector">
+                                        <option>종합</option>
+                                        <option>나이</option>
+                                        <option>키&몸무게</option>
+                                    </select>
+                                    <select class="year-selector">
+                                        <option>2025년</option>
+                                        <option>2024년</option>
+                                        <option>2023년</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="chart-container">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
