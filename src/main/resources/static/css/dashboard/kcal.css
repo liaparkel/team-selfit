@@ -1,85 +1,105 @@
 @import url("../global.css");
 
-/* ===== 메인 콘텐츠 ===== */
-#main-content {
-    width: 80%;
-    float: right;
-    padding: 2rem;
-    position: relative;
-}
-
 /* ===== 차트 카드 ===== */
-.chart-card {
+.card {
     background: #f8f9fa;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    margin-bottom: 2rem;
     overflow: hidden;
 }
 
-.chart-card:hover {
+.card:hover {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
-.chart-card .card-header {
-    padding: 1.5rem;
+.card-header {
+    padding: 1.5rem 1.5rem 0.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.card-title {
+    font-size: 1.25rem;
     font-weight: 600;
-    font-size: 1.1rem;
+    color: #111827;
+    margin: 0;
 }
 
-.chart-area {
-    height: 350px;
+.card-content {
+    padding: 0.5rem 1.5rem 1.5rem;
 }
 
-/* ===== 범례 ===== */
-.legend {
-    font-size: 0.9rem;
-    color: #666;
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 0 1.5rem;
 }
 
-.legend .dot {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin: 0 5px;
+.chart-selectors {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
 }
 
-.legend .intake {
-    background-color: #33C181;
+.compare-selector,
+.year-selector {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: white;
+    font-size: 0.875rem;
+    color: #374151;
+    cursor: pointer;
 }
 
-.legend .burn {
-    background-color: #11C6CF;
+.compare-selector:hover,
+.year-selector:hover {
+    border-color: var(--color-2);
 }
 
-/* ===== 캘린더 ===== */
-#calendar {
-    margin-top: 2rem;
-}
-
-/* ===== 패널 영역 ===== */
-.kcal-panel-wrapper {
+/* ===== 차트 영역 ===== */
+.chart-container {
     width: 100%;
+    height: 350px;
+    overflow: hidden;
+    padding: 0 1rem;
+}
+
+.chart-container svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* ===== 캘린더 및 패널 ===== */
+.calendar-wrapper {
+    margin-top: 3rem;
+    position: relative;
 }
 
 .calendar-panel-inner {
     position: relative;
 }
 
+#calendar {
+    min-width: 600px;
+}
+
+/* ===== kcal 패널 ===== */
 #kcal-panel {
-    position: fixed;
-    top: 10vh;
-    right: 30px;
+    position: absolute;
+    top: 0;
+    right: 0;
     width: 320px;
-    background-color: #ffffff;
+    max-width: 100%;
+    background-color: #f8f9fa;
+    z-index: 10;
+    display: none;
     border-radius: 12px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    display: none;
-    z-index: 999;
+    padding: 1rem;
 }
 
 #close-panel-btn {
@@ -101,17 +121,33 @@
     margin-bottom: 1rem;
 }
 
-/* ===== 패널 내용 정렬 ===== */
-#kcal-panel .d-flex {
+.kcal-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-content: space-between;
+    align-items: center;
     font-size: 0.95rem;
-    padding: 0 0.25rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 4px;
 }
 
-#kcal-panel .text-end {
+.kcal-row-even {
+    background-color: #e3f5f6;
+}
+
+.kcal-row-odd {
+    background-color: #cdeff2;
+}
+
+.kcal-summary {
+    text-align: center;
     font-size: 1rem;
+    color: black;
+    padding-top: 1rem;
 }
 
-/* ===== FullCalendar 기본 색상 조정 ===== */
+/* ===== FullCalendar 색상 커스터마이징 ===== */
 .fc-daygrid-day-number,
 .fc-col-header-cell-cushion {
     color: #222 !important;
@@ -144,7 +180,7 @@
 }
 
 .fc-day-today {
-    background-color: #f0fdf4 !important;
+    background-color: #e2e2e2 !important;
 }
 
 .fc-event {
@@ -154,4 +190,8 @@
     font-size: 0.8rem;
     padding: 2px 6px;
     border-radius: 4px;
+}
+
+.kcal-value {
+    margin-left: auto;
 }
