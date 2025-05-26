@@ -1,16 +1,61 @@
 // 식단 섭취 칼로리 차트 초기화 및 렌더링
 (function () {
-    document.addEventListener("DOMContentLoaded", function () {
-        const data = (window.foodKcalList && window.foodKcalList.length)
-            ? window.foodKcalList
-            : generateMockData();
+    function setupYearDropdown() {
+        const currentYear = new Date().getFullYear();
+        const startYear = currentYear - 2; // 최근 3년
+        const dropdownBtn = document.getElementById('yearDropdownBtn');
+        const menu = document.getElementById('yearDropdownMenu');
 
-        const seriesData = data.map(item => ({
+        dropdownBtn.innerText = `${currentYear}년`;
+
+        let html = '';
+        for (let y = currentYear; y >= startYear; y--) {
+            html += `<li><a class="dropdown-item year-option" data-year="${y}" href="#">${y}년</a></li>`;
+        }
+        menu.innerHTML = html;
+
+        // 드롭다운 클릭 이벤트 바인딩
+        document.querySelectorAll('.year-option').forEach(item => {
+            item.addEventListener('click', function (e) {
+                e.preventDefault();
+                const year = parseInt(this.dataset.year);
+                dropdownBtn.innerText = `${year}년`;
+
+                const allData = window.foodKcalList?.length
+                    ? window.foodKcalList
+                    : (window.foodKcalList = generateMockData());
+
+                const data = allData.filter(item => {
+                    return new Date(item.date).getFullYear() === year;
+                });
+
+                const seriesData = data.map(item => ({
+                    x: new Date(item.date + 'T00:00:00'),
+                    y: item.kcal
+                }));
+
+                renderChart(seriesData, year);
+            });
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const data = window.foodKcalList?.length
+            ? window.foodKcalList
+            : (window.foodKcalList = generateMockData());
+        window.foodKcalList = data;
+
+        setupYearDropdown(); // 드롭다운 먼저 설정
+
+        const defaultYear = new Date().getFullYear();
+        const filteredData = data.filter(item => new Date(item.date).getFullYear() === defaultYear);
+
+        const seriesData = filteredData.map(item => ({
             x: new Date(item.date + 'T00:00:00'),
             y: item.kcal
         }));
 
-        renderChart(seriesData);
+        renderChart(seriesData, defaultYear);
     });
 
     const today = new Date();
@@ -23,9 +68,17 @@
     const recent7Time = recent7.getTime();
 
     // ApexCharts 차트 렌더링 함수
-    function renderChart(seriesData) {
+    function renderChart(seriesData, selectedYear) {
         const yMax = Math.max(...seriesData.map(d => d.y), 0);
         const yAxisMax = yMax <= 4000 ? 4000 : Math.ceil(yMax / 500) * 500;
+
+        const jan1 = new Date(selectedYear, 0, 1).getTime();
+        const dec31 = new Date(selectedYear, 11, 31).getTime();
+        const today = new Date();
+        const todayTime = today.getTime();
+
+        const xMin = jan1;
+        const xMax = (selectedYear === today.getFullYear()) ? todayTime : dec31;
 
         const options = {
             chart: {
@@ -46,8 +99,10 @@
             },
             series: [{name: '섭취 칼로리', data: seriesData}],
             xaxis: {
-                type: 'datetime', min: jan1Time, max: todayTime,
-                labels: {format: 'yyyy-MM-dd', style: {fontSize: '12px', colors: '#444'}},
+                type: 'datetime',
+                min: xMin,
+                max: xMax,
+                labels: {format: 'MM-dd', style: {fontSize: '12px', colors: '#444'}},
                 tickPlacement: 'on'
             },
             yaxis: {
@@ -67,12 +122,19 @@
             },
             markers: {size: 0, hover: {size: 6}},
             grid: {borderColor: '#eee', strokeDashArray: 4},
-            title: {text: '식단 그래프', align: 'left', style: {fontSize: '16px', color: '#666'}}
+            title: {text: '식단 그래프', align: 'left', style: {fontSize: '18px', color: '#666'}}
         };
 
         const chart = new ApexCharts(document.querySelector("#food-chart"), options);
         chart.render().then(() => {
-            chart.zoomX(recent7Time, todayTime);
+            const recent7 = new Date();
+            recent7.setDate(today.getDate() - 6);
+            const recent7Time = recent7.getTime();
+            if (selectedYear === today.getFullYear()) {
+                chart.zoomX(recent7Time, xMax);
+            } else {
+                chart.zoomX(xMin, xMax);
+            }
 
             setTimeout(() => {
                 const homeBtn = document.querySelector(".apexcharts-reset-icon");
@@ -80,34 +142,51 @@
                     homeBtn.addEventListener("click", (e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        chart.zoomX(recent7Time, todayTime);
+                        if (selectedYear === today.getFullYear()) {
+                            chart.zoomX(recent7Time, xMax);
+                        } else {
+                            chart.zoomX(xMin, xMax);
+                        }
                     });
                 }
             }, 100);
         });
 
         chart.addEventListener("zoomed", function (ctx, {xaxis}) {
-            const min = Math.max(xaxis.min, jan1Time);
-            const max = Math.min(xaxis.max, todayTime);
+            const min = Math.max(xaxis.min, xMin);
+            const max = Math.min(xaxis.max, xMax);
             if (min !== xaxis.min || max !== xaxis.max) {
                 chart.zoomX(min, max);
             }
         });
     }
 
+
     // 더미 데이터 생성 (1월 1일부터 오늘까지)
     function generateMockData() {
         const arr = [];
-        const jan1 = new Date(today.getFullYear(), 0, 1);
-        const cursor = new Date(jan1);
-        while (cursor <= today) {
-            const dateStr = cursor.toISOString().split('T')[0];
-            arr.push({date: dateStr, kcal: Math.floor(Math.random() * 2500) + 1200});
-            cursor.setDate(cursor.getDate() + 1);
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const startYear = currentYear - 2;
+
+        for (let year = startYear; year <= currentYear; year++) {
+            const jan1 = new Date(year, 0, 1);
+            const dec31 = new Date(year, 11, 31);
+            const cursor = new Date(jan1);
+
+            while (cursor <= dec31) {
+                if (year === currentYear && cursor > today) break;
+
+                const dateStr = cursor.toISOString().split('T')[0];
+                arr.push({date: dateStr, kcal: Math.floor(Math.random() * 2500) + 1200});
+                cursor.setDate(cursor.getDate() + 1);
+            }
         }
         return arr;
     }
 })();
+
+let calendar;
 
 // 패널
 // 자동완성용 테스트 데이터
@@ -126,17 +205,40 @@ let foodList = foodMap[selectedDate] || [];
 let itemToDelete = null;
 
 // FullCalendar 초기화 및 날짜 클릭 시 패널 표시
+function renderKcalEvents(calendar) {
+    const events = [];
+
+    for (const date in foodMap) {
+        const list = foodMap[date];
+        const totalKcal = list.reduce((sum, item) => sum + item.cal, 0);
+        if (totalKcal > 0) {
+            events.push({
+                title: `총 ${totalKcal} kcal`,
+                start: date,
+                allDay: true
+            });
+        }
+    }
+
+    calendar.removeAllEvents();
+    calendar.addEventSource(events);
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     const calendarEl = document.getElementById('calendar');
     if (!calendarEl) return;
 
-    const calendar = new FullCalendar.Calendar(calendarEl, {
+    calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
+        locale: 'ko', // 한국어 설정
         height: 650,
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
             right: ''
+        },
+        buttonText: {
+            today: '오늘' // today 버튼을 오늘로 바꿈
         },
         dateClick: function (info) {
             const formatted = info.dateStr.replace(/-/g, '.');
@@ -319,6 +421,7 @@ function renderFoodList() {
     });
 
     document.getElementById('total-cal').innerText = total;
+    renderKcalEvents(calendar);
 }
 
 
@@ -394,3 +497,97 @@ document.addEventListener('click', function (e) {
 
     panel.style.display = 'none';
 });
+
+
+function renderChart(seriesData, selectedYear) {
+    const yMax = Math.max(...seriesData.map(d => d.y), 0);
+    const yAxisMax = yMax <= 4000 ? 4000 : Math.ceil(yMax / 500) * 500;
+
+    const jan1 = new Date(selectedYear, 0, 1).getTime();
+    const dec31 = new Date(selectedYear, 11, 31).getTime();
+    const today = new Date();
+    const todayTime = today.getTime();
+
+    const xMin = jan1;
+    const xMax = (selectedYear === today.getFullYear()) ? todayTime : dec31;
+
+    const options = {
+        chart: {
+            type: 'line', height: 350, background: '#f9f9f9',
+            zoom: {enabled: true, type: 'x', autoScaleYaxis: true},
+            toolbar: {
+                show: true,
+                tools: {
+                    download: false,
+                    selection: true,
+                    zoom: true,
+                    zoomin: true,
+                    zoomout: true,
+                    pan: true,
+                    reset: true
+                }
+            }
+        },
+        series: [{name: '섭취 칼로리', data: seriesData}],
+        xaxis: {
+            type: 'datetime',
+            min: xMin,
+            max: xMax,
+            labels: {format: 'MM-dd', style: {fontSize: '12px', colors: '#444'}},
+            tickPlacement: 'on'
+        },
+        yaxis: {
+            max: yAxisMax,
+            title: {text: 'kcal', style: {fontSize: '14px', color: '#999'}},
+            labels: {style: {fontSize: '12px', colors: '#666'}}
+        },
+        tooltip: {x: {format: 'yyyy-MM-dd'}},
+        stroke: {
+            width: 3,
+            curve: 'smooth',
+            colors: ['#33C181']
+        },
+        fill: {
+            type: 'solid',
+            colors: ['#33C181']
+        },
+        markers: {size: 0, hover: {size: 6}},
+        grid: {borderColor: '#eee', strokeDashArray: 4},
+        title: {text: '식단 그래프', align: 'left', style: {fontSize: '18px', color: '#666'}}
+    };
+
+    const chart = new ApexCharts(document.querySelector("#food-chart"), options);
+    chart.render().then(() => {
+        const recent7 = new Date();
+        recent7.setDate(today.getDate() - 6);
+        const recent7Time = recent7.getTime();
+        if (selectedYear === today.getFullYear()) {
+            chart.zoomX(recent7Time, xMax);
+        } else {
+            chart.zoomX(xMin, xMax);
+        }
+
+        setTimeout(() => {
+            const homeBtn = document.querySelector(".apexcharts-reset-icon");
+            if (homeBtn) {
+                homeBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (selectedYear === today.getFullYear()) {
+                        chart.zoomX(recent7Time, xMax);
+                    } else {
+                        chart.zoomX(xMin, xMax);
+                    }
+                });
+            }
+        }, 100);
+    });
+
+    chart.addEventListener("zoomed", function (ctx, {xaxis}) {
+        const min = Math.max(xaxis.min, xMin);
+        const max = Math.min(xaxis.max, xMax);
+        if (min !== xaxis.min || max !== xaxis.max) {
+            chart.zoomX(min, max);
+        }
+    });
+}

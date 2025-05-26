@@ -14,11 +14,12 @@
 /* 음식 입력 패널 */
 #food-panel {
     width: 520px;
-    position: absolute;
-    top: 100px;
+    position: fixed;
+    top: 10vh; /* ← 뷰포트 기준으로 위에서 10% */
     right: 30px;
     display: none;
-    z-index: 1000;
+    z-index: 900;
+    background-color: #f8f9fa;
 }
 
 .panel-date {
@@ -62,7 +63,6 @@
     cursor: pointer;
 }
 
-#autocomplete-list li:hover,
 #autocomplete-list li.active {
     background-color: #e9ecef;
     color: inherit;
@@ -110,25 +110,6 @@
 .food-row.editing {
     outline: 2px dashed #33C181;
     background-color: #eafaf3;
-}
-
-/* 패널 */
-#food-panel {
-    width: 520px;
-    position: absolute;
-    top: 100px;
-    right: 30px;
-    display: none;
-    z-index: 900; /* 수정됨 */
-    background-color: #f8f9fa;
-}
-
-#add-food-btn {
-    min-width: 60px;
-    flex-shrink: 0;
-    background-color: #33C181;
-    border-color: #33C181;
-    color: #fff;
 }
 
 #add-food-btn:hover {
@@ -181,29 +162,25 @@
     color: #2aae6c;
 }
 
-/* FullCalendar 날짜 텍스트 색상 재정의 */
-.fc-daygrid-day-number {
-    color: #333 !important;
-}
-
-.fc .fc-button {
-    background-color: #33C181;
-    border-color: #33C181;
-    color: #fff;
-}
-
-.fc .fc-button:hover,
 .fc .fc-button:focus {
     background-color: #2aae6c;
     border-color: #2aae6c;
     color: #fff;
 }
 
-.fc a {
-    text-decoration: none !important;
-}
-
 /* FullCalendar 오늘 날짜 배경색 */
 .fc-day-today {
     background-color: #eee !important;
+}
+
+/* ApexCharts toolbar 연도 선택 드롭다운 */
+.chart-toolbar-select {
+    font-size: 0.75rem;
+    height: 28px;
+    padding: 0 8px;
+    border-radius: 4px;
+    border: 1px solid #33C181;
+    color: #33C181;
+    background-color: white;
+    margin-left: 8px;
 }
