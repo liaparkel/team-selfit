@@ -44,3 +44,7 @@ spring:
 #              - email
 mybatis:
   mapper-locations: classpath:mappers/*.xml
+
+openapi:
+  base-url: https://api.data.go.kr/openapi/tn_pubr_public_nutri_process_info_api
+  key: ${OPENAPI_KEY}
