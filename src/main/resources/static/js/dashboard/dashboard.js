@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         },
                     },
                     hollow: {
-                        size: "55%",
+                        size: "35%",
                     },
                     track: {
                         background: "#f1f5f9",
@@ -269,10 +269,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 max: 4000,
                 tickAmount: 8,
                 labels: {
-                    formatter: (val) => val + " kcal",
+                    formatter: (val) => val,
                     style: {
                         fontSize: "12px",
                         colors: "#6b7280",
+                    },
+                },
+                title: {
+                    text: "kcal",
+                    rotate: -90,
+                    offsetX: 0,
+                    offsetY: 0,
+                    style: {
+                        fontSize: "14px",
+                        color: "#6b7280",
+                        fontWeight: 500,
                     },
                 },
             },

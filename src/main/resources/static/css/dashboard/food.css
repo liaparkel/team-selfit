@@ -1,14 +1,126 @@
-@import url('../global.css');
+@import url("../global.css");
+/* 차트 영역 - 카드 스타일 */
+#chart {
+    margin-bottom: 3rem;
+}
+
+/* 카드 스타일 */
+.card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+    padding: 1.5rem 1.5rem 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.card-content {
+    padding: 0.5rem 1.5rem 1.5rem;
+}
+
+/* Chart Header (범례와 셀렉터) */
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 0 1.5rem;
+}
+
+.chart-legend {
+    display: flex;
+    gap: 2rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.legend-line {
+    width: 20px;
+    height: 2px;
+    background: #33c181;
+    border-radius: 1px;
+}
+
+/* Chart Selectors */
+.chart-selectors {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.year-selector-btn {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: white;
+    font-size: 0.875rem;
+    color: #374151;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+    min-width: 100px;
+}
+
+.year-selector-btn:hover {
+    border-color: #33c181;
+}
+
+.year-selector-btn:focus {
+    outline: none;
+    border-color: #33c181;
+    box-shadow: 0 0 0 3px rgba(51, 193, 129, 0.1);
+}
+
+/* Chart Container */
+.chart-container {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    padding: 0 1rem;
+}
+
+.chart-container svg {
+    width: 100%;
+    height: 100%;
+}
+
+#food-chart {
+    width: 100%;
+    height: 100%;
+}
+
 /* 음식 입력 패널 */
 #food-panel {
     position: absolute;
     top: 0;
     right: 0;
     width: 520px;
-    max-width: 100%; /* ✅ 넘치지 않도록 */
+    max-width: 100%;
     background-color: #f8f9fa;
     z-index: 10;
-    display: none; /* JS로 toggle */
+    display: none;
 }
 
 .panel-date {
@@ -67,7 +179,7 @@
     font-size: 0.9rem;
     color: #6c757d;
     border-bottom: 1px solid #ccc;
-    margin-bottom: 4px; /* 헤더와 리스트 분리용 */
+    margin-bottom: 4px;
 }
 
 /* 리스트 아이템 */
@@ -97,13 +209,13 @@
 
 /* 식단 수정 중에는 수정 표시 */
 .food-row.editing {
-    outline: 2px dashed #33C181;
+    outline: 2px dashed #33c181;
     background-color: #eafaf3;
 }
 
 #add-food-btn {
-    background-color: #33C181 !important;
-    border-color: #33C181 !important;
+    background-color: #33c181 !important;
+    border-color: #33c181 !important;
     color: #fff !important;
     transition: background-color 0.2s ease, border-color 0.2s ease;
 }
@@ -113,7 +225,6 @@
     border-color: #2aae6c !important;
     color: #fff !important;
 }
-
 
 /* 패널 닫기 버튼 */
 #close-panel-btn {
@@ -140,8 +251,8 @@
 
 /* FullCalendar 이동 버튼 */
 .fc .fc-button {
-    background-color: #33C181;
-    border-color: #33C181;
+    background-color: #33c181;
+    border-color: #33c181;
     color: #fff;
 }
 
@@ -153,7 +264,7 @@
 /* FullCalendar 링크 밑줄 제거 및 색상 */
 .fc a {
     text-decoration: none;
-    color: #33C181;
+    color: #33c181;
 }
 
 .fc a:hover {
@@ -169,18 +280,6 @@
 /* FullCalendar 오늘 날짜 배경색 */
 .fc-day-today {
     background-color: #eee !important;
-}
-
-/* ApexCharts toolbar 연도 선택 드롭다운 */
-.chart-toolbar-select {
-    font-size: 0.75rem;
-    height: 28px;
-    padding: 0 8px;
-    border-radius: 4px;
-    border: 1px solid #33C181;
-    color: #33C181;
-    background-color: white;
-    margin-left: 8px;
 }
 
 .calendar-panel-wrap {
@@ -208,4 +307,22 @@
 .fc-event-time,
 .fc-event .fc-event-main {
     color: #000 !important;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .chart-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+    }
+
+    .chart-selectors {
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .chart-container {
+        height: 350px;
+    }
 }
