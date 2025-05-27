@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -701,6 +702,226 @@ public class DashboardRepositoryTests {
 
 		// then
 		assertNull(result);
+	}
+
+	@Test
+	void testGetYearExerciseAvgInfoYes() {
+		// given(키 174cm, 몸무게 75kg)
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 1);
+		param.put("heightMin", 170);
+		param.put("heightMax", 179);
+		param.put("weightMin", 70);
+		param.put("weightMax", 79);
+		param.put("exerciseYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearExerciseAvgInfo(param);
+
+		// then
+		assertFalse(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearExerciseAvgInfoNotExistMemberId() {
+		// given(키 174cm, 몸무게 75kg)
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 99999);
+		param.put("heightMin", 170);
+		param.put("heightMax", 179);
+		param.put("weightMin", 70);
+		param.put("weightMax", 79);
+		param.put("exerciseYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearExerciseAvgInfo(param);
+
+		// then
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearExerciseAvgAgeYes() {
+		// given(20대)
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 1);
+		param.put("minAge", 20);
+		param.put("maxAge", 29);
+		param.put("exerciseYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearExerciseAvgAge(param);
+
+		// then
+		assertNotNull(result);
+		assertFalse(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearExerciseAvgAgeNotExistMemberId() {
+		// given(20대)
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 99999);
+		param.put("minAge", 20);
+		param.put("maxAge", 29);
+		param.put("exerciseYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearExerciseAvgAge(param);
+
+		// then
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearExerciseAvgAllYes() {
+		// given(20대, 키 174cm, 몸무게 75kg)
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 1);
+		param.put("minAge", 20);
+		param.put("maxAge", 29);
+		param.put("heightMin", 170);
+		param.put("heightMax", 179);
+		param.put("weightMin", 70);
+		param.put("weightMax", 79);
+		param.put("exerciseYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearExerciseAvgAll(param);
+
+		// then
+		assertFalse(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearExerciseAvgAllNotExistMemberId() {
+		// given(20대, 키 174cm, 몸무게 75kg)
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 99999);
+		param.put("minAge", 20);
+		param.put("maxAge", 29);
+		param.put("heightMin", 170);
+		param.put("heightMax", 179);
+		param.put("weightMin", 70);
+		param.put("weightMax", 79);
+		param.put("exerciseYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearExerciseAvgAll(param);
+
+		// then
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearIntakeAvgInfoYes() {
+		// given
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 1);
+		param.put("heightMin", 170);
+		param.put("heightMax", 179);
+		param.put("weightMin", 70);
+		param.put("weightMax", 79);
+		param.put("intakeYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearIntakeAvgInfo(param);
+
+		// then
+		assertNotNull(result);
+		assertFalse(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearIntakeAvgInfoNotExistMemberId() {
+		// given
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 99999);
+		param.put("heightMin", 170);
+		param.put("heightMax", 179);
+		param.put("weightMin", 70);
+		param.put("weightMax", 79);
+		param.put("intakeYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearIntakeAvgInfo(param);
+
+		// then
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearIntakeAvgAgeYes() {
+		// given
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 1);
+		param.put("minAge", 20);
+		param.put("maxAge", 29);
+		param.put("intakeYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearIntakeAvgAge(param);
+
+		// then
+		assertNotNull(result);
+		assertFalse(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearIntakeAvgAgeNotExistMemberId() {
+		// given
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 99999);
+		param.put("minAge", 20);
+		param.put("maxAge", 29);
+		param.put("intakeYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearIntakeAvgAge(param);
+
+		// then
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearIntakeAvgAllYes() {
+		// given
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 1);
+		param.put("minAge", 20);
+		param.put("maxAge", 29);
+		param.put("heightMin", 170);
+		param.put("heightMax", 179);
+		param.put("weightMin", 70);
+		param.put("weightMax", 79);
+		param.put("intakeYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearIntakeAvgAll(param);
+
+		// then
+		assertNotNull(result);
+		assertFalse(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearIntakeAvgAllNotExistMemberId() {
+		// given
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 99999);
+		param.put("minAge", 20);
+		param.put("maxAge", 29);
+		param.put("heightMin", 170);
+		param.put("heightMax", 179);
+		param.put("weightMin", 70);
+		param.put("weightMax", 79);
+		param.put("intakeYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearIntakeAvgAll(param);
+
+		// then
+		assertTrue(result.isEmpty());
 	}
 
 }
