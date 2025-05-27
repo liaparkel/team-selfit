@@ -33,7 +33,7 @@ public class UIController {
 		return "dashboard/dashboard";
 	}
 
-	@GetMapping("/checklist")
+	@GetMapping("/dashboard/checklist")
 	public String checklist() {
 		return "dashboard/checklist";
 	}
