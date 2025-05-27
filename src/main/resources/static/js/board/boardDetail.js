@@ -1,30 +1,61 @@
-// src/main/resources/static/js/board/boardDetail.js
+document.addEventListener('DOMContentLoaded', function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryId = parseInt(urlParams.get('categoryId')) || 1;
+    const postId = parseInt(urlParams.get('postId')) || 1;
 
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. URL 경로를 슬래시로 분리
-    const parts = window.location.pathname.split('/');
-    // 2. 마지막 세그먼트를 숫자로 변환
-    const boardId = parseInt(parts[parts.length - 1], 10);
+    function generateMockDetails(prefix, authorPrefix, categoryName) {
+        return Array.from({length: 25}, (_, i) => ({
+            boardId: i + 1,
+            boardTitle: `${prefix} ${i + 1}`,
+            boardContents: `내용입니다 - ${prefix} ${i + 1}`,
+            boardImage: "/img/logo_img.png",
+            boardDate: `2025-05-${String(i + 1).padStart(2, '0')}`,
+            viewCount: (i + 1) * 3,
+            commentCount: (i + 1),
+            memberId: `${authorPrefix}${i + 1}`,
+            nickName: `${authorPrefix}닉네임${i + 1}`,
+            memberImage: "/img/memberImg.png",
+            categoryName: categoryName
+        }));
+    }
 
-    // 3. 모크 데이터에서 해당 ID 찾기
-    const board = allBoards.find(b => b.id === boardId);
-    if (!board) return;
+    const detailMockData = {
+        1: generateMockDetails("식단 샘플 제목", "식단유저", "식단"),
+        2: generateMockDetails("운동 샘플 제목", "운동유저", "운동"),
+        3: generateMockDetails("자유 샘플 제목", "자유유저", "자유")
+    };
 
-    // 상세 정보 렌더링
-    document.querySelector('.board-category').textContent = board.categoryName;
-    document.querySelector('.board-title').textContent = board.title;
-    document.querySelector('.nickName').textContent = board.author;
-    document.querySelector('.board-body').textContent = board.contents;
-    document.querySelector('.board-image img').setAttribute('src', board.image);
-    document.querySelector('.board-date').innerHTML = `<i class="bi bi-clock"></i> ${board.createdDate}`;
-    document.querySelector('.view-count').innerHTML = `<i class="bi bi-eye"></i> ${board.views}`;
-    document.querySelector('.comment-count').innerHTML = `<i class="bi bi-chat-dots"></i> ${board.commentCount}`;
+    function getBoardetail() {
+        const posts = detailMockData[categoryId] || [];
+        return posts.find(post => post.boardId === postId);
+    }
 
-    // 댓글 페이징 & 렌더링 (post.comments 배열 사용)
+    function renderPostDetail(data) {
+        if (!data) return;
+        document.querySelector('.board-category').textContent = data.categoryName;
+        document.querySelector('.board-title').textContent = data.boardTitle;
+        document.querySelector('.nickName').textContent = data.nickName;
+        document.querySelector('.board-body').textContent = data.boardContents;
+        document.querySelector('.board-image img').setAttribute('src', data.boardImage);
+        document.querySelector('.board-date').innerHTML = `<i class="bi bi-clock"></i> ${data.boardDate}`;
+        document.querySelector('.view-count').innerHTML = `<i class="bi bi-eye"></i> ${data.viewCount}`;
+        document.querySelector('.comment-count').innerHTML = `<i class="bi bi-chat-dots"></i> ${data.commentCount}`;
+    }
+
+    const boardDetail = getBoardetail();
+    renderPostDetail(boardDetail);
+
+    const mockComments = Array.from({length: 25}, (_, i) => ({
+        id: i + 1,
+        writerNickName: `유저${i + 1}`,
+        profileImage: '/img/memberImg.png',
+        commentDate: `2024-12-${String(i + 1).padStart(2, '0')}`,
+        commentContent: `${i + 1}번째 댓글입니다!`
+    }));
+
     const commentsPerPage = 5;
     let currentCommentPage = 1;
 
-    // 댓글 페이징 UI 렌더링
     function renderCommentPagination(totalComments) {
         const totalPages = Math.ceil(totalComments / commentsPerPage);
         const pagination = document.querySelector('.pagination');
@@ -34,22 +65,23 @@ document.addEventListener('DOMContentLoaded', () => {
             pagination.innerHTML += `<button onclick="goCommentPage(1)">&lt;&lt;</button>`;
             pagination.innerHTML += `<button onclick="goCommentPage(${currentCommentPage - 1})">&lt;</button>`;
         }
+
         for (let i = 1; i <= totalPages; i++) {
             pagination.innerHTML += `<button class="${i === currentCommentPage ? 'current' : ''}" onclick="goCommentPage(${i})">${i}</button>`;
         }
+
         if (currentCommentPage < totalPages) {
             pagination.innerHTML += `<button onclick="goCommentPage(${currentCommentPage + 1})">&gt;</button>`;
             pagination.innerHTML += `<button onclick="goCommentPage(${totalPages})">&gt;&gt;</button>`;
         }
     }
 
-    // 댓글 리스트 렌더링
     function renderComments(page) {
         const commentList = document.querySelector('.comment-list');
         commentList.innerHTML = '';
 
         const start = (page - 1) * commentsPerPage;
-        const pageComments = board.comments.slice(start, start + commentsPerPage);
+        const pageComments = mockComments.slice(start, start + commentsPerPage);
 
         pageComments.forEach(comment => {
             const div = document.createElement('div');
@@ -69,15 +101,13 @@ document.addEventListener('DOMContentLoaded', () => {
             commentList.appendChild(div);
         });
 
-        renderCommentPagination(board.comments.length);
+        renderCommentPagination(mockComments.length);
     }
 
-    // 전역에서 호출 가능한 페이지 이동 함수
     window.goCommentPage = function (page) {
         currentCommentPage = page;
         renderComments(page);
     };
 
-    // 초기 댓글 렌더링
     renderComments(currentCommentPage);
 });
