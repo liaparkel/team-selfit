@@ -171,4 +171,94 @@
         FROM MEMBER
         WHERE MEMBER_ID = #{memberId}
     </select>
+    <select id="getYearExerciseAvgInfo" parameterType="map" resultType="map">
+        SELECT T.EXERCISE_DATE, AVG(T.daily_sum)
+        FROM (SELECT EN.MEMBER_ID, EN.EXERCISE_DATE, SUM(EI.EXERCISE_KCAL) AS daily_sum
+              FROM EXERCISE_NOTE EN
+                       JOIN EXERCISE_INFO EI ON EN.EXERCISE_NOTE_ID = EI.EXERCISE_NOTE_ID
+                       JOIN MEMBER M ON EN.MEMBER_ID = M.MEMBER_ID
+              WHERE M.GOAL = (SELECT GOAL FROM MEMBER WHERE MEMBER_ID = #{memberId})
+                        AND M.GENDER = (SELECT GENDER FROM MEMBER WHERE MEMBER_ID = #{memberId})
+                        AND M.HEIGHT BETWEEN #{heightMin} AND #{heightMax}
+                        AND M.WEIGHT BETWEEN #{weightMin} AND #{weightMax}
+                        AND YEAR (EN.EXERCISE_DATE) = #{exerciseYear}
+        GROUP BY EN.MEMBER_ID, EN.EXERCISE_DATE
+            ) AS T
+        GROUP BY T.EXERCISE_DATE
+    </select>
+    <select id="getYearExerciseAvgAge" parameterType="map" resultType="map">
+        SELECT T.EXERCISE_DATE, AVG(T.daily_sum) AS avgKcal
+        FROM (SELECT EN.MEMBER_ID, EN.EXERCISE_DATE, SUM(EI.EXERCISE_KCAL) AS daily_sum
+              FROM EXERCISE_NOTE EN
+                       JOIN EXERCISE_INFO EI ON EN.EXERCISE_NOTE_ID = EI.EXERCISE_NOTE_ID
+                       JOIN MEMBER M ON EN.MEMBER_ID = M.MEMBER_ID
+              WHERE M.GOAL = (SELECT GOAL FROM MEMBER WHERE MEMBER_ID = #{memberId})
+                        AND M.GENDER = (SELECT GENDER FROM MEMBER WHERE MEMBER_ID = #{memberId})
+                        AND TIMESTAMPDIFF(YEAR, M.BIRTHDAY, CURDATE()) BETWEEN #{minAge} AND #{maxAge}
+                        AND YEAR (EN.EXERCISE_DATE) = #{exerciseYear}
+        GROUP BY EN.MEMBER_ID, EN.EXERCISE_DATE
+            ) AS T
+        GROUP BY T.EXERCISE_DATE
+    </select>
+    <select id="getYearExerciseAvgAll">
+        SELECT T.EXERCISE_DATE, AVG(T.daily_sum)
+        FROM (SELECT EN.MEMBER_ID, EN.EXERCISE_DATE, SUM(EI.EXERCISE_KCAL) AS daily_sum
+              FROM EXERCISE_NOTE EN
+                       JOIN EXERCISE_INFO EI ON EN.EXERCISE_NOTE_ID = EI.EXERCISE_NOTE_ID
+                       JOIN MEMBER M ON EN.MEMBER_ID = M.MEMBER_ID
+              WHERE M.GOAL = (SELECT GOAL FROM MEMBER WHERE MEMBER_ID = #{memberId})
+                        AND M.GENDER = (SELECT GENDER FROM MEMBER WHERE MEMBER_ID = #{memberId})
+                        AND TIMESTAMPDIFF(YEAR, M.BIRTHDAY, CURDATE()) BETWEEN #{minAge} AND #{maxAge}
+                        AND M.HEIGHT BETWEEN #{heightMin} AND #{heightMax}
+                        AND M.WEIGHT BETWEEN #{weightMin} AND #{weightMax}
+                        AND YEAR (EN.EXERCISE_DATE) = #{exerciseYear}
+        GROUP BY EN.MEMBER_ID, EN.EXERCISE_DATE
+            ) AS T
+        GROUP BY T.EXERCISE_DATE
+    </select>
+    <select id="getYearIntakeAvgInfo" parameterType="map" resultType="map">
+        SELECT T.INTAKE_DATE AS intakeDate, AVG(T.daily_sum) AS avgIntakeKcal
+        FROM (SELECT FN.MEMBER_ID, FN.INTAKE_DATE, SUM(FI.INTAKE_KCAL) AS daily_sum
+              FROM FOOD_NOTE FN
+                       JOIN FOOD_INFO FI ON FN.FOOD_NOTE_ID = FI.FOOD_NOTE_ID
+                       JOIN MEMBER M ON FN.MEMBER_ID = M.MEMBER_ID
+              WHERE M.GOAL = (SELECT GOAL FROM MEMBER WHERE MEMBER_ID = #{memberId})
+                        AND M.GENDER = (SELECT GENDER FROM MEMBER WHERE MEMBER_ID = #{memberId})
+                        AND M.HEIGHT BETWEEN #{heightMin} AND #{heightMax}
+                        AND M.WEIGHT BETWEEN #{weightMin} AND #{weightMax}
+                        AND YEAR (FN.INTAKE_DATE) = #{intakeYear}
+        GROUP BY FN.MEMBER_ID, FN.INTAKE_DATE
+            ) AS T
+        GROUP BY T.INTAKE_DATE
+    </select>
+    <select id="getYearIntakeAvgAge" parameterType="map" resultType="map">
+        SELECT T.INTAKE_DATE AS intakeDate, AVG(T.daily_sum) AS avgIntakeKcal
+        FROM (SELECT FN.MEMBER_ID, FN.INTAKE_DATE, SUM(FI.INTAKE_KCAL) AS daily_sum
+              FROM FOOD_NOTE FN
+                       JOIN FOOD_INFO FI ON FN.FOOD_NOTE_ID = FI.FOOD_NOTE_ID
+                       JOIN MEMBER M ON FN.MEMBER_ID = M.MEMBER_ID
+              WHERE M.GOAL = (SELECT GOAL FROM MEMBER WHERE MEMBER_ID = #{memberId})
+                        AND M.GENDER = (SELECT GENDER FROM MEMBER WHERE MEMBER_ID = #{memberId})
+                        AND TIMESTAMPDIFF(YEAR, M.BIRTHDAY, CURDATE()) BETWEEN #{minAge} AND #{maxAge}
+                        AND YEAR (FN.INTAKE_DATE) = #{intakeYear}
+        GROUP BY FN.MEMBER_ID, FN.INTAKE_DATE
+            ) AS T
+        GROUP BY T.INTAKE_DATE
+    </select>
+    <select id="getYearIntakeAvgAll" parameterType="map" resultType="map">
+        SELECT T.INTAKE_DATE AS intakeDate, AVG(T.daily_sum) AS avgIntakeKcal
+        FROM (SELECT FN.MEMBER_ID, FN.INTAKE_DATE, SUM(FI.INTAKE_KCAL) AS daily_sum
+              FROM FOOD_NOTE FN
+                       JOIN FOOD_INFO FI ON FN.FOOD_NOTE_ID = FI.FOOD_NOTE_ID
+                       JOIN MEMBER M ON FN.MEMBER_ID = M.MEMBER_ID
+              WHERE M.GOAL = (SELECT GOAL FROM MEMBER WHERE MEMBER_ID = #{memberId})
+                        AND M.GENDER = (SELECT GENDER FROM MEMBER WHERE MEMBER_ID = #{memberId})
+                        AND TIMESTAMPDIFF(YEAR, M.BIRTHDAY, CURDATE()) BETWEEN #{minAge} AND #{maxAge}
+                        AND M.HEIGHT BETWEEN #{heightMin} AND #{heightMax}
+                        AND M.WEIGHT BETWEEN #{weightMin} AND #{weightMax}
+                        AND YEAR (FN.INTAKE_DATE) = #{intakeYear}
+        GROUP BY FN.MEMBER_ID, FN.INTAKE_DATE
+            ) AS T
+        GROUP BY T.INTAKE_DATE
+    </select>
 </mapper>

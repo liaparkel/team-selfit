@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +65,7 @@ public class DashboardRepositoryTests {
 	@Test
 	void testGetBmrNotExistMemberId() {
 		// given
-		int memberId = 9999;
+		int memberId = 99999;
 
 		// when
 		Member member = dashboardRepository.getBmr(memberId);
@@ -88,7 +89,7 @@ public class DashboardRepositoryTests {
 	@Test
 	void testGetIntakeKcalNotExistMemberId() {
 		// given
-		Food request = Food.builder().memberId(9999).intakeDate("2025-05-21").build();
+		Food request = Food.builder().memberId(99999).intakeDate("2025-05-21").build();
 
 		// when
 		Food result = dashboardRepository.getIntakeKcal(request);
@@ -112,7 +113,7 @@ public class DashboardRepositoryTests {
 	@Test
 	void testGetExerciseKcalNotExistMemberId() {
 		// given
-		Exercise request = Exercise.builder().memberId(9999).exerciseDate("2025-05-21").build();
+		Exercise request = Exercise.builder().memberId(99999).exerciseDate("2025-05-21").build();
 
 		// when
 		Exercise result = dashboardRepository.getExerciseKcal(request);
@@ -139,7 +140,7 @@ public class DashboardRepositoryTests {
 	void testGetYearIntakeKcalNotExistMemberId() {
 		// given
 		HashMap<String, Object> map = new HashMap<>();
-		map.put("memberId", 9999);
+		map.put("memberId", 99999);
 		map.put("intakeYear", "2025");
 
 		// when
@@ -167,7 +168,7 @@ public class DashboardRepositoryTests {
 	void testGetYearExerciseKcalNotExistMemberId() {
 		// given
 		HashMap<String, Object> map = new HashMap<>();
-		map.put("memberId", 9999);
+		map.put("memberId", 99999);
 		map.put("exerciseYear", "2025");
 
 		// when
@@ -192,7 +193,7 @@ public class DashboardRepositoryTests {
 	@Test
 	void testGetIntakeDetailNotExistMemberId() {
 		// given
-		Food request = Food.builder().memberId(9999).intakeDate("2025-05-21").build();
+		Food request = Food.builder().memberId(99999).intakeDate("2025-05-21").build();
 
 		// when
 		List<Food> result = dashboardRepository.getIntakeDetail(request);
@@ -240,7 +241,7 @@ public class DashboardRepositoryTests {
 	@Test
 	void testAddFoodListNotExistMemberId() {
 		// given
-		Food request = Food.builder().memberId(9999).intakeDate("2025-06-05").build();
+		Food request = Food.builder().memberId(99999).intakeDate("2025-06-05").build();
 
 		// when & then
 		assertThrows(DataIntegrityViolationException.class, () -> {
@@ -263,7 +264,7 @@ public class DashboardRepositoryTests {
 	@Test
 	void testRemoveFoodListNotExistMemberId() {
 		// given
-		Food request = Food.builder().memberId(9999).intakeDate("2025-06-02").build();
+		Food request = Food.builder().memberId(99999).intakeDate("2025-06-02").build();
 
 		// when
 		int result = dashboardRepository.removeFoodList(request);
@@ -274,97 +275,653 @@ public class DashboardRepositoryTests {
 
 	@Test
 	void testAddFoodYes() {
-		assertEquals(1,
-			dashboardRepository.addFood(Food.builder().intake("200").intakeKcal("95").foodNoteId(2).foodId(8).build()));
+		// given
+		Food request = Food.builder().intake("200").intakeKcal("95").foodNoteId(2).foodId(8).build();
+
+		// when
+		int result = dashboardRepository.addFood(request);
+
+		// then
+		assertEquals(1, result);
+	}
+
+	@Test
+	void testAddFoodNotExistFoodId() {
+		// given
+		Food request = Food.builder().intake("200").intakeKcal("95").foodNoteId(2).foodId(99999).build();
+
+		// when & then
+		assertThrows(DataIntegrityViolationException.class, () -> {
+			dashboardRepository.addFood(request);
+		});    //SQLIntegrityConstraintViolationException을 Spring이 자동 변환
 	}
 
 	@Test
 	void testSetIntakeYes() {
-		assertEquals(1, dashboardRepository.setIntake(Food.builder().foodInfoId(2).intake("300").build()));
+		// given
+		Food request = Food.builder().foodInfoId(2).intake("300").build();
+
+		// when
+		int result = dashboardRepository.setIntake(request);
+
+		// then
+		assertEquals(1, result);
+	}
+
+	@Test
+	void testSetIntakeNoInvalidId() {
+		// given
+		Food request = Food.builder().foodInfoId(99999).intake("300").build();
+
+		// when
+		int result = dashboardRepository.setIntake(request);
+
+		// then
+		assertEquals(0, result);
 	}
 
 	@Test
 	void testRemoveFoodYes() {
-		assertEquals(1, dashboardRepository.removeFood(30));
+		// given
+		int foodInfoId = 30;
+
+		// when
+		int result = dashboardRepository.removeFood(foodInfoId);
+
+		// then
+		assertEquals(1, result);
+	}
+
+	@Test
+	void testRemoveFoodNoInvalidId() {
+		// given
+		int foodInfoId = 99999;
+
+		// when
+		int result = dashboardRepository.removeFood(foodInfoId);
+
+		// then
+		assertEquals(0, result);
 	}
 
 	@Test
 	void testGetAutoCompleteExerciseYes() {
-		System.out.println(dashboardRepository.getAutoCompleteExercise("기"));
+		// given
+		String partWord = "기";
+
+		// when
+		List<String> result = dashboardRepository.getAutoCompleteExercise(partWord);
+
+		// then
+		assertFalse(result.isEmpty());
+	}
+
+	@Test
+	void testGetAutoCompleteExerciseInvalidKeyword() {
+		// given
+		String partWord = "selfit";
+
+		// when
+		List<String> result = dashboardRepository.getAutoCompleteExercise(partWord);
+
+		// then
+		assertTrue(result.isEmpty());
 	}
 
 	@Test
 	void testAddExerciseListYes() {
-		assertEquals(1,
-			dashboardRepository.addExerciseList(Exercise.builder().memberId(1).exerciseDate("2025-06-05").build()));
+		// given
+		Exercise request = Exercise.builder().memberId(1).exerciseDate("2025-06-05").build();
+
+		// when
+		int result = dashboardRepository.addExerciseList(request);
+
+		// then
+		assertEquals(1, result);
 	}
 
 	@Test
-	void testremoveExerciseListYes() {
-		assertEquals(1,
-			dashboardRepository.removeExerciseList(Exercise.builder().memberId(10).exerciseDate("2025-05-10").build()));
+	void testAddExerciseListNotExistMemberId() {
+		// given
+		Exercise request = Exercise.builder().memberId(99999).exerciseDate("2025-06-05").build();
+
+		// when & then
+		assertThrows(DataIntegrityViolationException.class, () -> {
+			dashboardRepository.addExerciseList(request);
+		});
+	}
+
+	@Test
+	void testRemoveExerciseListYes() {
+		// given
+		Exercise request = Exercise.builder().memberId(10).exerciseDate("2025-05-10").build();
+
+		// when
+		int result = dashboardRepository.removeExerciseList(request);
+
+		// then
+		assertEquals(1, result);
+	}
+
+	@Test
+	void testRemoveExerciseListNo_NotExistMemberId() {
+		// given
+		Exercise request = Exercise.builder().memberId(99999).exerciseDate("2025-05-10").build();
+
+		// when
+		int result = dashboardRepository.removeExerciseList(request);
+
+		// then
+		assertEquals(0, result);
 	}
 
 	@Test
 	void testAddExerciseYes() {
-		assertEquals(1, dashboardRepository.addExercise(
-			Exercise.builder().exerciseMin(40).exerciseKcal("112").exerciseId(6).exerciseNoteId(1).build()));
+		// given
+		Exercise request = Exercise.builder()
+			.exerciseMin(40)
+			.exerciseKcal("112")
+			.exerciseId(6)
+			.exerciseNoteId(1)
+			.build();
+
+		// when
+		int result = dashboardRepository.addExercise(request);
+
+		// then
+		assertEquals(1, result);
 	}
 
-	// @Test
-	// void testGetExerciseDetailYes() {
-	// 	Exercise e = dashboardRepository.getExerciseDetail(
-	// 		Exercise.builder().memberId(1).exerciseDate("2025-05-01").exerciseInfoId(1).build());
-	// 	System.out.println(e);
-	// }
+	@Test
+	void testAddExerciseNotExistNoteId() {
+		// given
+		Exercise request = Exercise.builder()
+			.exerciseMin(40)
+			.exerciseKcal("112")
+			.exerciseId(6)
+			.exerciseNoteId(99999)
+			.build();
+
+		// when & then
+		assertThrows(DataIntegrityViolationException.class, () -> {
+			dashboardRepository.addExercise(request);
+		});
+	}
+
+	@Test
+	void testGetExerciseDetailYes() {
+		// given
+		Exercise request = Exercise.builder().memberId(1).exerciseDate("2025-05-21").build();
+
+		// when
+		List<Exercise> result = dashboardRepository.getExerciseDetail(request);
+
+		// then
+		assertFalse(result.isEmpty());
+	}
+
+	@Test
+	void testGetExerciseDetailNotExistMemberId() {
+		// given
+		Exercise request = Exercise.builder().memberId(99999).exerciseDate("2025-05-21").build();
+
+		// when
+		List<Exercise> result = dashboardRepository.getExerciseDetail(request);
+
+		// then
+		assertTrue(result.isEmpty());
+	}
 
 	@Test
 	void testSetExerciseMinYes() {
-		assertEquals(1,
-			dashboardRepository.setExerciseMin(Exercise.builder().exerciseInfoId(2).exerciseMin(300).build()));
+		// given
+		Exercise request = Exercise.builder().exerciseInfoId(2).exerciseMin(300).build();
+
+		// when
+		int result = dashboardRepository.setExerciseMin(request);
+
+		// then
+		assertEquals(1, result);
+	}
+
+	@Test
+	void testSetExerciseMinNotExistExerciseInfoId() {
+		// given
+		Exercise request = Exercise.builder().exerciseInfoId(99999).exerciseMin(300).build();
+
+		// when
+		int result = dashboardRepository.setExerciseMin(request);
+
+		// then
+		assertEquals(0, result);
 	}
 
 	@Test
 	void testRemoveExerciseYes() {
-		assertEquals(1, dashboardRepository.removeExercise(1));
+		// given
+		int exerciseInfoId = 1;
+
+		// when
+		int result = dashboardRepository.removeExercise(exerciseInfoId);
+
+		// then
+		assertEquals(1, result);
+	}
+
+	@Test
+	void testRemoveExerciseNotExistExerciseInfoId() {
+		// given
+		int exerciseInfoId = 99999;
+
+		// when
+		int result = dashboardRepository.removeExercise(exerciseInfoId);
+
+		// then
+		assertEquals(0, result);
 	}
 
 	@Test
 	void testGetCheckListYes() {
-		System.out.println(
-			dashboardRepository.getCheckList(Checklist.builder().memberId(1).checkDate("2025-05-01").build()));
+		// given
+		Checklist request = Checklist.builder().memberId(1).checkDate("2025-05-01").build();
+
+		// when
+		List<Checklist> result = dashboardRepository.getCheckList(request);
+
+		// then
+		assertFalse(result.isEmpty());
 	}
 
 	@Test
-	void testSetCheckContent() {
-		assertEquals(1, dashboardRepository.setCheckContent(Checklist.builder().checkId(2).checkContent("수정").build()));
+	void testGetCheckListNotExistMemberId() {
+		// given
+		Checklist request = Checklist.builder().memberId(99999).checkDate("2025-05-01").build();
+
+		// when
+		List<Checklist> result = dashboardRepository.getCheckList(request);
+
+		// then
+		assertTrue(result.isEmpty());
 	}
 
 	@Test
-	void testSetIsCheck() {
-		assertEquals(1, dashboardRepository.setIsCheck(Checklist.builder().isCheck(1).checkId(2).build()));
+	void testSetCheckContentYes() {
+		// given
+		Checklist request = Checklist.builder().checkId(2).checkContent("수정").build();
+
+		// when
+		int result = dashboardRepository.setCheckContent(request);
+
+		// then
+		assertEquals(1, result);
 	}
 
 	@Test
-	void testRemoveCheckItem() {
-		assertEquals(1, dashboardRepository.removeCheckItem(2));
+	void testSetCheckContentNotExistCheckId() {
+		// given
+		Checklist request = Checklist.builder().checkId(99999).checkContent("수정").build();
+
+		// when
+		int result = dashboardRepository.setCheckContent(request);
+
+		// then
+		assertEquals(0, result);
 	}
 
 	@Test
-	void testAddChecklist() {
-		assertEquals(1,
-			dashboardRepository.addChecklist(Checklist.builder().memberId(1).checkDate("2025-06-07").build()));
+	void testSetIsCheckYes() {
+		// given
+		Checklist request = Checklist.builder().checkId(2).isCheck(1).build();
+
+		// when
+		int result = dashboardRepository.setIsCheck(request);
+
+		// then
+		assertEquals(1, result);
 	}
 
 	@Test
-	void testAddCheckItem() {
-		assertEquals(1, dashboardRepository.addCheckItem(
-			Checklist.builder().checkContent("물 마시기").isCheck(0).checklistId(1).build()));
+	void testSetIsCheckNotExistCheckId() {
+		// given
+		Checklist request = Checklist.builder().checkId(99999).isCheck(1).build();
+
+		// when
+		int result = dashboardRepository.setIsCheck(request);
+
+		// then
+		assertEquals(0, result);
+	}
+
+	@Test
+	void testRemoveCheckItemYes() {
+		// given
+		int checkId = 2;
+
+		// when
+		int result = dashboardRepository.removeCheckItem(checkId);
+
+		// then
+		assertEquals(1, result);
+	}
+
+	@Test
+	void testRemoveCheckItemNotExistCheckId() {
+		// given
+		int checkId = 99999;
+
+		// when
+		int result = dashboardRepository.removeCheckItem(checkId);
+
+		// then
+		assertEquals(0, result);
+	}
+
+	@Test
+	void testAddChecklistYes() {
+		// given
+		Checklist request = Checklist.builder().memberId(1).checkDate("2025-06-07").build();
+
+		// when
+		int result = dashboardRepository.addChecklist(request);
+
+		// then
+		assertEquals(1, result);
+	}
+
+	@Test
+	void testAddChecklistNotExistMemberId() {
+		// given
+		Checklist request = Checklist.builder().memberId(99999).checkDate("2025-06-07").build();
+
+		// when & then
+		assertThrows(DataIntegrityViolationException.class, () -> {
+			dashboardRepository.addChecklist(request);
+		});
+	}
+
+	@Test
+	void testAddCheckItemNullContent() {
+		// given
+		Checklist request = Checklist.builder()
+			.isCheck(0)
+			.checklistId(1)
+			.build();
+
+		// when & then
+		assertThrows(DataIntegrityViolationException.class, () -> {
+			dashboardRepository.addCheckItem(request);
+		});
+	}
+
+	@Test
+	void testAddCheckItemYes() {
+		// given
+		Checklist request = Checklist.builder().checkContent("물 마시기").isCheck(0).checklistId(1).build();
+
+		// when
+		int result = dashboardRepository.addCheckItem(request);
+
+		// then
+		assertEquals(1, result);
+	}
+
+	@Test
+	void testAddCheckItemNotExistChecklistId() {
+		// given
+		Checklist request = Checklist.builder()
+			.checkContent("물 마시기")
+			.isCheck(0)
+			.checklistId(99999)
+			.build();
+
+		// when & then
+		assertThrows(DataIntegrityViolationException.class, () -> {
+			dashboardRepository.addCheckItem(request);
+		});
 	}
 
 	@Test
 	void testGetGoalYes() {
-		System.out.println(dashboardRepository.getGoal(2));
+		// given
+		int memberId = 2;
+
+		// when
+		String result = dashboardRepository.getGoal(memberId);
+
+		// then
+		assertNotNull(result);
+	}
+
+	@Test
+	void testGetGoalNotExistMemberId() {
+		// given
+		int memberId = 99999;
+
+		// when
+		String result = dashboardRepository.getGoal(memberId);
+
+		// then
+		assertNull(result);
+	}
+
+	@Test
+	void testGetYearExerciseAvgInfoYes() {
+		// given(키 174cm, 몸무게 75kg)
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 1);
+		param.put("heightMin", 170);
+		param.put("heightMax", 179);
+		param.put("weightMin", 70);
+		param.put("weightMax", 79);
+		param.put("exerciseYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearExerciseAvgInfo(param);
+
+		// then
+		assertFalse(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearExerciseAvgInfoNotExistMemberId() {
+		// given(키 174cm, 몸무게 75kg)
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 99999);
+		param.put("heightMin", 170);
+		param.put("heightMax", 179);
+		param.put("weightMin", 70);
+		param.put("weightMax", 79);
+		param.put("exerciseYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearExerciseAvgInfo(param);
+
+		// then
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearExerciseAvgAgeYes() {
+		// given(20대)
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 1);
+		param.put("minAge", 20);
+		param.put("maxAge", 29);
+		param.put("exerciseYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearExerciseAvgAge(param);
+
+		// then
+		assertNotNull(result);
+		assertFalse(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearExerciseAvgAgeNotExistMemberId() {
+		// given(20대)
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 99999);
+		param.put("minAge", 20);
+		param.put("maxAge", 29);
+		param.put("exerciseYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearExerciseAvgAge(param);
+
+		// then
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearExerciseAvgAllYes() {
+		// given(20대, 키 174cm, 몸무게 75kg)
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 1);
+		param.put("minAge", 20);
+		param.put("maxAge", 29);
+		param.put("heightMin", 170);
+		param.put("heightMax", 179);
+		param.put("weightMin", 70);
+		param.put("weightMax", 79);
+		param.put("exerciseYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearExerciseAvgAll(param);
+
+		// then
+		assertFalse(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearExerciseAvgAllNotExistMemberId() {
+		// given(20대, 키 174cm, 몸무게 75kg)
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 99999);
+		param.put("minAge", 20);
+		param.put("maxAge", 29);
+		param.put("heightMin", 170);
+		param.put("heightMax", 179);
+		param.put("weightMin", 70);
+		param.put("weightMax", 79);
+		param.put("exerciseYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearExerciseAvgAll(param);
+
+		// then
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearIntakeAvgInfoYes() {
+		// given
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 1);
+		param.put("heightMin", 170);
+		param.put("heightMax", 179);
+		param.put("weightMin", 70);
+		param.put("weightMax", 79);
+		param.put("intakeYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearIntakeAvgInfo(param);
+
+		// then
+		assertNotNull(result);
+		assertFalse(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearIntakeAvgInfoNotExistMemberId() {
+		// given
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 99999);
+		param.put("heightMin", 170);
+		param.put("heightMax", 179);
+		param.put("weightMin", 70);
+		param.put("weightMax", 79);
+		param.put("intakeYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearIntakeAvgInfo(param);
+
+		// then
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearIntakeAvgAgeYes() {
+		// given
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 1);
+		param.put("minAge", 20);
+		param.put("maxAge", 29);
+		param.put("intakeYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearIntakeAvgAge(param);
+
+		// then
+		assertNotNull(result);
+		assertFalse(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearIntakeAvgAgeNotExistMemberId() {
+		// given
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 99999);
+		param.put("minAge", 20);
+		param.put("maxAge", 29);
+		param.put("intakeYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearIntakeAvgAge(param);
+
+		// then
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearIntakeAvgAllYes() {
+		// given
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 1);
+		param.put("minAge", 20);
+		param.put("maxAge", 29);
+		param.put("heightMin", 170);
+		param.put("heightMax", 179);
+		param.put("weightMin", 70);
+		param.put("weightMax", 79);
+		param.put("intakeYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearIntakeAvgAll(param);
+
+		// then
+		assertNotNull(result);
+		assertFalse(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearIntakeAvgAllNotExistMemberId() {
+		// given
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", 99999);
+		param.put("minAge", 20);
+		param.put("maxAge", 29);
+		param.put("heightMin", 170);
+		param.put("heightMax", 179);
+		param.put("weightMin", 70);
+		param.put("weightMax", 79);
+		param.put("intakeYear", 2025);
+
+		// when
+		List<Map<String, Object>> result = dashboardRepository.getYearIntakeAvgAll(param);
+
+		// then
+		assertTrue(result.isEmpty());
 	}
 
 }
