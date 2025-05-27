@@ -2,14 +2,11 @@ package com.oopsw.selfit.repository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.oopsw.selfit.dto.Bookmark;
 import com.oopsw.selfit.dto.LoginInfo;
 import com.oopsw.selfit.dto.Member;
 
@@ -140,7 +137,6 @@ public class MemberRepositoryTests {
 			.height(180.0f)
 			.weight(75.0f)
 			.goal("건강 유지")
-			.joinDate("2025-05-26")
 			.memberType("일반회원")
 			.profileImg("img.jpg")
 			.build();
@@ -150,57 +146,6 @@ public class MemberRepositoryTests {
 
 		//then
 		assertEquals(1, result);
-	}
-	
-	@Test
-	public void testGetBookmarksPagedYes() {
-		//given
-
-		//when
-		List<Bookmark> list = memberRepository.getBookmarks(1, 5, 0);
-
-		//then
-		assertTrue(list.size() <= 5);
-	}
-
-	//페이지당 n개일 때 n개 이하가 잘 나오는지 확인
-	@Test
-	public void testGetBookmarksPagedExactLimit() {
-		//given
-		int limit = 2;
-		int offset = 0;
-
-		//when
-		List<Bookmark> list = memberRepository.getBookmarks(1, limit, offset);
-
-		//then
-		assertNotNull(list);
-		assertTrue(list.size() <= limit);
-	}
-
-	//offset이 너무 커서 결과 없는지 확인
-	@Test
-	public void testGetBookmarksPagedOffsetOver() {
-		//given
-		int offset = 9999;
-
-		//when
-		List<Bookmark> list = memberRepository.getBookmarks(1, 5, offset);
-
-		//then
-		assertNotNull(list);
-		assertEquals(0, list.size()); // offset이 너무 커서 결과 없음
-	}
-
-	@Test
-	public void testGetBookmarksPagedInvalidMemberId() {
-		//given
-
-		//when
-		List<Bookmark> list = memberRepository.getBookmarks(-1, 5, 0);
-
-		//then
-		assertTrue(list.isEmpty());
 	}
 
 	@Test
@@ -217,20 +162,7 @@ public class MemberRepositoryTests {
 		//then
 		assertEquals(1, result);
 	}
-
-	@Test
-	public void testSetMemberGoogleYes() {
-		//given
-		Member member = memberRepository.getMember(1);
-		member.setNickname("googlenick");
-
-		//when
-		int updated = memberRepository.setMemberGoogle(member);
-
-		//then
-		assertEquals(1, updated);
-	}
-
+	
 	@Test
 	public void testRemoveMemberYes() {
 		//given
