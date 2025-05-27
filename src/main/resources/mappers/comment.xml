@@ -18,10 +18,10 @@
     </select>
 
     <!-- 댓글 등록 -->
-    <insert id="insertComment" parameterType="com.oopsw.selfit.dto.Comment">
+    <insert id="addComment" parameterType="com.oopsw.selfit.dto.Comment">
         INSERT INTO COMMENTS
             (COMMENT_CONTENT, COMMENT_CREATED_DATE, BOARD_ID, MEMBER_ID)
-        VALUES (#{commentContent}, #{commentDate}, #{boardId}, #{memberId})
+        VALUES (#{commentContent}, SYSDATE(), #{boardId}, #{memberId})
     </insert>
 </mapper>
 

@@ -42,13 +42,13 @@
     <select id="getBoard"
             parameterType="com.oopsw.selfit.dto.Board"
             resultType="com.oopsw.selfit.dto.Board">
-        SELECT B.BOARD_ID,
-               B.BOARD_TITLE,
-               M.NICKNAME,
-               B.VIEW_COUNT,
-               B.CREATED_DATE,
-               C.CATEGORY_NAME,
-               COUNT(CM.COMMENT_ID) AS COMMENT_COUNT
+        SELECT B.BOARD_ID           AS boardId,
+               B.BOARD_TITLE        AS boardTitle,
+               M.NICKNAME           AS nickName,
+               B.VIEW_COUNT         AS viewCount,
+               B.CREATED_DATE       AS createdDate,
+               C.CATEGORY_NAME      AS categoryName,
+               COUNT(CM.COMMENT_ID) AS commentCount
         FROM BOARD B
                  JOIN
              MEMBER M ON B.MEMBER_ID = M.MEMBER_ID
@@ -81,14 +81,14 @@
     <insert id="addBoard" parameterType="com.oopsw.selfit.dto.Board">
         INSERT INTO BOARD
         (BOARD_TITLE, BOARD_CONTENT, VIEW_COUNT, CREATED_DATE, BOARD_IMG, CATEGORY_ID, MEMBER_ID)
-        VALUES (#{boardTitle}, #{boardContent}, #{viewCount}, #{createdDate}, #{boardImg}, #{categoryId}, #{memberId})
+        VALUES (#{boardTitle}, #{boardContent}, #{viewCount}, SYSDATE(), #{boardImg}, #{categoryId}, #{memberId})
     </insert>
 
-    <insert id="insertBookmark" parameterType="com.oopsw.selfit.dto.Board">
-        INSERT INTO bookmark
-            (memberId, postId, bookmarkDate)
+    <insert id="addBookmark" parameterType="com.oopsw.selfit.dto.Board">
+        INSERT INTO BOOKMARK
+            (MEMBER_ID, BOARD_ID, BOOKMARK_AT)
         VALUES (#{memberId}, #{boardId},
-                SYSDATE)
+                SYSDATE())
     </insert>
 
     <!-- 게시글 수정 -->
@@ -103,8 +103,8 @@
 
     <delete id="removeBoard" parameterType="com.oopsw.selfit.dto.Board">
         DELETE
-        FROM post
-        WHERE postId = #{boardId}
+        FROM BOARD
+        WHERE BOARD_ID = #{boardId}
     </delete>
 </mapper>
 
