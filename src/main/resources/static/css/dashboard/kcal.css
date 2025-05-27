@@ -1,0 +1,197 @@
+@import url("../global.css");
+
+/* ===== 차트 카드 ===== */
+.card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+    padding: 1.5rem 1.5rem 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.card-content {
+    padding: 0.5rem 1.5rem 1.5rem;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 0 1.5rem;
+}
+
+.chart-selectors {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.compare-selector,
+.year-selector {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: white;
+    font-size: 0.875rem;
+    color: #374151;
+    cursor: pointer;
+}
+
+.compare-selector:hover,
+.year-selector:hover {
+    border-color: var(--color-2);
+}
+
+/* ===== 차트 영역 ===== */
+.chart-container {
+    width: 100%;
+    height: 350px;
+    overflow: hidden;
+    padding: 0 1rem;
+}
+
+.chart-container svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* ===== 캘린더 및 패널 ===== */
+.calendar-wrapper {
+    margin-top: 3rem;
+    position: relative;
+}
+
+.calendar-panel-inner {
+    position: relative;
+}
+
+#calendar {
+    min-width: 600px;
+}
+
+/* ===== kcal 패널 ===== */
+#kcal-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 320px;
+    max-width: 100%;
+    background-color: #f8f9fa;
+    z-index: 10;
+    display: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+}
+
+#close-panel-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 1.25rem;
+    color: #6c757d;
+    cursor: pointer;
+}
+
+#close-panel-btn:hover {
+    color: #000;
+}
+
+.panel-date {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.kcal-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 4px;
+}
+
+.kcal-row-even {
+    background-color: #e3f5f6;
+}
+
+.kcal-row-odd {
+    background-color: #cdeff2;
+}
+
+.kcal-summary {
+    text-align: center;
+    font-size: 1rem;
+    color: black;
+    padding-top: 1rem;
+}
+
+/* ===== FullCalendar 색상 커스터마이징 ===== */
+.fc-daygrid-day-number,
+.fc-col-header-cell-cushion {
+    color: #222 !important;
+}
+
+.fc .fc-button {
+    background-color: #33c181;
+    border-color: #33c181;
+    color: #fff;
+}
+
+.fc .fc-button:hover {
+    background-color: #2aae6c;
+    border-color: #2aae6c;
+}
+
+.fc .fc-button:focus {
+    background-color: #2aae6c;
+    border-color: #2aae6c;
+    color: #fff;
+}
+
+.fc a {
+    text-decoration: none;
+    color: #33c181;
+}
+
+.fc a:hover {
+    color: #2aae6c;
+}
+
+.fc-day-today {
+    background-color: #e2e2e2 !important;
+}
+
+.fc-event {
+    background-color: var(--color-4) !important;
+    color: #000 !important;
+    font-weight: 500;
+    font-size: 0.8rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.kcal-value {
+    margin-left: auto;
+}

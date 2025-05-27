@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>칼로리 계산</title>
+    <link rel="stylesheet" href="/css/dashboard/kcal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+</head>
+<body>
+<div id="container">
+    <!-- 헤더 영역 -->
+    <div th:replace="~{fragments/layout :: header}"></div>
+    <!-- 사이드바 영역 -->
+    <div id="section1">
+        <div th:replace="~{fragments/layout :: sidebar}"></div>
+        <!-- 메인 콘텐츠 영역 -->
+        <div class="main-content">
+            <!-- 상단 기록 비교 차트 -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">칼로리 계산</h2>
+                    <div class="chart-header">
+                        <div class="chart-selectors">
+                            <select class="year-selector">
+                                <option>2025년</option>
+                                <option>2024년</option>
+                                <option>2023년</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="chart-container"></div>
+                </div>
+            </div>
+
+            <!-- 달력과 패널 -->
+            <div class="calendar-wrapper mt-5">
+                <div class="calendar-panel-inner">
+                    <div id="calendar"></div>
+                    <div id="kcal-panel" class="card shadow-sm">
+                        <i class="bi bi-x-lg" id="close-panel-btn" role="button" aria-label="패널 닫기"></i>
+                        <div id="panel-date" class="panel-date">2025.05.03</div>
+                        <div class="kcal-row kcal-row-even">
+                            <span class="kcal-label">기초대사량</span>
+                            <span id="bmr" class="kcal-value">0kcal</span>
+                        </div>
+                        <div class="kcal-row kcal-row-odd">
+                            <span class="kcal-label">소모 칼로리</span>
+                            <span id="burned" class="kcal-value">0kcal</span>
+                        </div>
+                        <div class="kcal-row kcal-row-even">
+                            <span class="kcal-label">섭취 칼로리</span>
+                            <span id="intake" class="kcal-value">0kcal</span>
+                        </div>
+                        <div class="kcal-summary" id="result">0kcal 초과 섭취</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/dashboard/kcal.js"></script>
+</body>
+</html>

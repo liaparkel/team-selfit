@@ -125,7 +125,7 @@
             title: {text: '식단 그래프', align: 'left', style: {fontSize: '18px', color: '#666'}}
         };
 
-        const chart = new ApexCharts(document.querySelector("#food-chart"), options);
+        const chart = new ApexCharts(document.querySelector(".chart-container"), options);
         chart.render().then(() => {
             const recent7 = new Date();
             recent7.setDate(today.getDate() - 6);
@@ -556,7 +556,7 @@ function renderChart(seriesData, selectedYear) {
         title: {text: '식단 그래프', align: 'left', style: {fontSize: '18px', color: '#666'}}
     };
 
-    const chart = new ApexCharts(document.querySelector("#food-chart"), options);
+    const chart = new ApexCharts(document.querySelector(".chart-container"), options);
     chart.render().then(() => {
         const recent7 = new Date();
         recent7.setDate(today.getDate() - 6);
