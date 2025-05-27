@@ -1,91 +1,88 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.oopsw.selfit.repository.DashboardRepository">
-    <select id="getFoodWeightByName" parameterType="String" resultType="String">
+    <select id="getFoodWeight" parameterType="String" resultType="String">
         SELECT FOOD_WEIGHT
         FROM FOOD
         WHERE FOOD_NAME = #{foodName}
     </select>
-    <select id="getBmrById" parameterType="int" resultType="com.oopsw.selfit.dto.Member">
+    <select id="getBmr" parameterType="int" resultType="com.oopsw.selfit.dto.Member">
         SELECT MEMBER_ID, GENDER, BIRTHDAY, HEIGHT, WEIGHT
         FROM MEMBER
-        WHERE MEMBER_ID = #{memberId};
+        WHERE MEMBER_ID = #{memberId}
     </select>
-    <select id="getIntakeKcalByIdDate" parameterType="com.oopsw.selfit.dto.Food" resultType="com.oopsw.selfit.dto.Food">
+    <select id="getIntakeKcal" parameterType="com.oopsw.selfit.dto.Food" resultType="com.oopsw.selfit.dto.Food">
         SELECT FN.INTAKE_DATE as intakeDate, SUM(FI.INTAKE_KCAL) AS intakeSum
         FROM FOOD_NOTE FN
-        JOIN FOOD_INFO FI ON FN.FOOD_NOTE_ID = FI.FOOD_NOTE_ID
-        WHERE FN.MEMBER_ID = #{memberId} AND FN.INTAKE_DATE = #{intakeDate};
+                 JOIN FOOD_INFO FI ON FN.FOOD_NOTE_ID = FI.FOOD_NOTE_ID
+        WHERE FN.MEMBER_ID = #{memberId}
+          AND FN.INTAKE_DATE = #{intakeDate}
     </select>
-    <select id="getExerciseKcalByIdDate" parameterType="com.oopsw.selfit.dto.Exercise" resultType="com.oopsw.selfit.dto.Exercise">
+    <select id="getExerciseKcal" parameterType="com.oopsw.selfit.dto.Exercise"
+            resultType="com.oopsw.selfit.dto.Exercise">
         SELECT EN.EXERCISE_DATE as exerciseDate, SUM(EI.EXERCISE_KCAL) AS exerciseSum
         FROM EXERCISE_NOTE EN
-        JOIN EXERCISE_INFO EI ON EN.EXERCISE_NOTE_ID = EI.EXERCISE_NOTE_ID
-        WHERE EN.MEMBER_ID = #{memberId} AND EN.EXERCISE_DATE = #{exerciseDate};
+                 JOIN EXERCISE_INFO EI ON EN.EXERCISE_NOTE_ID = EI.EXERCISE_NOTE_ID
+        WHERE EN.MEMBER_ID = #{memberId}
+          AND EN.EXERCISE_DATE = #{exerciseDate}
     </select>
     <select id="getYearIntakeKcal" parameterType="map" resultType="com.oopsw.selfit.dto.Food">
         SELECT FN.INTAKE_DATE as intakeDate, SUM(FI.INTAKE_KCAL) as intakeSum
         FROM FOOD_NOTE FN
-        JOIN FOOD_INFO FI ON FN.FOOD_NOTE_ID = FI.FOOD_NOTE_ID
-        WHERE FN.MEMBER_ID = #{memberId} AND YEAR(FN.INTAKE_DATE) = #{intakeYear}
+                 JOIN FOOD_INFO FI ON FN.FOOD_NOTE_ID = FI.FOOD_NOTE_ID
+        WHERE FN.MEMBER_ID = #{memberId} AND YEAR (FN.INTAKE_DATE) = #{intakeYear}
         GROUP BY FN.INTAKE_DATE
-        ORDER BY FN.INTAKE_DATE;
+        ORDER BY FN.INTAKE_DATE
     </select>
     <select id="getYearExerciseKcal" parameterType="map" resultType="com.oopsw.selfit.dto.Exercise">
         SELECT EN.EXERCISE_DATE AS exerciseDate, SUM(EI.EXERCISE_KCAL) as exerciseSum
         FROM EXERCISE_NOTE EN
-        JOIN EXERCISE_INFO EI ON EN.EXERCISE_NOTE_ID = EI.EXERCISE_NOTE_ID
-        WHERE EN.MEMBER_ID = #{memberId} AND YEAR(EN.EXERCISE_DATE) = #{exerciseYear}
+                 JOIN EXERCISE_INFO EI ON EN.EXERCISE_NOTE_ID = EI.EXERCISE_NOTE_ID
+        WHERE EN.MEMBER_ID = #{memberId} AND YEAR (EN.EXERCISE_DATE) = #{exerciseYear}
         GROUP BY EN.EXERCISE_DATE
         ORDER BY EN.EXERCISE_DATE
     </select>
     <select id="getIntakeDetail" parameterType="com.oopsw.selfit.dto.Food" resultType="com.oopsw.selfit.dto.Food">
-        SELECT FN.INTAKE_DATE AS intakeDate, F.FOOD_NAME AS foodName, FI.INTAKE, FI.INTAKE_KCAL AS intakeKcal, F.UNIT_KCAL AS unitKcal
+        SELECT FN.INTAKE_DATE AS intakeDate,
+               F.FOOD_NAME    AS foodName,
+               FI.INTAKE,
+               FI.INTAKE_KCAL AS intakeKcal,
+               F.UNIT_KCAL    AS unitKcal
         FROM FOOD_INFO FI
-        INNER JOIN FOOD F ON FI.FOOD_ID = F.FOOD_ID
-        INNER JOIN FOOD_NOTE FN ON FN.FOOD_NOTE_ID = FI.FOOD_NOTE_ID
-        WHERE FN.MEMBER_ID = #{memberId} AND FN.INTAKE_DATE = #{intakeDate}
+                 INNER JOIN FOOD F ON FI.FOOD_ID = F.FOOD_ID
+                 INNER JOIN FOOD_NOTE FN ON FN.FOOD_NOTE_ID = FI.FOOD_NOTE_ID
+        WHERE FN.MEMBER_ID = #{memberId}
+          AND FN.INTAKE_DATE = #{intakeDate}
     </select>
     <select id="getAutoCompleteFood" parameterType="String" resultType="String">
         SELECT FOOD_NAME
         FROM FOOD
-        WHERE FOOD_NAME LIKE CONCAT('%', #{partWord}, '%');
+        WHERE FOOD_NAME LIKE CONCAT('%', #{partWord}, '%')
     </select>
     <insert id="addFoodList" parameterType="com.oopsw.selfit.dto.Food">
         INSERT INTO FOOD_NOTE (INTAKE_DATE, MEMBER_ID)
         VALUES (#{intakeDate}, #{memberId})
     </insert>
     <delete id="removeFoodList" parameterType="com.oopsw.selfit.dto.Food">
-        DELETE FROM FOOD_NOTE
-        WHERE MEMBER_ID = #{memberId} AND INTAKE_DATE = #{intakeDate};
+        DELETE
+        FROM FOOD_NOTE
+        WHERE MEMBER_ID = #{memberId}
+          AND INTAKE_DATE = #{intakeDate}
     </delete>
     <insert id="addFood" parameterType="com.oopsw.selfit.dto.Food">
         INSERT INTO FOOD_INFO (INTAKE, INTAKE_KCAL, FOOD_NOTE_ID, FOOD_ID)
-        VALUES (#{intake}, #{intakeKcal}, #{foodNoteId}, #{foodId});
+        VALUES (#{intake}, #{intakeKcal}, #{foodNoteId}, #{foodId})
     </insert>
-    <select id="getFood" parameterType="com.oopsw.selfit.dto.Food" resultType="com.oopsw.selfit.dto.Food">
-        SELECT FN.INTAKE_DATE AS intakeDate, F.FOOD_NAME AS foodName, FI.INTAKE, FI.INTAKE_KCAL AS intakeKcal, F.UNIT_KCAL AS unitKcal
-        FROM FOOD_INFO FI
-        INNER JOIN FOOD F ON FI.FOOD_ID = F.FOOD_ID
-        INNER JOIN FOOD_NOTE FN ON FN.FOOD_NOTE_ID = FI.FOOD_NOTE_ID
-        WHERE FN.MEMBER_ID = #{memberId} AND FN.INTAKE_DATE = #{intakeDate} AND FI.FOOD_INFO_ID = #{foodInfoId};
-    </select>
     <update id="setIntake" parameterType="com.oopsw.selfit.dto.Food">
         UPDATE FOOD_INFO
         SET INTAKE = #{intake}
         WHERE FOOD_INFO_ID = #{foodInfoId}
     </update>
     <delete id="removeFood" parameterType="Integer">
-        DELETE FROM FOOD_INFO
+        DELETE
+        FROM FOOD_INFO
         WHERE FOOD_INFO_ID = #{foodInfoId}
     </delete>
-    <select id="getIntakeKcal" parameterType="com.oopsw.selfit.dto.Exercise" resultType="com.oopsw.selfit.dto.Exercise">
-        SELECT EN.EXERCISE_DATE AS exerciseDate, E.EXERCISE_NAME AS exerciseName, EI.EXERCISE_MIN AS exerciseMin, EI.EXERCISE_KCAL AS exerciseKcal
-        FROM EXERCISE_INFO EI
-        INNER JOIN EXERCISE E ON EI.EXERCISE_ID = E.EXERCISE_ID
-        INNER JOIN EXERCISE_NOTE EN ON EN.EXERCISE_NOTE_ID = EI.EXERCISE_NOTE_ID
-        WHERE EN.MEMBER_ID = #{memberId} AND EN.EXERCISE_DATE = #{exerciseDate}
-    </select>
     <select id="getAutoCompleteExercise" parameterType="String" resultType="String">
         SELECT EXERCISE_NAME
         FROM EXERCISE
@@ -96,62 +93,74 @@
         VALUES (#{exerciseDate}, #{memberId})
     </insert>
     <delete id="removeExerciseList" parameterType="com.oopsw.selfit.dto.Exercise">
-        DELETE FROM EXERCISE_NOTE
-        WHERE MEMBER_ID = #{memberId} AND EXERCISE_DATE = #{exerciseDate}
+        DELETE
+        FROM EXERCISE_NOTE
+        WHERE MEMBER_ID = #{memberId}
+          AND EXERCISE_DATE = #{exerciseDate}
     </delete>
     <insert id="addExercise" parameterType="com.oopsw.selfit.dto.Exercise">
         INSERT INTO EXERCISE_INFO (EXERCISE_MIN, EXERCISE_KCAL, EXERCISE_ID, EXERCISE_NOTE_ID)
-        VALUES (#{exerciseMin}, #{exerciseKcal}, #{exerciseId}, #{exerciseNoteId});
+        VALUES (#{exerciseMin}, #{exerciseKcal}, #{exerciseId}, #{exerciseNoteId})
     </insert>
-    <select id="getExerciseDetail" parameterType="com.oopsw.selfit.dto.Exercise" resultType="com.oopsw.selfit.dto.Exercise">
-        SELECT EN.EXERCISE_DATE AS exerciseDate, E.EXERCISE_NAME AS exerciseName, EI.EXERCISE_MIN AS exerciseMin, EI.EXERCISE_KCAL AS exerciseKcal
+    <select id="getExerciseDetail" parameterType="com.oopsw.selfit.dto.Exercise"
+            resultType="com.oopsw.selfit.dto.Exercise">
+        SELECT EN.EXERCISE_DATE AS exerciseDate,
+               E.EXERCISE_NAME  AS exerciseName,
+               EI.EXERCISE_MIN  AS exerciseMin,
+               EI.EXERCISE_KCAL AS exerciseKcal
         FROM EXERCISE_INFO EI
-        INNER JOIN EXERCISE E ON EI.EXERCISE_ID = E.EXERCISE_ID
-        INNER JOIN EXERCISE_NOTE EN ON EN.EXERCISE_NOTE_ID = EI.EXERCISE_NOTE_ID
-        WHERE EN.MEMBER_ID = #{memberId} AND EN.EXERCISE_DATE = #{exerciseDate} AND EI.EXERCISE_INFO_ID = #{exerciseInfoId};
+                 INNER JOIN EXERCISE E ON EI.EXERCISE_ID = E.EXERCISE_ID
+                 INNER JOIN EXERCISE_NOTE EN ON EN.EXERCISE_NOTE_ID = EI.EXERCISE_NOTE_ID
+        WHERE EN.MEMBER_ID = #{memberId}
+          AND EN.EXERCISE_DATE = #{exerciseDate}
     </select>
     <update id="setExerciseMin" parameterType="com.oopsw.selfit.dto.Exercise">
         UPDATE EXERCISE_INFO
         SET EXERCISE_MIN = #{exerciseMin}
-        WHERE EXERCISE_INFO_ID = #{exerciseInfoId};
+        WHERE EXERCISE_INFO_ID = #{exerciseInfoId}
     </update>
     <delete id="removeExercise" parameterType="Integer">
-        DELETE FROM EXERCISE_INFO
+        DELETE
+        FROM EXERCISE_INFO
         WHERE EXERCISE_INFO_ID = #{exerciseInfoId}
     </delete>
     <select id="getYearExerciseAge" parameterType="com.oopsw.selfit.dto.Exercise" resultType="map">
-        SELECT YEAR(EN.EXERCISE_DATE) AS year, SUM(EI.EXERCISE_KCAL) AS exerciseSum
+        SELECT YEAR (EN.EXERCISE_DATE) AS year, SUM (EI.EXERCISE_KCAL) AS exerciseSum
         FROM EXERCISE_NOTE EN
-        JOIN EXERCISE_INFO EI ON EN.EXERCISE_NOTE_ID = EI.EXERCISE_NOTE_ID
-        JOIN MEMBER M ON EN.MEMBER_ID  = M.MEMBER_ID
+            JOIN EXERCISE_INFO EI
+        ON EN.EXERCISE_NOTE_ID = EI.EXERCISE_NOTE_ID
+            JOIN MEMBER M ON EN.MEMBER_ID = M.MEMBER_ID
         WHERE M.GOAL = (SELECT GOAL FROM MEMBER WHERE MEMBER_ID = #{memberId})
-        AND M.BIRTHDAY    = (SELECT BIRTHDAY    FROM MEMBER WHERE MEMBER_ID = #{memberId})
-        GROUP BY YEAR(EN.EXERCISE_DATE)
+          AND M.BIRTHDAY = (SELECT BIRTHDAY FROM MEMBER WHERE MEMBER_ID = #{memberId})
+        GROUP BY YEAR (EN.EXERCISE_DATE)
     </select>
-    <select id="getCheckList" parameterType="com.oopsw.selfit.dto.Checklist" resultType="com.oopsw.selfit.dto.Checklist">
+    <select id="getCheckList" parameterType="com.oopsw.selfit.dto.Checklist"
+            resultType="com.oopsw.selfit.dto.Checklist">
         SELECT CI.CHECK_ID AS checkId, CI.CHECK_CONTENT AS checkContent, CI.IS_CHECK AS isCheck
         FROM CHECKLIST CL
-        JOIN CHECK_ITEM CI ON CL.CHECKLIST_ID = CI.CHECKLIST_ID
-        WHERE CL.MEMBER_ID  = #{memberId} AND CL.CHECK_DATE = #{checkDate}
+                 JOIN CHECK_ITEM CI ON CL.CHECKLIST_ID = CI.CHECKLIST_ID
+        WHERE CL.MEMBER_ID = #{memberId}
+          AND CL.CHECK_DATE = #{checkDate}
         ORDER BY CI.CHECK_ID
     </select>
     <update id="setCheckContent" parameterType="com.oopsw.selfit.dto.Checklist">
         UPDATE CHECK_ITEM
         SET CHECK_CONTENT = #{checkContent}
-        WHERE CHECK_ID = #{checkId};
+        WHERE CHECK_ID = #{checkId}
     </update>
     <update id="setIsCheck" parameterType="com.oopsw.selfit.dto.Checklist">
         UPDATE CHECK_ITEM
         SET IS_CHECK = #{isCheck}
-        WHERE CHECK_ID = #{checkId};
+        WHERE CHECK_ID = #{checkId}
     </update>
     <delete id="removeCheckItem" parameterType="Integer">
-        DELETE FROM CHECK_ITEM
-        WHERE CHECK_ID = #{checkId};
+        DELETE
+        FROM CHECK_ITEM
+        WHERE CHECK_ID = #{checkId}
     </delete>
     <insert id="addChecklist" parameterType="com.oopsw.selfit.dto.Checklist">
         INSERT INTO CHECKLIST (CHECK_DATE, MEMBER_ID)
-        VALUES(#{checkDate}, #{memberId})
+        VALUES (#{checkDate}, #{memberId})
     </insert>
     <insert id="addCheckItem" parameterType="com.oopsw.selfit.dto.Checklist">
         INSERT INTO CHECK_ITEM (CHECK_CONTENT, IS_CHECK, CHECKLIST_ID)
@@ -160,6 +169,6 @@
     <select id="getGoal" parameterType="Integer" resultType="String">
         SELECT GOAL
         FROM MEMBER
-        WHERE MEMBER_ID = #{memberId};
+        WHERE MEMBER_ID = #{memberId}
     </select>
 </mapper>

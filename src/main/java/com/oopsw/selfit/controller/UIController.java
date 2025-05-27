@@ -1,9 +1,7 @@
 package com.oopsw.selfit.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class UIController {
@@ -35,7 +33,7 @@ public class UIController {
 		return "dashboard/dashboard";
 	}
 
-	@GetMapping("/checklist")
+	@GetMapping("/dashboard/checklist")
 	public String checklist() {
 		return "dashboard/checklist";
 	}
@@ -61,10 +59,9 @@ public class UIController {
 		return "board/board";
 	}
 
-	@GetMapping("board/detail/{boardId}")
-	public String deatail(@PathVariable int boardId, Model model) {
-		model.addAttribute("boardId", boardId);
-		return "board/boardDetail";
+	@GetMapping("board/deatail")
+	public String deatail() {
+		return "board/boardDeatail";
 	}
 
 	@GetMapping("board/write")
