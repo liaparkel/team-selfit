@@ -42,20 +42,16 @@ $(document).ready(function () {
 
         // AJAX 요청
         $.ajax({
-            url: '/login-process',
+            url: '/api/account/login-process',
             type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(loginData),
+            data: loginData,
             success: function (response) {
                 console.log('로그인 성공:', response);
-
-                // 성공 메시지 표시
-                showAlert('로그인에 성공했습니다!', 'success');
 
                 // 잠시 후 대시보드로 이동
                 setTimeout(function () {
                     window.location.href = '/dashboard';
-                }, 1000);
+                }, 500);
             },
             error: function (xhr, status, error) {
                 console.error('로그인 실패:', error);
