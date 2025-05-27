@@ -46,7 +46,7 @@
         INNER JOIN FOOD_NOTE FN ON FN.FOOD_NOTE_ID = FI.FOOD_NOTE_ID
         WHERE FN.MEMBER_ID = #{memberId} AND FN.INTAKE_DATE = #{intakeDate}
     </select>
-    <select id="getAutoComplete" parameterType="String" resultType="String">
+    <select id="getAutoCompleteFood" parameterType="String" resultType="String">
         SELECT FOOD_NAME
         FROM FOOD
         WHERE FOOD_NAME LIKE CONCAT('%', #{partWord}, '%');
@@ -69,5 +69,97 @@
         INNER JOIN FOOD F ON FI.FOOD_ID = F.FOOD_ID
         INNER JOIN FOOD_NOTE FN ON FN.FOOD_NOTE_ID = FI.FOOD_NOTE_ID
         WHERE FN.MEMBER_ID = #{memberId} AND FN.INTAKE_DATE = #{intakeDate} AND FI.FOOD_INFO_ID = #{foodInfoId};
+    </select>
+    <update id="setIntake" parameterType="com.oopsw.selfit.dto.Food">
+        UPDATE FOOD_INFO
+        SET INTAKE = #{intake}
+        WHERE FOOD_INFO_ID = #{foodInfoId}
+    </update>
+    <delete id="removeFood" parameterType="Integer">
+        DELETE FROM FOOD_INFO
+        WHERE FOOD_INFO_ID = #{foodInfoId}
+    </delete>
+    <select id="getIntakeKcal" parameterType="com.oopsw.selfit.dto.Exercise" resultType="com.oopsw.selfit.dto.Exercise">
+        SELECT EN.EXERCISE_DATE AS exerciseDate, E.EXERCISE_NAME AS exerciseName, EI.EXERCISE_MIN AS exerciseMin, EI.EXERCISE_KCAL AS exerciseKcal
+        FROM EXERCISE_INFO EI
+        INNER JOIN EXERCISE E ON EI.EXERCISE_ID = E.EXERCISE_ID
+        INNER JOIN EXERCISE_NOTE EN ON EN.EXERCISE_NOTE_ID = EI.EXERCISE_NOTE_ID
+        WHERE EN.MEMBER_ID = #{memberId} AND EN.EXERCISE_DATE = #{exerciseDate}
+    </select>
+    <select id="getAutoCompleteExercise" parameterType="String" resultType="String">
+        SELECT EXERCISE_NAME
+        FROM EXERCISE
+        WHERE EXERCISE_NAME LIKE CONCAT('%', #{partWord}, '%')
+    </select>
+    <insert id="addExerciseList" parameterType="com.oopsw.selfit.dto.Exercise">
+        INSERT INTO EXERCISE_NOTE (EXERCISE_DATE, MEMBER_ID)
+        VALUES (#{exerciseDate}, #{memberId})
+    </insert>
+    <delete id="removeExerciseList" parameterType="com.oopsw.selfit.dto.Exercise">
+        DELETE FROM EXERCISE_NOTE
+        WHERE MEMBER_ID = #{memberId} AND EXERCISE_DATE = #{exerciseDate}
+    </delete>
+    <insert id="addExercise" parameterType="com.oopsw.selfit.dto.Exercise">
+        INSERT INTO EXERCISE_INFO (EXERCISE_MIN, EXERCISE_KCAL, EXERCISE_ID, EXERCISE_NOTE_ID)
+        VALUES (#{exerciseMin}, #{exerciseKcal}, #{exerciseId}, #{exerciseNoteId});
+    </insert>
+    <select id="getExerciseDetail" parameterType="com.oopsw.selfit.dto.Exercise" resultType="com.oopsw.selfit.dto.Exercise">
+        SELECT EN.EXERCISE_DATE AS exerciseDate, E.EXERCISE_NAME AS exerciseName, EI.EXERCISE_MIN AS exerciseMin, EI.EXERCISE_KCAL AS exerciseKcal
+        FROM EXERCISE_INFO EI
+        INNER JOIN EXERCISE E ON EI.EXERCISE_ID = E.EXERCISE_ID
+        INNER JOIN EXERCISE_NOTE EN ON EN.EXERCISE_NOTE_ID = EI.EXERCISE_NOTE_ID
+        WHERE EN.MEMBER_ID = #{memberId} AND EN.EXERCISE_DATE = #{exerciseDate} AND EI.EXERCISE_INFO_ID = #{exerciseInfoId};
+    </select>
+    <update id="setExerciseMin" parameterType="com.oopsw.selfit.dto.Exercise">
+        UPDATE EXERCISE_INFO
+        SET EXERCISE_MIN = #{exerciseMin}
+        WHERE EXERCISE_INFO_ID = #{exerciseInfoId};
+    </update>
+    <delete id="removeExercise" parameterType="Integer">
+        DELETE FROM EXERCISE_INFO
+        WHERE EXERCISE_INFO_ID = #{exerciseInfoId}
+    </delete>
+    <select id="getYearExerciseAge" parameterType="com.oopsw.selfit.dto.Exercise" resultType="map">
+        SELECT YEAR(EN.EXERCISE_DATE) AS year, SUM(EI.EXERCISE_KCAL) AS exerciseSum
+        FROM EXERCISE_NOTE EN
+        JOIN EXERCISE_INFO EI ON EN.EXERCISE_NOTE_ID = EI.EXERCISE_NOTE_ID
+        JOIN MEMBER M ON EN.MEMBER_ID  = M.MEMBER_ID
+        WHERE M.GOAL = (SELECT GOAL FROM MEMBER WHERE MEMBER_ID = #{memberId})
+        AND M.BIRTHDAY    = (SELECT BIRTHDAY    FROM MEMBER WHERE MEMBER_ID = #{memberId})
+        GROUP BY YEAR(EN.EXERCISE_DATE)
+    </select>
+    <select id="getCheckList" parameterType="com.oopsw.selfit.dto.Checklist" resultType="com.oopsw.selfit.dto.Checklist">
+        SELECT CI.CHECK_ID AS checkId, CI.CHECK_CONTENT AS checkContent, CI.IS_CHECK AS isCheck
+        FROM CHECKLIST CL
+        JOIN CHECK_ITEM CI ON CL.CHECKLIST_ID = CI.CHECKLIST_ID
+        WHERE CL.MEMBER_ID  = #{memberId} AND CL.CHECK_DATE = #{checkDate}
+        ORDER BY CI.CHECK_ID
+    </select>
+    <update id="setCheckContent" parameterType="com.oopsw.selfit.dto.Checklist">
+        UPDATE CHECK_ITEM
+        SET CHECK_CONTENT = #{checkContent}
+        WHERE CHECK_ID = #{checkId};
+    </update>
+    <update id="setIsCheck" parameterType="com.oopsw.selfit.dto.Checklist">
+        UPDATE CHECK_ITEM
+        SET IS_CHECK = #{isCheck}
+        WHERE CHECK_ID = #{checkId};
+    </update>
+    <delete id="removeCheckItem" parameterType="Integer">
+        DELETE FROM CHECK_ITEM
+        WHERE CHECK_ID = #{checkId};
+    </delete>
+    <insert id="addChecklist" parameterType="com.oopsw.selfit.dto.Checklist">
+        INSERT INTO CHECKLIST (CHECK_DATE, MEMBER_ID)
+        VALUES(#{checkDate}, #{memberId})
+    </insert>
+    <insert id="addCheckItem" parameterType="com.oopsw.selfit.dto.Checklist">
+        INSERT INTO CHECK_ITEM (CHECK_CONTENT, IS_CHECK, CHECKLIST_ID)
+        VALUES (#{checkContent}, #{isCheck}, #{checklistId});
+    </insert>
+    <select id="getGoal" parameterType="Integer" resultType="String">
+        SELECT GOAL
+        FROM MEMBER
+        WHERE MEMBER_ID = #{memberId};
     </select>
 </mapper>

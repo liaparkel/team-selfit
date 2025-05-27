@@ -12,6 +12,7 @@ import lombok.ToString;
 public class Exercise {
 	private int memberId;
 	private int exerciseNoteId;
+	private int exerciseInfoId;
 	private int exerciseId;
 	private String exerciseName;
 	private int exerciseMin;
