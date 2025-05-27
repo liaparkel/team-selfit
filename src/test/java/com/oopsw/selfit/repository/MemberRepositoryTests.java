@@ -153,34 +153,11 @@ public class MemberRepositoryTests {
 	}
 
 	@Test
-	public void testGetBookmarksYes() {
-		//given
-
-		//when
-		List<Bookmark> list = memberRepository.getBookmarks(1);
-
-		//then
-		assertFalse(list.isEmpty());
-	}
-
-	@Test
-	public void testGetBookmarksEmpty() {
-		//given
-
-		//when
-		List<Bookmark> list = memberRepository.getBookmarks(9999);
-
-		//then
-		assertTrue(list.isEmpty());
-
-	}
-
-	@Test
 	public void testGetBookmarksPagedYes() {
 		//given
 
 		//when
-		List<Bookmark> list = memberRepository.getBookmarksPaged(1, 5, 0);
+		List<Bookmark> list = memberRepository.getBookmarks(1, 5, 0);
 
 		//then
 		assertTrue(list.size() <= 5);
@@ -194,7 +171,7 @@ public class MemberRepositoryTests {
 		int offset = 0;
 
 		//when
-		List<Bookmark> list = memberRepository.getBookmarksPaged(1, limit, offset);
+		List<Bookmark> list = memberRepository.getBookmarks(1, limit, offset);
 
 		//then
 		assertNotNull(list);
@@ -208,7 +185,7 @@ public class MemberRepositoryTests {
 		int offset = 9999;
 
 		//when
-		List<Bookmark> list = memberRepository.getBookmarksPaged(1, 5, offset);
+		List<Bookmark> list = memberRepository.getBookmarks(1, 5, offset);
 
 		//then
 		assertNotNull(list);
@@ -220,7 +197,7 @@ public class MemberRepositoryTests {
 		//given
 
 		//when
-		List<Bookmark> list = memberRepository.getBookmarksPaged(-1, 5, 0);
+		List<Bookmark> list = memberRepository.getBookmarks(-1, 5, 0);
 
 		//then
 		assertTrue(list.isEmpty());
