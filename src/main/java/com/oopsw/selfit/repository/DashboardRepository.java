@@ -38,7 +38,7 @@ public interface DashboardRepository {
 
 	int removeFood(int foodInfoId);
 
-	List<Food> getAutoCompleteExercise(String partWord);
+	List<String> getAutoCompleteExercise(String partWord);
 
 	int addExerciseList(Exercise exercise);
 
