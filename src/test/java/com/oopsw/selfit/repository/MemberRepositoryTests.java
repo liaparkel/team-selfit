@@ -151,7 +151,7 @@ public class MemberRepositoryTests {
 		//then
 		assertEquals(1, result);
 	}
-
+	
 	@Test
 	public void testGetBookmarksPagedYes() {
 		//given
