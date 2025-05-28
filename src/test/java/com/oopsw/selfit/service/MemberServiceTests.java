@@ -2,12 +2,15 @@ package com.oopsw.selfit.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.oopsw.selfit.dto.Bookmark;
 import com.oopsw.selfit.dto.Member;
 
 @Transactional
@@ -139,20 +142,20 @@ public class MemberServiceTests {
 		assertNotNull(encodedPw);
 	}
 
-	// @Test
-	// public void testGetBookmarksYes() {
-	// 	// given
-	// 	int memberId = 1;
-	// 	int limit = 5;
-	// 	int offset = 0;
-	//
-	// 	// when
-	// 	List<Bookmark> bookmarks = memberService.getBookmarks(memberId, limit, offset);
-	//
-	// 	// then
-	// 	assertNotNull(bookmarks);
-	// 	assertTrue(bookmarks.size() <= limit);
-	// }
+	@Test
+	public void testGetBookmarksYes() {
+		// given
+		int memberId = 1;
+		int limit = 5;
+		int offset = 0;
+
+		// when
+		List<Bookmark> bookmarks = memberService.getBookmarks(memberId, limit, offset);
+
+		// then
+		assertNotNull(bookmarks);
+		assertTrue(bookmarks.size() <= limit);
+	}
 
 	@Test
 	public void testSetMemberYes() {
@@ -189,7 +192,7 @@ public class MemberServiceTests {
 	@Test
 	public void testRemoveMemberYes() {
 		// given
-		
+
 		// when
 		boolean result = memberService.removeMember(1);
 
