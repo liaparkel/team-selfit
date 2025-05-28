@@ -3,7 +3,6 @@ package com.oopsw.selfit.service;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -198,4 +197,155 @@ public class DashboardService {
 	public String getGoal(int memberId) {
 		return dashboardRepository.getGoal(memberId);
 	}
+
+	// public List<Map<String, Object>> getYearExerciseAvgInfo(int memberId, int exerciseYear) {
+	// 	Member member = dashboardRepository.getBmr(memberId);
+	//
+	// 	int height = (int)member.getHeight();
+	// 	int weight = (int)member.getWeight();
+	//
+	// 	int heightMin = (height / 10) * 10;
+	// 	int heightMax = heightMin + 9;
+	//
+	// 	int weightMin = (weight / 10) * 10;
+	// 	int weightMax = weightMin + 9;
+	//
+	// 	Map<String, Object> param = new HashMap<>();
+	// 	param.put("memberId", memberId);
+	// 	param.put("gender", member.getGender());
+	// 	param.put("heightMin", heightMin);
+	// 	param.put("heightMax", heightMax);
+	// 	param.put("weightMin", weightMin);
+	// 	param.put("weightMax", weightMax);
+	// 	param.put("exerciseYear", exerciseYear);
+	//
+	// 	return dashboardRepository.getYearExerciseAvgInfo(param);
+	// }
+	//
+	// public List<Map<String, Object>> getYearExerciseAvgAge(int memberId, int exerciseYear) {
+	// 	Member member = dashboardRepository.getBmr(memberId);
+	//
+	// 	String birthday = member.getBirthday();
+	// 	int age = getAge(birthday);
+	//
+	// 	int minAge = (age / 10) * 10;
+	// 	int maxAge = minAge + 9;
+	//
+	// 	Map<String, Object> param = new HashMap<>();
+	// 	param.put("memberId", memberId);
+	// 	param.put("gender", member.getGender());
+	// 	param.put("minAge", minAge);
+	// 	param.put("maxAge", maxAge);
+	// 	param.put("exerciseYear", exerciseYear);
+	//
+	// 	return dashboardRepository.getYearExerciseAvgAge(param);
+	// }
+
+	public List<Map<String, Object>> getYearExerciseAvgAll(int memberId, int exerciseYear) {
+		Member member = dashboardRepository.getBmr(memberId);
+
+		String birthday = member.getBirthday();
+		int age = getAge(birthday);
+		int height = (int)member.getHeight();
+		int weight = (int)member.getWeight();
+
+		int minAge = (age / 10) * 10;
+		int maxAge = minAge + 9;
+
+		int heightMin = (height / 10) * 10;
+		int heightMax = heightMin + 9;
+
+		int weightMin = (weight / 10) * 10;
+		int weightMax = weightMin + 9;
+
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", memberId);
+		param.put("gender", member.getGender());
+		param.put("minAge", minAge);
+		param.put("maxAge", maxAge);
+		param.put("heightMin", heightMin);
+		param.put("heightMax", heightMax);
+		param.put("weightMin", weightMin);
+		param.put("weightMax", weightMax);
+		param.put("exerciseYear", exerciseYear);
+
+		return dashboardRepository.getYearExerciseAvgAll(param);
+	}
+
+	// public List<Map<String, Object>> getYearIntakeAvgInfo(int memberId, int intakeYear) {
+	// 	Member member = dashboardRepository.getBmr(memberId);
+	//
+	// 	int height = (int)member.getHeight();
+	// 	int weight = (int)member.getWeight();
+	//
+	// 	int heightMin = (height / 10) * 10;
+	// 	int heightMax = heightMin + 9;
+	//
+	// 	int weightMin = (weight / 10) * 10;
+	// 	int weightMax = weightMin + 9;
+	//
+	// 	Map<String, Object> param = new HashMap<>();
+	// 	param.put("memberId", memberId);
+	// 	param.put("gender", member.getGender());
+	// 	param.put("heightMin", heightMin);
+	// 	param.put("heightMax", heightMax);
+	// 	param.put("weightMin", weightMin);
+	// 	param.put("weightMax", weightMax);
+	// 	param.put("intakeYear", intakeYear);
+	//
+	// 	return dashboardRepository.getYearIntakeAvgInfo(param);
+	// }
+	//
+	// public List<Map<String, Object>> getYearIntakeAvgAge(int memberId, int intakeYear) {
+	// 	Member member = dashboardRepository.getBmr(memberId);
+	//
+	// 	String birthday = member.getBirthday();
+	// 	int age = getAge(birthday);
+	// 	int height = (int)member.getHeight();
+	// 	int weight = (int)member.getWeight();
+	//
+	// 	int minAge = (age / 10) * 10;
+	// 	int maxAge = minAge + 9;
+	//
+	// 	Map<String, Object> param = new HashMap<>();
+	// 	param.put("memberId", memberId);
+	// 	param.put("gender", member.getGender());
+	// 	param.put("minAge", minAge);
+	// 	param.put("maxAge", maxAge);
+	// 	param.put("intakeYear", intakeYear);
+	//
+	// 	return dashboardRepository.getYearIntakeAvgAge(param);
+	// }
+
+	public List<Map<String, Object>> getYearIntakeAvgAll(int memberId, int intakeYear) {
+		Member member = dashboardRepository.getBmr(memberId);
+
+		String birthday = member.getBirthday();
+		int age = getAge(birthday);
+		int height = (int)member.getHeight();
+		int weight = (int)member.getWeight();
+
+		int minAge = (age / 10) * 10;
+		int maxAge = minAge + 9;
+
+		int heightMin = (height / 10) * 10;
+		int heightMax = heightMin + 9;
+
+		int weightMin = (weight / 10) * 10;
+		int weightMax = weightMin + 9;
+
+		Map<String, Object> param = new HashMap<>();
+		param.put("memberId", memberId);
+		param.put("gender", member.getGender());
+		param.put("minAge", minAge);
+		param.put("maxAge", maxAge);
+		param.put("heightMin", heightMin);
+		param.put("heightMax", heightMax);
+		param.put("weightMin", weightMin);
+		param.put("weightMax", weightMax);
+		param.put("intakeYear", intakeYear);
+
+		return dashboardRepository.getYearIntakeAvgAll(param);
+	}
+
 }
