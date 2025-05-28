@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.oopsw.selfit.dto.Checklist;
 import com.oopsw.selfit.dto.Exercise;
 import com.oopsw.selfit.dto.Food;
 import com.oopsw.selfit.dto.Member;
@@ -21,6 +22,18 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class DashboardService {
 	private final DashboardRepository dashboardRepository;
+
+	public void validatePositive(int value, String fieldName) {
+		if (value <= 0) {
+			throw new IllegalArgumentException(fieldName + "은(는) 0보다 커야 합니다.");
+		}
+	}
+
+	public void isAlreadyExists(int exists, String type, String date) {
+		if (exists > 0) {
+			throw new IllegalStateException("이미 해당 날짜에 " + type + "이(가) 존재합니다: " + date);
+		}
+	}
 
 	public HashMap<String, Object> getFoodWeight(String foodName) {
 		HashMap<String, Object> map = new HashMap<>();
@@ -145,5 +158,44 @@ public class DashboardService {
 
 	public List<Exercise> getExerciseDetail(Exercise exercise) {
 		return dashboardRepository.getExerciseDetail(exercise);
+	}
+
+	public boolean setExerciseMin(Exercise exercise) {
+		validatePositive(exercise.getExerciseMin(), "운동 시간");
+		return dashboardRepository.setExerciseMin(exercise) > 0;
+	}
+
+	public boolean removeExercise(int exerciseInfoId) {
+		return dashboardRepository.removeExercise(exerciseInfoId) > 0;
+	}
+
+	public List<Checklist> getCheckList(Checklist checklist) {
+		return dashboardRepository.getCheckList(checklist);
+	}
+
+	public boolean setCheckContent(Checklist checklist) {
+		return dashboardRepository.setCheckContent(checklist) > 0;
+	}
+
+	public boolean setIsCheck(Checklist checklist) {
+		return dashboardRepository.setIsCheck(checklist) > 0;
+	}
+
+	public boolean removeCheckItem(int checkId) {
+		return dashboardRepository.removeCheckItem(checkId) > 0;
+	}
+
+	public boolean addChecklist(Checklist checklist) {
+		int exists = dashboardRepository.isChecklist(checklist.getMemberId(), checklist.getCheckDate());
+		isAlreadyExists(exists, "체크리스트", checklist.getCheckDate());
+		return dashboardRepository.addChecklist(checklist) > 0;
+	}
+
+	public boolean addCheckItem(Checklist checklist) {
+		return dashboardRepository.addCheckItem(checklist) > 0;
+	}
+
+	public String getGoal(int memberId) {
+		return dashboardRepository.getGoal(memberId);
 	}
 }
