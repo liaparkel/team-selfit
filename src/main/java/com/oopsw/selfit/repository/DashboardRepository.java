@@ -78,4 +78,11 @@ public interface DashboardRepository {
 	List<Map<String, Object>> getYearIntakeAvgAge(Map<String, Object> param);
 
 	List<Map<String, Object>> getYearIntakeAvgAll(Map<String, Object> param);
+
+	int isChecklist(int memberId, String checkDate);
+
+	int isFoodNote(int memberId, String intakeDate);
+
+	int isExerciseNote(int memberId, String exerciseDate);
+
 }
