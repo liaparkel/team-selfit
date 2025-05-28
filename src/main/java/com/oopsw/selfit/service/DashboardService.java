@@ -74,5 +74,76 @@ public class DashboardService {
 		return dashboardRepository.getYearExerciseKcal(map);
 	}
 
+	public List<Food> getIntakeDetail(Food food) {
+		return dashboardRepository.getIntakeDetail(food);
+	}
 
+	public List<String> getAutoCompleteFood(String partWord) {
+		return dashboardRepository.getAutoCompleteFood(partWord);
+	}
+
+	public boolean addFoodList(Food food) {
+		if (dashboardRepository.addFoodList(food) == 0) {
+			return false;
+		}
+		return true;
+
+	}
+
+	public boolean removeFoodList(Food food) {
+		if (dashboardRepository.removeFoodList(food) == 0) {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean addFood(Food food) {
+		if (dashboardRepository.addFood(food) == 0) {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean setIntake(Food food) {
+		if (dashboardRepository.setIntake(food) == 0) {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean removeFood(int foodInfoId) {
+		if (dashboardRepository.removeFood(foodInfoId) == 0) {
+			return false;
+		}
+		return true;
+	}
+
+	public List<String> getAutoCompleteExercise(String partWord) {
+		return dashboardRepository.getAutoCompleteExercise(partWord);
+	}
+
+	public boolean addExerciseList(Exercise exercise) {
+		if (dashboardRepository.addExerciseList(exercise) == 0) {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean removeExerciseList(Exercise exercise) {
+		if (dashboardRepository.removeExerciseList(exercise) == 0) {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean addExercise(Exercise exercise) {
+		if (dashboardRepository.addExercise(exercise) == 0) {
+			return false;
+		}
+		return true;
+	}
+
+	public List<Exercise> getExerciseDetail(Exercise exercise) {
+		return dashboardRepository.getExerciseDetail(exercise);
+	}
 }
