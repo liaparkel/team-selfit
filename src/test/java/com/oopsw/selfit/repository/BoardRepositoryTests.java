@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.oopsw.selfit.dto.Board;
+import com.oopsw.selfit.dto.Bookmark;
 
 @Transactional
 @SpringBootTest
@@ -253,5 +254,56 @@ public class BoardRepositoryTests {
 
 		// then: 실행결과 체크
 		assertEquals(0, result);
+	}
+
+	@Test
+	public void testGetBookmarksPagedYes() {
+		//given
+
+		//when
+		List<Bookmark> list = boardRepository.getBookmarks(1, 5, 0);
+
+		//then
+		assertTrue(list.size() <= 5);
+	}
+
+	//페이지당 n개일 때 n개 이하가 잘 나오는지 확인
+	@Test
+	public void testGetBookmarksPagedExactLimit() {
+		//given
+		int limit = 2;
+		int offset = 0;
+
+		//when
+		List<Bookmark> list = boardRepository.getBookmarks(1, limit, offset);
+
+		//then
+		assertNotNull(list);
+		assertTrue(list.size() <= limit);
+	}
+
+	//offset이 너무 커서 결과 없는지 확인
+	@Test
+	public void testGetBookmarksPagedOffsetOver() {
+		//given
+		int offset = 9999;
+
+		//when
+		List<Bookmark> list = boardRepository.getBookmarks(1, 5, offset);
+
+		//then
+		assertNotNull(list);
+		assertEquals(0, list.size()); // offset이 너무 커서 결과 없음
+	}
+
+	@Test
+	public void testGetBookmarksPagedInvalidMemberId() {
+		//given
+
+		//when
+		List<Bookmark> list = boardRepository.getBookmarks(-1, 5, 0);
+
+		//then
+		assertTrue(list.isEmpty());
 	}
 }
