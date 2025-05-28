@@ -1,13 +1,10 @@
 package com.oopsw.selfit.repository;
 
-import com.oopsw.selfit.dto.ExerciseApi;
-import com.oopsw.selfit.dto.FoodApi;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import reactor.core.publisher.Mono;
+import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,58 +12,54 @@ import static org.junit.jupiter.api.Assertions.*;
 class ApiRepositoryTests {
 
 	@Autowired
-	private RestFoodData restFoodData;  // 혹은 RestData
+	private RestFoodData restFoodData;
 	@Autowired
 	private RestExerciseData restExerciseData;
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
 	@Test
-	void foodApiTest() {
-		// 1) 외부 API에서 5개만 가져오도록 요청
-		Mono<List<FoodApi>> mono = restFoodData.fetchFoods(1,100);
-		List<FoodApi> list = mono.block();   // 동기 호출
+	void addFoodApi() {
+		jdbcTemplate.update("DELETE FROM FOOD WHERE FOOD_ID > 10");
 
-		// 2) 호출 결과만 검증
-		assertNotNull(list, "응답 리스트는 null 이 아니어야 합니다");
-		assertFalse(list.isEmpty(), "최소 하나 이상의 항목이 있어야 합니다");
+		// 실제 API 호출 (pageNo=1, numOfRows=5)
+		restFoodData.addFoodApi(1, 100).block();
 
-		// 3) 콘솔 출력으로 필드 바인딩 확인
-		System.out.println("▶ API Fetch 결과 ▶");
-		list.forEach(item -> System.out.printf(
-			"foodNm=%s, enerc=%s, foodSize=%s%n",
-			item.getFoodNm(), item.getEnerc(), item.getFoodSize()
-		));
+		// --- 3) DB에 새로운 행이 들어왔는지 확인 ---
+		Integer total = jdbcTemplate.queryForObject(
+			"SELECT COUNT(*) FROM FOOD", Integer.class);
+		// 초기 샘플 10건 이후에 최소 1건이 더 추가됐어야 함
+		assertTrue(total > 10, "총 행 수가 10보다 커야 합니다");
+
+		// 옵션: 방금 들어온 데이터 중 하나를 직접 조회해 보기
+		String code = jdbcTemplate.queryForObject(
+			"SELECT FOOD_NAME FROM FOOD ORDER BY FOOD_ID DESC LIMIT 1",
+			String.class);
+		System.out.println("가장 마지막에 삽입된 식품명: " + code);
 	}
 
 	@Test
-	void exerciseApiTest() {
-		// 1) 외부 API에서 첫 페이지(perPage=100) 가져오기
-		Mono<List<ExerciseApi>> mono = restExerciseData.fetchExercises(1, 100);
-		List<ExerciseApi> list = mono.block();   // 동기 호출
+	void addExerciseApi() {
+		jdbcTemplate.update("DELETE FROM EXERCISE WHERE EXERCISE_ID > 10");
 
-		// 2) 호출 결과만 검증
-		assertNotNull(list, "응답 리스트는 null 이 아니어야 합니다");
-		assertFalse(list.isEmpty(), "최소 하나 이상의 항목이 있어야 합니다");
+		// 실제 API 호출 (pageNo=1, numOfRows=5)
+		restExerciseData.addExerciseApi(1, 100).block();
 
-		// 3) 콘솔 출력으로 필드 바인딩 확인
-		System.out.println("▶ Exercise API Fetch 결과 ▶");
-		list.forEach(item -> System.out.printf(
-			"exerciseName=%s, Met=%s%n",
-			item.getExerciseName(), item.getMET()
-		));
+		// --- 3) DB에 새로운 행이 들어왔는지 확인 ---
+		Integer total = jdbcTemplate.queryForObject(
+			"SELECT COUNT(*) FROM EXERCISE", Integer.class);
+		// 초기 샘플 10건 이후에 최소 1건이 더 추가됐어야 함
+		assertTrue(total > 10, "총 행 수가 10보다 커야 합니다");
 
+		// 옵션: 방금 들어온 데이터 중 하나를 직접 조회해 보기
+		String code = jdbcTemplate.queryForObject(
+			"SELECT EXERCISE_NAME FROM EXERCISE ORDER BY EXERCISE_NAME DESC LIMIT 1",
+			String.class);
+		System.out.println("가장 마지막에 삽입된 운동명: " + code);
 	}
-	@Test
-	void fetchFoodByName() {
-		String foodName = "FG베이컨";
-
-		Mono<FoodApi> mono = restFoodData.fetchFoodByName(foodName);
-		FoodApi result = mono.block();
-
-		assertNotNull(result, "반환된 FoodApi 객체는 null이 아니어야 합니다");
-		assertEquals(foodName, result.getFoodNm(), "조회한 식품명이 일치해야 합니다");
-		assertNotNull(result.getEnerc(), "enerc 칼로리 값이 채워져 있어야 합니다");
-		System.out.println("▶ fetchFoodByName 결과 ▶ " + result);
-	}
-
 
 }
+
+
+
+
