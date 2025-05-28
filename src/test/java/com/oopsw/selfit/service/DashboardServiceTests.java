@@ -1,14 +1,15 @@
 package com.oopsw.selfit.service;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.oopsw.selfit.dto.Exercise;
 import com.oopsw.selfit.dto.Food;
 
 @Transactional
@@ -47,6 +48,29 @@ public class DashboardServiceTests {
 		Food newf = dashboardService.getIntakeKcal(f);
 		// then
 		assertEquals(140, newf.getIntakeSum());
+	}
+
+	@Test
+	void testGetExerciseKcalYes() {
+		// given
+		Exercise e = Exercise.builder().memberId(1).exerciseDate("2025-05-21").build();
+		// when
+		Exercise newe = dashboardService.getExerciseKcal(e);
+		// then
+		assertEquals(212, newe.getExerciseSum());
+	}
+
+	@Test
+	void testGetYearIntakeKcalYes() {
+		// given
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("memberId", 1);
+		map.put("intakeYear", "2025");
+		// when
+		List list = dashboardService.getYearIntakeKcal(map);
+		//then
+		System.out.println(list);
+
 	}
 
 }
