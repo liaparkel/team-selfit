@@ -261,4 +261,22 @@
             ) AS T
         GROUP BY T.INTAKE_DATE
     </select>
+    <select id="isChecklist" resultType="int">
+        SELECT COUNT(1)
+        FROM CHECKLIST
+        WHERE MEMBER_ID = #{memberId}
+          AND CHECK_DATE = #{checkDate}
+    </select>
+    <select id="isFoodNote" resultType="int">
+        SELECT COUNT(1)
+        FROM FOOD_NOTE
+        WHERE MEMBER_ID = #{memberId}
+          AND INTAKE_DATE = #{intakeDate}
+    </select>
+    <select id="isExerciseNote" resultType="int">
+        SELECT COUNT(1)
+        FROM EXERCISE_NOTE
+        WHERE MEMBER_ID = #{memberId}
+          AND EXERCISE_DATE = #{exerciseDate}
+    </select>
 </mapper>
