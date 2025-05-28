@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.oopsw.selfit.dto.Board;
+import com.oopsw.selfit.dto.Bookmark;
 
 @Mapper
 public interface BoardRepository {
@@ -20,6 +21,12 @@ public interface BoardRepository {
 	int addBoard(Board board);
 
 	int addBookmark(Board board);
+
+	int removeBookmark(Board board);
+
+	int getBookmarkCount(Board board);
+
+	List<Bookmark> getBookmarks(int memberId, int limit, int offset);
 
 	int setBoard(Board board);
 

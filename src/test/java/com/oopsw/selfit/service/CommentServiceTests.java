@@ -1,10 +1,8 @@
-package com.oopsw.selfit.repository;
+package com.oopsw.selfit.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,39 +13,36 @@ import com.oopsw.selfit.dto.Comment;
 
 @Transactional
 @SpringBootTest
-public class CommentRepositoryTests {
+public class CommentServiceTests {
 
 	@Autowired
-	private CommentRepository commentRepository;
+	private CommentService commentService;
 
 	@Test
 	public void testGetCommentsYes() {
 		// given: 데이터 준비
-		Map<String, Object> map = new HashMap<>();
-		map.put("boardId", 1);  // 댓글이 존재할 수 있는 게시글
-		map.put("limit", 10);
-		map.put("offset", 0);
+		int boardId = 1;
+		int page = 1;
 
 		// when: 실행
-		List<Comment> comments = commentRepository.getComments(map);
+		List<Comment> comments = commentService.getComments(boardId, page);
 
 		// then: 실행결과 체크
 		assertNotNull(comments);
+		assertTrue(comments.size() > 0);
 	}
 
 	@Test
 	public void testGetCommentsInvalid() {
 		// given: 데이터 준비
-		Map<String, Object> map = new HashMap<>();
-		map.put("boardId", -999); // 존재하지 않는 게시글
-		map.put("limit", 10);
-		map.put("offset", 0);
+		int boardId = -999;
+		int page = 1;
 
 		// when: 실행
-		List<Comment> comments = commentRepository.getComments(map);
+		List<Comment> comments = commentService.getComments(boardId, page);
 
 		// then: 실행결과 체크
-		assertNotNull(comments); // 실패 아님. 빈 리스트 가능
+		assertNotNull(comments);
 		assertEquals(0, comments.size());
 	}
 
@@ -62,9 +57,10 @@ public class CommentRepositoryTests {
 			.build();
 
 		// when: 실행
-		int result = commentRepository.addComment(comment);
+		boolean result = commentService.addComment(comment);
 
 		// then: 실행결과 체크
-		assertEquals(1, result);
+		assertTrue(result);
+
 	}
 }
