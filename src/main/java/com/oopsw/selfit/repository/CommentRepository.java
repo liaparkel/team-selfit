@@ -1,15 +1,17 @@
 package com.oopsw.selfit.repository;
 
 import java.util.List;
-import java.util.Map;
 
-import org.apache.ibatis.annotations.Mapper;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.oopsw.selfit.dto.Comment;
+import com.oopsw.selfit.domain.Comments;
 
-@Mapper
-public interface CommentRepository {
-	List<Comment> getComments(Map<String, Object> map);
+public interface CommentRepository extends JpaRepository<Comments, Long> {
+	//댓글 전체 가져오기
+	List<Comments> findByBoardIdOrderByCommentCreatedDateDesc(Long boardId);
 
-	int addComment(Comment comment);
+	// 페이징 버전
+	List<Comments> findByBoardIdOrderByCommentCreatedDateDesc(Long boardId, Pageable pageable);
+
 }
