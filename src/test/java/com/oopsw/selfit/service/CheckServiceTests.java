@@ -17,18 +17,26 @@ public class CheckServiceTests {
 	private CheckService checkService;
 
 	@Test
-	public void testAddCheckItem() {
-		// given: 체크리스트 ID가 1번이라고 가정 (DB에 반드시 있어야 함)
-		Checklist checklistDto = Checklist.builder()
-			.checklistId(1)  // FK (checklist 테이블에 1번 ID가 있어야 함)
+	public void testAddCheckItemYes() {
+		// given: 데이터 준비
+		Checklist dto = Checklist.builder()
+			.checklistId(1)
 			.checkContent("물 마시기")
 			.build();
 
-		// when
-		Checklist savedDto = checkService.addCheckItem(checklistDto);
+		// when + then
+		assertDoesNotThrow(() -> checkService.addCheckItem(dto));
+	}
 
-		// then
-		assertEquals("물 마시기", savedDto.getCheckContent());
+	@Test
+	public void testAddCheckItemOverLimit() {
+		// given: 데이터 준비
+		Checklist dto = Checklist.builder()
+			.checklistId(1)
+			.checkContent("추가 항목")
+			.build();
 
+		// when + then
+		assertThrows(IllegalStateException.class, () -> checkService.addCheckItem(dto));
 	}
 }
