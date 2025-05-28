@@ -35,6 +35,7 @@ spring:
           google:
             client-id: ${GOOGLE_ID}
             client-secret: ${GOOGLE_SECRET}
+
             scope:
               - profile
               - email
@@ -45,8 +46,8 @@ mybatis:
 
 food:
   base-url: http://api.data.go.kr/openapi/tn_pubr_public_nutri_process_info_api
-  key: ${FOODAPI_KEY:Gngvp3UKvhulX6Jks8LsIebA534zldKcl1z7nB5IY7GLCTi91UO4BmwWutMo0zLFPMNFltzHI7Ab3uL1IoVt/g==}
+  key: ${FOODAPI_KEY}
 
 exercise:
   base-url: https://api.odcloud.kr/api/15068730/v1/uddi:e57a5dba-bbbf-414e-a5cd-866c48378daa
-  key: ${EXERCISE_KEY:Gngvp3UKvhulX6Jks8LsIebA534zldKcl1z7nB5IY7GLCTi91UO4BmwWutMo0zLFPMNFltzHI7Ab3uL1IoVt/g==}
+  key: ${EXERCISE_KEY}
