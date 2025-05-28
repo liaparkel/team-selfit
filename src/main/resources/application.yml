@@ -44,7 +44,13 @@ spring:
 #              - email
 mybatis:
   mapper-locations: classpath:mappers/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
 
-openapi:
-  base-url: https://api.data.go.kr/openapi/tn_pubr_public_nutri_process_info_api
-  key: ${OPENAPI_KEY}
+food:
+  base-url: http://api.data.go.kr/openapi/tn_pubr_public_nutri_process_info_api
+  key: ${FOODAPI_KEY:Gngvp3UKvhulX6Jks8LsIebA534zldKcl1z7nB5IY7GLCTi91UO4BmwWutMo0zLFPMNFltzHI7Ab3uL1IoVt/g==}
+
+exercise:
+  base-url: https://api.odcloud.kr/api/15068730/v1/uddi:e57a5dba-bbbf-414e-a5cd-866c48378daa
+  key: ${EXERCISE_KEY:Gngvp3UKvhulX6Jks8LsIebA534zldKcl1z7nB5IY7GLCTi91UO4BmwWutMo0zLFPMNFltzHI7Ab3uL1IoVt/g==}

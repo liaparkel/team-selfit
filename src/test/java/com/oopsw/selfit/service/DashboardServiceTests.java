@@ -11,8 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.oopsw.selfit.dto.Exercise;
 import com.oopsw.selfit.dto.Food;
-import com.oopsw.selfit.dto.Member;
-import com.oopsw.selfit.repository.DashboardRepository;
 
 @Transactional
 @SpringBootTest
