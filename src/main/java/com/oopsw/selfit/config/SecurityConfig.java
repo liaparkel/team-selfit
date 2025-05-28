@@ -5,13 +5,16 @@ import java.util.Map;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import com.google.gson.Gson;
+import com.oopsw.selfit.auth.CustomOAuth2UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +26,28 @@ public class SecurityConfig {
 
 	private final Gson gson = new Gson();
 
+	//account
+	@GetMapping("/account/login")
+	public String login() {
+		return "account/login";
+	}
+
+	@GetMapping("/account/signup")
+
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	public SecurityFilterChain filterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws
+		Exception {
 		http.csrf(csrf -> csrf.disable());
 		http
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/board/list").permitAll()
+				.requestMatchers(HttpMethod.POST, "/api/account/member").permitAll()
+				.requestMatchers("/account/login").permitAll()
+				.requestMatchers("/account/signup").permitAll()
 				.requestMatchers("/board/**").hasRole("USER")
 				.requestMatchers("/dashboard/**").hasRole("USER")
+				.requestMatchers("/account/**").hasRole("USER")
+				.requestMatchers("/api/account/member/**").hasRole("USER")
 				.anyRequest().permitAll()
 			);
 
@@ -43,6 +60,27 @@ public class SecurityConfig {
 			.successHandler(successHandler())
 			.failureHandler(failureHandler())
 			.permitAll()
+		);
+
+		http.oauth2Login(oauth2 -> oauth2
+			.userInfoEndpoint(userInfo -> userInfo
+				.userService(customOAuth2UserService)
+			)
+			.failureHandler((request, response, exception) -> {
+				if ("NEED_REGISTRATION".equals(exception.getMessage())) {
+					response.sendRedirect("/account/signup-social");
+				} else {
+					response.sendRedirect("/login?error");
+				}
+			})
+		);
+
+		http.logout(logout -> logout
+			.logoutUrl("/account/logout")
+			.logoutSuccessUrl("/account/login")
+			.invalidateHttpSession(true)
+			.clearAuthentication(true)
+			.deleteCookies("JSESSIONID")
 		);
 
 		return http.build();
@@ -66,6 +104,11 @@ public class SecurityConfig {
 	@Bean
 	public AuthenticationFailureHandler failureHandler() {
 		return (request, response, exception) -> {
+			String loginId = request.getParameter("loginId"); // 사용자가 입력한 로그인 ID
+			System.out.println(loginId);
+			System.out.println(request.getParameter("loginPassword"));
+			System.out.println(exception.getMessage());
+
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			response.setContentType("application/json;charset=UTF-8");
 
@@ -75,4 +118,5 @@ public class SecurityConfig {
 			gson.toJson(error, response.getWriter());
 		};
 	}
+
 }

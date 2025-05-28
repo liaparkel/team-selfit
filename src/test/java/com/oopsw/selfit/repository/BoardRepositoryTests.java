@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.oopsw.selfit.dto.Board;
+import com.oopsw.selfit.dto.Bookmark;
 
 @Transactional
 @SpringBootTest
@@ -46,7 +47,7 @@ public class BoardRepositoryTests {
 	}
 
 	@Test
-	public void testGetBoardInvalidId() {
+	public void testGetBoardInvalid() {
 		// given: 데이터 준비
 		Board board = Board.builder().boardId(-999).build();
 
@@ -75,7 +76,7 @@ public class BoardRepositoryTests {
 	}
 
 	@Test
-	void testGetBoardUpdateYes() {
+	public void testGetBoardUpdateYes() {
 		// given: 데이터 준비
 		Board board = Board.builder().boardId(1).build();
 
@@ -89,7 +90,7 @@ public class BoardRepositoryTests {
 	}
 
 	@Test
-	void testGetBoardUpdateInvalid() {
+	public void testGetBoardUpdateInvalid() {
 		// given: 데이터 준비
 		Board board = Board.builder().boardId(-999).build();
 
@@ -121,7 +122,7 @@ public class BoardRepositoryTests {
 	}
 
 	@Test
-	void testAddBookmarkYes() {
+	public void testAddBookmarkYes() {
 		// given: 데이터 준비
 		Board board = Board.builder()
 			.boardId(1)
@@ -136,7 +137,67 @@ public class BoardRepositoryTests {
 	}
 
 	@Test
-	public void testUpdateBoardYes() {
+	public void testGetBookmarkCountYes() {
+		// given: 데이터 준비
+		Board board = Board.builder()
+			.memberId(1)
+			.boardId(1)
+			.build();
+
+		// when: 실행
+		int count = boardRepository.getBookmarkCount(board);
+
+		// then: 실행결과 체크
+		assertTrue(count >= 0); // 실제 DB에 따라 0 또는 1 이상
+	}
+
+	@Test
+	public void testGetBookmarkCountInvalid() {
+		// given: 데이터 준비 (존재하지 않는 조합)
+		Board board = Board.builder()
+			.memberId(-999)  // 없는 유저
+			.boardId(-999)   // 없는 게시글
+			.build();
+
+		// when: 실행
+		int count = boardRepository.getBookmarkCount(board);
+
+		// then: 실행결과 체크
+		assertEquals(0, count); // 존재하지 않으면 0이어야 정상
+	}
+
+	@Test
+	public void testRemoveBookmarkYes() {
+		// given: 데이터 준비
+		Board board = Board.builder()
+			.memberId(1)
+			.boardId(1)
+			.build();
+
+		// when: 실행
+		int deleted = boardRepository.removeBookmark(board);
+
+		// then: 실행결과 체크
+		assertTrue(deleted == 0 || deleted == 1); // 이미 없을 수도 있기 때문에 유연하게 검사
+	}
+
+	@Test
+	public void testRemoveBookmarkInvalid() {
+		// given: 데이터 준비 (존재하지 않는 조합)
+		Board board = Board.builder()
+			.memberId(-999)
+			.boardId(-999)
+			.build();
+
+		// when: 실행
+		int deleted = boardRepository.removeBookmark(board);
+
+		// then: 실행결과 체크
+		assertEquals(0, deleted); // 삭제할 게 없으니까 0
+	}
+
+	@Test
+	public void testSetBoardYes() {
 		// given: 데이터 준비
 		Board board = Board.builder()
 			.boardId(1)
@@ -154,7 +215,7 @@ public class BoardRepositoryTests {
 	}
 
 	@Test
-	public void testUpdateBoardInvalidId() {
+	public void testSetBoardInvalidId() {
 		// given: 데이터 준비
 		Board board = Board.builder()
 			.boardId(-999)
@@ -193,5 +254,56 @@ public class BoardRepositoryTests {
 
 		// then: 실행결과 체크
 		assertEquals(0, result);
+	}
+
+	@Test
+	public void testGetBookmarksPagedYes() {
+		//given
+
+		//when
+		List<Bookmark> list = boardRepository.getBookmarks(1, 5, 0);
+
+		//then
+		assertTrue(list.size() <= 5);
+	}
+
+	//페이지당 n개일 때 n개 이하가 잘 나오는지 확인
+	@Test
+	public void testGetBookmarksPagedExactLimit() {
+		//given
+		int limit = 2;
+		int offset = 0;
+
+		//when
+		List<Bookmark> list = boardRepository.getBookmarks(1, limit, offset);
+
+		//then
+		assertNotNull(list);
+		assertTrue(list.size() <= limit);
+	}
+
+	//offset이 너무 커서 결과 없는지 확인
+	@Test
+	public void testGetBookmarksPagedOffsetOver() {
+		//given
+		int offset = 9999;
+
+		//when
+		List<Bookmark> list = boardRepository.getBookmarks(1, 5, offset);
+
+		//then
+		assertNotNull(list);
+		assertEquals(0, list.size()); // offset이 너무 커서 결과 없음
+	}
+
+	@Test
+	public void testGetBookmarksPagedInvalidMemberId() {
+		//given
+
+		//when
+		List<Bookmark> list = boardRepository.getBookmarks(-1, 5, 0);
+
+		//then
+		assertTrue(list.isEmpty());
 	}
 }

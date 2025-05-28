@@ -6,10 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class Bookmark {
-	int boardId;
-	String boardTitle;
+public class FoodApi {
+	private String foodNm; //식품명
+	private String enerc; //단위당_칼로리
+	private String foodSize; //식품총중량
 }

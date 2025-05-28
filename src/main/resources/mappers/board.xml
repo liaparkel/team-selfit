@@ -76,6 +76,20 @@
         GROUP BY B.BOARD_ID, B.BOARD_TITLE, C.CATEGORY_NAME, B.BOARD_CONTENT
     </select>
 
+    <select id="getBookmarks" resultType="com.oopsw.selfit.dto.Bookmark">
+        SELECT BM.BOARD_ID, B.BOARD_TITLE
+        FROM BOOKMARK BM
+                 JOIN BOARD B ON BM.BOARD_ID = B.BOARD_ID
+        WHERE BM.MEMBER_ID = #{memberId} LIMIT #{limit}
+        OFFSET #{offset}
+    </select>
+
+    <select id="getBookmarkCount" parameterType="com.oopsw.selfit.dto.Board" resultType="int">
+        SELECT COUNT(*)
+        FROM BOOKMARK
+        WHERE MEMBER_ID = #{memberId}
+          AND BOARD_ID = #{boardId}
+    </select>
 
     <!-- 게시글 등록 -->
     <insert id="addBoard" parameterType="com.oopsw.selfit.dto.Board">
@@ -90,6 +104,13 @@
         VALUES (#{memberId}, #{boardId},
                 SYSDATE())
     </insert>
+
+    <delete id="removeBookmark" parameterType="com.oopsw.selfit.dto.Board">
+        DELETE
+        FROM BOOKMARK
+        WHERE MEMBER_ID = #{memberId}
+          AND BOARD_ID = #{boardId}
+    </delete>
 
     <!-- 게시글 수정 -->
     <update id="setBoard" parameterType="com.oopsw.selfit.dto.Board">

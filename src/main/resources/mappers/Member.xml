@@ -49,14 +49,6 @@
         WHERE MEMBER_ID = #{memberId}
     </select>
 
-    <select id="getBookmarks" resultType="com.oopsw.selfit.dto.Bookmark">
-        SELECT BM.BOARD_ID, B.BOARD_TITLE
-        FROM BOOKMARK BM
-                 JOIN BOARD B ON BM.BOARD_ID = B.BOARD_ID
-        WHERE BM.MEMBER_ID = #{memberId}
-        LIMIT #{limit} OFFSET #{offset}
-    </select>
-
     <update id="setMember">
         UPDATE MEMBER
         SET EMAIL       = #{email},
