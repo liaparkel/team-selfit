@@ -2,10 +2,12 @@ package com.oopsw.selfit.service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.oopsw.selfit.dto.Bookmark;
 import com.oopsw.selfit.dto.LoginInfo;
 import com.oopsw.selfit.dto.Member;
 import com.oopsw.selfit.repository.BoardRepository;
@@ -29,6 +31,11 @@ public class MemberService {
 		return memberRepository.getLoginInfo(email);
 	}
 
+	public boolean checkPw(String email, String pw) {
+		String encodedPw = memberRepository.getLoginInfo(email).getPw();
+		return encoder.matches(pw, encodedPw);
+	}
+
 	public boolean isEmailExists(String email) {
 		return memberRepository.checkExistEmail(email) != null;
 	}
@@ -48,8 +55,9 @@ public class MemberService {
 		return memberRepository.addMember(member) > 0;
 	}
 
-	// public List<Bookmark> getBookmarks(int memberId, int limit, int offset) {
-	// }
+	public List<Bookmark> getBookmarks(int memberId, int limit, int offset) {
+		return boardRepository.getBookmarks(memberId, limit, offset);
+	}
 
 	public boolean setMember(Member newMember) {
 
