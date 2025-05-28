@@ -37,7 +37,7 @@ $(document).ready(function () {
         // API 요청 데이터
         const loginData = {
             loginId: loginId,
-            password: loginPassword
+            loginPassword: loginPassword
         };
 
         // AJAX 요청
@@ -55,7 +55,7 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 console.error('로그인 실패:', error);
-
+                console.log(error)
                 let errorMessage = '로그인에 실패했습니다.';
 
                 // 서버에서 온 에러 메시지가 있다면 사용

@@ -1,18 +1,19 @@
 // API 엔드포인트 설정
-const API_BASE_URL = 'https://api.example.com';
+const API_BASE_URL = '/api/account';
 
 // 폼 상태 관리
 const formState = {
-    email: { value: '', valid: false, checked: false },
-    password: { value: '', valid: false },
-    passwordConfirm: { value: '', valid: false },
-    name: { value: '', valid: false },
-    nickname: { value: '', valid: false, checked: false },
+    email: {value: '', valid: false, checked: false},
+    password: {value: '', valid: false},
+    passwordConfirm: {value: '', valid: false},
+    name: {value: '', valid: false},
+    nickname: {value: '', valid: false, checked: false},
     gender: '',
     birthDate: '',
     height: '',
     weight: '',
     exerciseType: '',
+    memberType: "DEFAULT",
     agreeTerms: false
 };
 
@@ -24,20 +25,19 @@ const $ = window.jQuery;
 /**
  * 이메일 중복 확인 API
  * @param {string} email - 확인할 이메일
- * @returns {Promise<{success: boolean, available: boolean, message: string}>}
+ * @returns {Promise<{result: boolean}>}
  */
 async function checkEmailDuplicateAPI(email) {
     const requestData = {
-        email: email,
-        timestamp: new Date().toISOString()
+        email: email
     };
-    
+
     console.log('이메일 중복확인 요청:', requestData);
-    
+
     try {
         // jQuery AJAX 요청
         const response = await $.ajax({
-            url: `${API_BASE_URL}/auth/check-email`,
+            url: `${API_BASE_URL}/check-email`,
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(requestData),
@@ -47,43 +47,30 @@ async function checkEmailDuplicateAPI(email) {
                 'X-Requested-With': 'XMLHttpRequest'
             }
         });
-        
+
         console.log('이메일 중복확인 응답:', response);
         return response;
     } catch (error) {
         console.error('이메일 중복확인 API 오류:', error);
-        
-        // 가짜 응답 (개발용)
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const mockResponse = {
-                    success: true,
-                    available: true,
-                    message: '사용 가능한 이메일입니다.'
-                };
-                console.log('이메일 중복확인 Mock 응답:', mockResponse);
-                resolve(mockResponse);
-            }, 1000);
-        });
+        return null;
     }
 }
 
 /**
  * 닉네임 중복 확인 API
  * @param {string} nickname - 확인할 닉네임
- * @returns {Promise<{success: boolean, available: boolean, message: string}>}
+ * @returns {Promise<{result: boolean}>}
  */
 async function checkNicknameDuplicateAPI(nickname) {
     const requestData = {
-        nickname: nickname,
-        timestamp: new Date().toISOString()
+        nickname: nickname
     };
-    
+
     console.log('닉네임 중복확인 요청:', requestData);
-    
+
     try {
         const response = await $.ajax({
-            url: `${API_BASE_URL}/auth/check-nickname`,
+            url: `${API_BASE_URL}/check-nickname`,
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(requestData),
@@ -93,52 +80,40 @@ async function checkNicknameDuplicateAPI(nickname) {
                 'X-Requested-With': 'XMLHttpRequest'
             }
         });
-        
+
         console.log('닉네임 중복확인 응답:', response);
         return response;
     } catch (error) {
         console.error('닉네임 중복확인 API 오류:', error);
-        
-        // 가짜 응답 (개발용)
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const mockResponse = {
-                    success: true,
-                    available: true,
-                    message: '사용 가능한 닉네임입니다.'
-                };
-                console.log('닉네임 중복확인 Mock 응답:', mockResponse);
-                resolve(mockResponse);
-            }, 800);
-        });
+        return null;
     }
 }
 
 /**
  * 회원가입 API
  * @param {Object} userData - 회원가입 데이터
- * @returns {Promise<{success: boolean, userId?: string, message: string}>}
+ * @returns {Promise<{success: boolean}>}
  */
 async function signupAPI(userData) {
     const requestData = {
         email: userData.email,
-        password: userData.password,
+        pw: userData.password,
         name: userData.name,
         nickname: userData.nickname,
         gender: userData.gender,
         birthDate: userData.birthDate,
-        height: userData.height ? parseInt(userData.height) : null,
-        weight: userData.weight ? parseInt(userData.weight) : null,
+        height: userData.height ? parseFloat(userData.height) : null,
+        weight: userData.weight ? parseFloat(userData.weight) : null,
         exerciseType: userData.exerciseType,
+        memberType: userData.memberType,
         agreeTerms: userData.agreeTerms,
-        timestamp: new Date().toISOString()
     };
-    
+
     console.log('회원가입 요청:', requestData);
-    
+
     try {
         const response = await $.ajax({
-            url: `${API_BASE_URL}/auth/signup`,
+            url: `${API_BASE_URL}/member`,
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(requestData),
@@ -148,24 +123,12 @@ async function signupAPI(userData) {
                 'X-Requested-With': 'XMLHttpRequest'
             }
         });
-        
+
         console.log('회원가입 응답:', response);
         return response;
     } catch (error) {
         console.error('회원가입 API 오류:', error);
-        
-        // 가짜 응답 (개발용)
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const mockResponse = {
-                    success: true,
-                    userId: 'user_' + Date.now(),
-                    message: '회원가입이 성공적으로 완료되었습니다.'
-                };
-                console.log('회원가입 Mock 응답:', mockResponse);
-                resolve(mockResponse);
-            }, 2000);
-        });
+        return null;
     }
 }
 
@@ -179,7 +142,7 @@ async function signupAPI(userData) {
 function toggleButtonLoading($button, loading) {
     const $textSpan = $button.find('.btn-text');
     const $loadingSpan = $button.find('.btn-loading');
-    
+
     if (loading) {
         $textSpan.addClass('d-none');
         $loadingSpan.removeClass('d-none');
@@ -219,7 +182,7 @@ function clearError($element) {
 
 // =========================== 이벤트 리스너 등록 ===========================
 
-$(document).ready(function() {
+$(document).ready(function () {
     initEventListeners();
 });
 
@@ -237,14 +200,14 @@ function initEventListeners() {
     $('#nicknameCheck').on('click', handleNicknameDuplicateCheck);
 
     // 성별 선택
-    $('.gender-btn').on('click', function() {
+    $('.gender-btn').on('click', function () {
         $('.gender-btn').removeClass('active');
         $(this).addClass('active');
         formState.gender = $(this).data('gender');
     });
 
     // 운동유형 선택
-    $('.exercise-btn').on('click', function() {
+    $('.exercise-btn').on('click', function () {
         $('.exercise-btn').removeClass('active');
         $(this).addClass('active');
         formState.exerciseType = $(this).data('type');
@@ -255,7 +218,7 @@ function initEventListeners() {
     $('#birthDate').on('keydown', handleBirthDateKeydown);
 
     // 숫자만 입력 허용
-    $('.number-only').on('input', function() {
+    $('.number-only').on('input', function () {
         const value = $(this).val().replace(/[^0-9]/g, '');
         $(this).val(value);
     });
@@ -269,10 +232,10 @@ function initEventListeners() {
 function validateEmail() {
     const email = $('#email').val().trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    
+
     formState.email.value = email;
     formState.email.valid = emailRegex.test(email);
-    
+
     // 값이 변경되면 중복확인 초기화
     if (formState.email.checked) {
         formState.email.checked = false;
@@ -280,7 +243,7 @@ function validateEmail() {
         $wrapper.removeClass('valid');
         resetDuplicateButton($('#emailCheck'), '중복확인');
     }
-    
+
     if (email === '') {
         clearError($('#email'));
     } else if (!formState.email.valid) {
@@ -288,19 +251,19 @@ function validateEmail() {
     } else {
         clearError($('#email'));
     }
-    
+
     validateForm();
 }
 
 function validatePassword() {
     const password = $('#password').val();
     const passwordRegex = /^(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/; // 함수 내부로 이동
-    
+
     formState.password.value = password;
     formState.password.valid = passwordRegex.test(password);
-    
+
     const $wrapper = $('#password').closest('.input-wrapper');
-    
+
     if (password === '') {
         $wrapper.removeClass('valid');
         clearError($('#password'));
@@ -311,25 +274,25 @@ function validatePassword() {
         $wrapper.addClass('valid');
         clearError($('#password'));
     }
-    
+
     // 비밀번호 확인도 다시 검증
     if ($('#passwordConfirm').val()) {
         validatePasswordConfirm();
     }
-    
+
     validateForm();
 }
 
 function validatePasswordConfirm() {
     const passwordConfirm = $('#passwordConfirm').val();
     const password = $('#password').val();
-    
+
     formState.passwordConfirm.value = passwordConfirm;
     // 비밀번호 확인은 일치하고 + 비밀번호가 유효할 때만 true
     formState.passwordConfirm.valid = passwordConfirm === password && formState.password.valid;
-    
+
     const $passwordConfirm = $('#passwordConfirm');
-    
+
     if (passwordConfirm === '') {
         clearError($passwordConfirm);
         $passwordConfirm.removeClass('is-invalid');
@@ -343,18 +306,18 @@ function validatePasswordConfirm() {
         clearError($passwordConfirm);
         $passwordConfirm.removeClass('is-invalid');
     }
-    
+
     validateForm();
 }
 
 function validateName() {
     const name = $('#name').val().trim();
-    
+
     formState.name.value = name;
     formState.name.valid = name.length >= 2;
-    
+
     const $wrapper = $('#name').closest('.input-wrapper');
-    
+
     if (name === '') {
         $wrapper.removeClass('valid');
         clearError($('#name'));
@@ -365,16 +328,16 @@ function validateName() {
         $wrapper.addClass('valid');
         clearError($('#name'));
     }
-    
+
     validateForm();
 }
 
 function validateNickname() {
     const nickname = $('#nickname').val().trim();
-    
+
     formState.nickname.value = nickname;
     formState.nickname.valid = nickname.length >= 2;
-    
+
     // 값이 변경되면 중복확인 초기화
     if (formState.nickname.checked) {
         formState.nickname.checked = false;
@@ -382,7 +345,7 @@ function validateNickname() {
         $wrapper.removeClass('valid');
         resetDuplicateButton($('#nicknameCheck'), '중복확인');
     }
-    
+
     if (nickname === '') {
         clearError($('#nickname'));
     } else if (!formState.nickname.valid) {
@@ -390,28 +353,28 @@ function validateNickname() {
     } else {
         clearError($('#nickname'));
     }
-    
+
     validateForm();
 }
 
 function validateForm() {
     formState.agreeTerms = $('#agreeTerms').is(':checked');
-    
+
     const isValid = formState.email.valid && formState.email.checked &&
-                   formState.password.valid &&
-                   formState.passwordConfirm.valid &&
-                   formState.name.valid &&
-                   formState.nickname.valid && formState.nickname.checked &&
-                   formState.agreeTerms;
-    
+        formState.password.valid &&
+        formState.passwordConfirm.valid &&
+        formState.name.valid &&
+        formState.nickname.valid && formState.nickname.checked &&
+        formState.agreeTerms;
+
     $('#submitBtn').prop('disabled', !isValid);
-    
+
     console.log('폼 검증 상태:', {
-        email: { valid: formState.email.valid, checked: formState.email.checked },
+        email: {valid: formState.email.valid, checked: formState.email.checked},
         password: formState.password.valid,
         passwordConfirm: formState.passwordConfirm.valid,
         name: formState.name.valid,
-        nickname: { valid: formState.nickname.valid, checked: formState.nickname.checked },
+        nickname: {valid: formState.nickname.valid, checked: formState.nickname.checked},
         agreeTerms: formState.agreeTerms,
         isValid: isValid
     });
@@ -426,20 +389,20 @@ function validateForm() {
 function handleBirthDateKeydown(e) {
     const $input = $(e.target);
     const value = $input.val();
-    
+
     // 백스페이스 키 (keyCode 8)
     if (e.keyCode === 8) {
         // 현재 커서 위치
         const cursorPos = $input[0].selectionStart;
-        
+
         // 커서 바로 앞 문자가 '.'인 경우
         if (cursorPos > 0 && value.charAt(cursorPos - 1) === '.') {
             e.preventDefault();
-            
+
             // '.' 앞의 문자까지 제거
             const newValue = value.substring(0, cursorPos - 2) + value.substring(cursorPos);
             $input.val(newValue);
-            
+
             // 커서 위치 조정
             setTimeout(() => {
                 $input[0].setSelectionRange(cursorPos - 2, cursorPos - 2);
@@ -455,22 +418,22 @@ async function handleEmailDuplicateCheck() {
         alert('올바른 이메일을 입력해주세요.');
         return;
     }
-    
+
     const $emailCheck = $('#emailCheck');
     toggleButtonLoading($emailCheck, true);
-    
+
     try {
         const response = await checkEmailDuplicateAPI(formState.email.value);
-        
-        if (response.success && response.available) {
+
+        if (!response.result) {
             formState.email.checked = true;
             $emailCheck.addClass('checked');
             $emailCheck.find('.btn-text').text('확인완료');
             $emailCheck.prop('disabled', true); // 확인완료 후 버튼 비활성화
-            
+
             const $wrapper = $('#email').closest('.input-wrapper');
             $wrapper.addClass('valid');
-            
+
             validateForm();
         } else {
             showError($('#email'), response.message || '이미 사용중인 이메일입니다.');
@@ -488,22 +451,22 @@ async function handleNicknameDuplicateCheck() {
         alert('올바른 닉네임을 입력해주세요.');
         return;
     }
-    
+
     const $nicknameCheck = $('#nicknameCheck');
     toggleButtonLoading($nicknameCheck, true);
-    
+
     try {
         const response = await checkNicknameDuplicateAPI(formState.nickname.value);
-        
-        if (response.success && response.available) {
+
+        if (!response.result) {
             formState.nickname.checked = true;
             $nicknameCheck.addClass('checked');
             $nicknameCheck.find('.btn-text').text('확인완료');
             $nicknameCheck.prop('disabled', true); // 확인완료 후 버튼 비활성화
-            
+
             const $wrapper = $('#nickname').closest('.input-wrapper');
             $wrapper.addClass('valid');
-            
+
             validateForm();
         } else {
             showError($('#nickname'), response.message || '이미 사용중인 닉네임입니다.');
@@ -520,10 +483,10 @@ async function handleSignup() {
     if ($('#submitBtn').prop('disabled')) {
         return;
     }
-    
+
     const $submitBtn = $('#submitBtn');
     toggleButtonLoading($submitBtn, true);
-    
+
     try {
         const userData = {
             email: formState.email.value,
@@ -535,14 +498,16 @@ async function handleSignup() {
             height: $('#height').val(),
             weight: $('#weight').val(),
             exerciseType: formState.exerciseType,
+            memberType: formState.memberType,
             agreeTerms: formState.agreeTerms
         };
-        
+
         const response = await signupAPI(userData);
-        
+
         if (response.success) {
             alert('회원가입이 완료되었습니다!');
-            resetForm();
+            // resetForm();
+            window.location.href = '/account/login';
         } else {
             alert(response.message || '회원가입 중 오류가 발생했습니다.');
         }
@@ -564,14 +529,14 @@ function resetDuplicateButton($button, text) {
 
 function formatBirthDate() {
     let value = $('#birthDate').val().replace(/\D/g, ''); // 숫자만 추출
-    
+
     if (value.length >= 4) {
         value = value.substring(0, 4) + '.' + value.substring(4);
     }
     if (value.length >= 7) {
         value = value.substring(0, 7) + '.' + value.substring(7, 9);
     }
-    
+
     $('#birthDate').val(value);
     formState.birthDate = value;
 }
@@ -580,33 +545,33 @@ function resetForm() {
     // 폼 상태 초기화
     Object.keys(formState).forEach(key => {
         if (typeof formState[key] === 'object') {
-            formState[key] = { value: '', valid: false, checked: false };
+            formState[key] = {value: '', valid: false, checked: false};
         } else {
             formState[key] = '';
         }
     });
-    
+
     // 입력 필드 초기화
-    $('input').each(function() {
+    $('input').each(function () {
         $(this).val('').removeClass('is-invalid');
     });
-    
+
     // 체크박스 초기화
     $('#agreeTerms').prop('checked', false);
-    
+
     // 버튼 상태 초기화
     $('.gender-btn, .exercise-btn').removeClass('active');
-    
+
     // 검증 상태 초기화
     $('.input-wrapper').removeClass('valid');
-    
+
     // 중복확인 버튼 초기화
     resetDuplicateButton($('#emailCheck'), '중복확인');
     resetDuplicateButton($('#nicknameCheck'), '중복확인');
-    
+
     // 에러 메시지 제거
     $('.invalid-feedback').text('');
-    
+
     // 제출 버튼 비활성화
     $('#submitBtn').prop('disabled', true);
 }
@@ -615,7 +580,7 @@ function resetForm() {
 
 // AJAX 요청 전역 설정
 $.ajaxSetup({
-    error: function(xhr, status, error) {
+    error: function (xhr, status, error) {
         console.error('AJAX 오류:', {
             status: xhr.status,
             statusText: xhr.statusText,
