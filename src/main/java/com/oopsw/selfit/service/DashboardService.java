@@ -3,8 +3,10 @@ package com.oopsw.selfit.service;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,18 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class DashboardService {
 	private final DashboardRepository dashboardRepository;
+
+	public void validatePositive(int value, String fieldName) {
+		if (value <= 0) {
+			throw new IllegalArgumentException(fieldName + "은(는) 0보다 커야 합니다.");
+		}
+	}
+
+	public void isAlreadyExists(int exists, String type, String date) {
+		if (exists > 0) {
+			throw new IllegalStateException("이미 해당 날짜에 " + type + "이(가) 존재합니다: " + date);
+		}
+	}
 
 	public HashMap<String, Object> getFoodWeight(String foodName) {
 		HashMap<String, Object> map = new HashMap<>();
@@ -73,7 +87,79 @@ public class DashboardService {
 		return dashboardRepository.getYearExerciseKcal(map);
 	}
 
-	// 윤호님 코드 예정
+	public List<Food> getIntakeDetail(Food food) {
+		return dashboardRepository.getIntakeDetail(food);
+	}
+
+	public List<String> getAutoCompleteFood(String partWord) {
+		return dashboardRepository.getAutoCompleteFood(partWord);
+	}
+
+	public boolean addFoodList(Food food) {
+		if (dashboardRepository.addFoodList(food) == 0) {
+			return false;
+		}
+		return true;
+
+	}
+
+	public boolean removeFoodList(Food food) {
+		if (dashboardRepository.removeFoodList(food) == 0) {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean addFood(Food food) {
+		if (dashboardRepository.addFood(food) == 0) {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean setIntake(Food food) {
+		if (dashboardRepository.setIntake(food) == 0) {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean removeFood(int foodInfoId) {
+		if (dashboardRepository.removeFood(foodInfoId) == 0) {
+			return false;
+		}
+		return true;
+	}
+
+	public List<String> getAutoCompleteExercise(String partWord) {
+		return dashboardRepository.getAutoCompleteExercise(partWord);
+	}
+
+	public boolean addExerciseList(Exercise exercise) {
+		if (dashboardRepository.addExerciseList(exercise) == 0) {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean removeExerciseList(Exercise exercise) {
+		if (dashboardRepository.removeExerciseList(exercise) == 0) {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean addExercise(Exercise exercise) {
+		if (dashboardRepository.addExercise(exercise) == 0) {
+			return false;
+		}
+		return true;
+	}
+
+	public List<Exercise> getExerciseDetail(Exercise exercise) {
+		return dashboardRepository.getExerciseDetail(exercise);
+	}
+
 	public boolean setExerciseMin(Exercise exercise) {
 		validatePositive(exercise.getExerciseMin(), "운동 시간");
 		return dashboardRepository.setExerciseMin(exercise) > 0;
@@ -112,17 +198,4 @@ public class DashboardService {
 	public String getGoal(int memberId) {
 		return dashboardRepository.getGoal(memberId);
 	}
-
-	public void validatePositive(int value, String fieldName) {
-		if (value <= 0) {
-			throw new IllegalArgumentException(fieldName + "은(는) 0보다 커야 합니다.");
-		}
-	}
-
-	public void isAlreadyExists(int exists, String type, String date) {
-		if (exists > 0) {
-			throw new IllegalStateException("이미 해당 날짜에 " + type + "이(가) 존재합니다: " + date);
-		}
-	}
-
 }
