@@ -29,7 +29,7 @@
         INSERT INTO MEMBER (EMAIL, PW, NAME, NICKNAME, GENDER, BIRTHDAY,
                             HEIGHT, WEIGHT, GOAL, JOIN_DATE, MEMBER_TYPE, PROFILE_IMG)
         VALUES (#{email}, #{pw}, #{name}, #{nickname}, #{gender}, #{birthday},
-                #{height}, #{weight}, #{goal}, #{joinDate}, #{memberType}, #{profileImg})
+                #{height}, #{weight}, #{goal}, NOW(), #{memberType}, #{profileImg})
     </insert>
 
     <select id="getMember" resultType="com.oopsw.selfit.dto.Member">
@@ -70,21 +70,7 @@
             PROFILE_IMG = #{profileImg}
         WHERE MEMBER_ID = #{memberId}
     </update>
-
-    <update id="setMemberGoogle">
-        UPDATE MEMBER
-        SET EMAIL       = #{email},
-            NAME        = #{name},
-            NICKNAME    = #{nickname},
-            GENDER      = #{gender},
-            BIRTHDAY    = #{birthday},
-            HEIGHT      = #{height},
-            WEIGHT      = #{weight},
-            GOAL        = #{goal},
-            PROFILE_IMG = #{profileImg}
-        WHERE MEMBER_ID = #{memberId}
-    </update>
-
+    
     <delete id="removeMember">
         DELETE
         FROM MEMBER

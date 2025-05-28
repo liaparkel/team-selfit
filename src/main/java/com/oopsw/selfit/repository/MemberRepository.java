@@ -1,10 +1,7 @@
 package com.oopsw.selfit.repository;
 
-import java.util.List;
-
 import org.apache.ibatis.annotations.Mapper;
 
-import com.oopsw.selfit.dto.Bookmark;
 import com.oopsw.selfit.dto.LoginInfo;
 import com.oopsw.selfit.dto.Member;
 
@@ -22,11 +19,7 @@ public interface MemberRepository {
 
 	int addMember(Member member);
 
-	List<Bookmark> getBookmarks(int memberId, int limit, int offset);
-
 	int setMember(Member newMember);
-
-	int setMemberGoogle(Member newMember);
-
+	
 	int removeMember(int memberId);
 }
