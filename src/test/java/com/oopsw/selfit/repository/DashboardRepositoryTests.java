@@ -922,6 +922,124 @@ public class DashboardRepositoryTests {
 
 		// then
 		assertTrue(result.isEmpty());
+
+	}
+
+	@Test
+	void testIsChecklistYes() {
+		// given
+		int memberId = 2;
+		String checkDate = "2025-05-02";
+
+		// when
+		int result = dashboardRepository.isChecklist(memberId, checkDate);
+
+		// then
+		assertEquals(1, result);
+	}
+
+	@Test
+	void testIsChecklistNotExistMemberId() {
+		// given
+		int memberId = 99999;
+		String checkDate = "2025-05-02";
+
+		// when
+		int result = dashboardRepository.isChecklist(memberId, checkDate);
+
+		// then
+		assertEquals(0, result);
+	}
+
+	@Test
+	void testIsChecklistNotExistDate() {
+		// given
+		int memberId = 2;
+		String checkDate = "9999-05-02";
+
+		// when
+		int result = dashboardRepository.isChecklist(memberId, checkDate);
+
+		// then
+		assertEquals(0, result);
+	}
+
+	@Test
+	void testIsFoodNoteYes() {
+		// given
+		int memberId = 2;
+		String intakeDate = "2025-05-02";
+
+		// when
+		int result = dashboardRepository.isFoodNote(memberId, intakeDate);
+
+		// then
+		assertEquals(1, result);
+	}
+
+	@Test
+	void testIsFoodNoteNotExistMemberId() {
+		// given
+		int memberId = 99999;
+		String intakeDate = "2025-05-02";
+
+		// when
+		int result = dashboardRepository.isFoodNote(memberId, intakeDate);
+
+		// then
+		assertEquals(0, result);
+	}
+
+	@Test
+	void testIsFoodNoteNotExistDate() {
+		// given
+		int memberId = 2;
+		String intakeDate = "9999-05-02";
+
+		// when
+		int result = dashboardRepository.isFoodNote(memberId, intakeDate);
+
+		// then
+		assertEquals(0, result);
+	}
+
+	@Test
+	void testIsExerciseNoteYes() {
+		// given
+		int memberId = 2;
+		String exerciseDate = "2025-05-02";
+
+		// when
+		int result = dashboardRepository.isExerciseNote(memberId, exerciseDate);
+
+		// then
+		assertEquals(1, result);
+	}
+
+	@Test
+	void testIsExerciseNoteNotExistMemberId() {
+		// given
+		int memberId = 99999;
+		String exerciseDate = "2025-05-02";
+
+		// when
+		int result = dashboardRepository.isExerciseNote(memberId, exerciseDate);
+
+		// then
+		assertEquals(0, result);
+	}
+
+	@Test
+	void testIsExerciseNoteNotExistDate() {
+		// given
+		int memberId = 2;
+		String exerciseDate = "9999-05-02";
+
+		// when
+		int result = dashboardRepository.isExerciseNote(memberId, exerciseDate);
+
+		// then
+		assertEquals(0, result);
 	}
 
 }
