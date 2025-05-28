@@ -3,10 +3,14 @@ package com.oopsw.selfit.service;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.oopsw.selfit.dto.Exercise;
 import com.oopsw.selfit.dto.Food;
 import com.oopsw.selfit.dto.Member;
 import com.oopsw.selfit.repository.DashboardRepository;
@@ -56,6 +60,18 @@ public class DashboardService {
 
 	public Food getIntakeKcal(Food food) {
 		return dashboardRepository.getIntakeKcal(food);
+	}
+
+	public Exercise getExerciseKcal(Exercise exercise) {
+		return dashboardRepository.getExerciseKcal(exercise);
+	}
+
+	public List<Food> getYearIntakeKcal(HashMap<String, Object> map) {
+		return dashboardRepository.getYearIntakeKcal(map);
+	}
+
+	public List<Exercise> getYearExerciseKcal(HashMap<String, Object> map) {
+		return dashboardRepository.getYearExerciseKcal(map);
 	}
 
 
