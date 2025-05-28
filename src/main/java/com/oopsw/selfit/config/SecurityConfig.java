@@ -62,18 +62,13 @@ public class SecurityConfig {
 			.permitAll()
 		);
 
-		http.oauth2Login(oauth2 -> oauth2
-			.userInfoEndpoint(userInfo -> userInfo
-				.userService(customOAuth2UserService)
-			)
-			.failureHandler((request, response, exception) -> {
-				if ("NEED_REGISTRATION".equals(exception.getMessage())) {
-					response.sendRedirect("/account/signup-social");
-				} else {
-					response.sendRedirect("/login?error");
-				}
-			})
-		);
+		// 뒤에서 Authorization code로 AccessToken 받는거 알아서 실행되고 userInfo를 통해 AccessToken으로 사용자정보 받아옴
+		http
+			.oauth2Login(oauth2 -> oauth2
+				.userInfoEndpoint(userInfo -> userInfo
+					.userService(customOAuth2UserService)
+				)
+			);
 
 		http.logout(logout -> logout
 			.logoutUrl("/account/logout")
@@ -118,5 +113,4 @@ public class SecurityConfig {
 			gson.toJson(error, response.getWriter());
 		};
 	}
-
 }
