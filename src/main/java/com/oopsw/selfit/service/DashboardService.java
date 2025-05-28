@@ -58,5 +58,4 @@ public class DashboardService {
 		return dashboardRepository.getIntakeKcal(food);
 	}
 
-
 }

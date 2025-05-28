@@ -1,4 +1,5 @@
 package com.oopsw.selfit.service;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashMap;
@@ -9,8 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.oopsw.selfit.dto.Food;
-import com.oopsw.selfit.dto.Member;
-import com.oopsw.selfit.repository.DashboardRepository;
 
 @Transactional
 @SpringBootTest
@@ -49,6 +48,5 @@ public class DashboardServiceTests {
 		// then
 		assertEquals(140, newf.getIntakeSum());
 	}
-
 
 }
