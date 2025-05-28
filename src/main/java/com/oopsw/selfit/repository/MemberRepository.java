@@ -20,8 +20,6 @@ public interface MemberRepository {
 	int addMember(Member member);
 
 	int setMember(Member newMember);
-
-	int setMemberGoogle(Member newMember);
-
+	
 	int removeMember(int memberId);
 }

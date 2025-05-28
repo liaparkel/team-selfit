@@ -137,7 +137,6 @@ public class MemberRepositoryTests {
 			.height(180.0f)
 			.weight(75.0f)
 			.goal("건강 유지")
-			.joinDate("2025-05-26")
 			.memberType("일반회원")
 			.profileImg("img.jpg")
 			.build();
@@ -163,20 +162,7 @@ public class MemberRepositoryTests {
 		//then
 		assertEquals(1, result);
 	}
-
-	@Test
-	public void testSetMemberGoogleYes() {
-		//given
-		Member member = memberRepository.getMember(1);
-		member.setNickname("googlenick");
-
-		//when
-		int updated = memberRepository.setMemberGoogle(member);
-
-		//then
-		assertEquals(1, updated);
-	}
-
+	
 	@Test
 	public void testRemoveMemberYes() {
 		//given
