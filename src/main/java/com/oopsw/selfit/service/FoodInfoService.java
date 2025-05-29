@@ -20,23 +20,6 @@ public class FoodInfoService {
 	private final FoodInfoRepository foodInfoRepository;
 	private final DashboardRepository dashboardRepository;
 
-
-
-	public void getIntakeDetail(Food food) {
-
-		//List<Food> foodList = new ArrayList<>();
-
-		//List<Food> findByMemberIdAndIntakeDate(food.getMemberId(), food.getIntakeDate());
-		//Food intakeDetail = Food.builder().intakeDate(food.getIntakeDate()).memberId(food.getMemberId()).foodNoteId(food.getFoodNoteId()).foodId(food.getFoodId()).build();
-		// System.out.println(foodInfoRepository.findById(food.getFoodId()).get());
-
-
-	}
-
-
-
-	//private final DashboardRepository dashboardRepository;
-
 	// public List<Food> getIntakeDetail(int memberId, String intakeDate) {
 	// 	// JPA로 FoodInfo 리스트 조회
 	// 	List<FoodInfo> foodInfos = foodInfoRepository.getIntakeDetail(memberId, intakeDate);
