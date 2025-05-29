@@ -39,7 +39,7 @@ public class CheckRepositoryTests {
 	@Test
 	public void testRemoveCheckItemYes() {
 		// given
-		Long checkId = 7L;
+		Long checkId = 4L;
 
 		// when
 		checkRepository.deleteById(checkId);
@@ -66,7 +66,7 @@ public class CheckRepositoryTests {
 	@Test
 	public void testSetCheckItemYes() {
 		// given
-		Long checkId = 7L;
+		Long checkId = 4L;
 		Optional<CheckItem> itemOpt = checkRepository.findById(checkId);
 		assertTrue(itemOpt.isPresent(), "수정할 체크 항목이 존재해야 함");
 
@@ -97,7 +97,7 @@ public class CheckRepositoryTests {
 	@Test
 	public void testIsCheckItemYes() {
 		// given
-		Long checkId = 7L;
+		Long checkId = 4L;
 
 		// when
 		Optional<CheckItem> itemOpt = checkRepository.findById(checkId);
@@ -117,7 +117,7 @@ public class CheckRepositoryTests {
 	@Test
 	public void testIsCheckItemInvalid() {
 		// given
-		Long checkId = 7L;
+		Long checkId = 4L;
 
 		// when
 		Optional<CheckItem> itemOpt = checkRepository.findById(checkId);
