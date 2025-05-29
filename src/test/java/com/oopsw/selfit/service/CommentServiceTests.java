@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.oopsw.selfit.domain.Comments;
 import com.oopsw.selfit.dto.Comment;
 
 @Transactional
@@ -21,46 +22,51 @@ public class CommentServiceTests {
 	@Test
 	public void testGetCommentsYes() {
 		// given: 데이터 준비
+		Comment comment = Comment.builder()
+			.commentContent("테스트 댓글")
+			.boardId(1)
+			.memberId(1)
+			.build();
+		commentService.addComment(comment);
+
 		int boardId = 1;
 		int page = 1;
 
-		// when: 실행
-		List<Comment> comments = commentService.getComments(boardId, page);
+		// when
+		List<Comments> comments = commentService.getComments(boardId, page);
 
-		// then: 실행결과 체크
+		// then
 		assertNotNull(comments);
 		assertTrue(comments.size() > 0);
 	}
 
 	@Test
 	public void testGetCommentsInvalid() {
-		// given: 데이터 준비
+		// given
 		int boardId = -999;
 		int page = 1;
 
-		// when: 실행
-		List<Comment> comments = commentService.getComments(boardId, page);
+		// when
+		List<Comments> comments = commentService.getComments(boardId, page);
 
-		// then: 실행결과 체크
-		assertNotNull(comments);
+		// then
+		assertNotNull(comments); // null 아님
 		assertEquals(0, comments.size());
 	}
 
 	@Test
 	public void testAddCommentYes() {
-		// given: 데이터 준비
+		// given
 		Comment comment = Comment.builder()
-			.commentContent("테스트 댓글입니다.")
-			.commentDate(null)
+			.commentContent("JPA 댓글 저장 테스트")
 			.boardId(1)
 			.memberId(1)
 			.build();
 
-		// when: 실행
+		// when
 		boolean result = commentService.addComment(comment);
 
-		// then: 실행결과 체크
+		// then
 		assertTrue(result);
-
 	}
 }

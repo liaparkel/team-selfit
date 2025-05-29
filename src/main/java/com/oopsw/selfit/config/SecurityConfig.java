@@ -13,6 +13,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.google.gson.Gson;
+import com.oopsw.selfit.auth.CustomOAuth2UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,8 @@ public class SecurityConfig {
 	@GetMapping("/account/signup")
 
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	public SecurityFilterChain filterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws
+		Exception {
 		http.csrf(csrf -> csrf.disable());
 		http
 			.authorizeHttpRequests(auth -> auth
@@ -58,6 +60,14 @@ public class SecurityConfig {
 			.failureHandler(failureHandler())
 			.permitAll()
 		);
+
+		// 뒤에서 Authorization code로 AccessToken 받는거 알아서 실행되고 userInfo를 통해 AccessToken으로 사용자정보 받아옴
+		http
+			.oauth2Login(oauth2 -> oauth2
+				.userInfoEndpoint(userInfo -> userInfo
+					.userService(customOAuth2UserService)
+				)
+			);
 
 		http.logout(logout -> logout
 			.logoutUrl("/account/logout")
@@ -102,5 +112,4 @@ public class SecurityConfig {
 			gson.toJson(error, response.getWriter());
 		};
 	}
-
 }
