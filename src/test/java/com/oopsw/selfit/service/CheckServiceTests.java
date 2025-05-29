@@ -37,14 +37,26 @@ public class CheckServiceTests {
 
 	@Test
 	public void testAddCheckItemOverLimit() {
-		// given: 데이터 준비
-		Checklist dto = Checklist.builder()
-			.checklistId(1)
-			.checkContent("추가 항목")
+		int checklistId = 1;
+
+		// given: 체크리스트에 이미 10개가 있다고 가정
+		for (int i = 0; i < 5; i++) {
+			Checklist dto = Checklist.builder()
+				.checklistId(checklistId)
+				.checkContent("기존 항목 " + i)
+				.build();
+
+			checkService.addCheckItem(dto);
+		}
+
+		// 6번째 넣으면 예외 발생해야 함
+		Checklist overLimitDto = Checklist.builder()
+			.checklistId(checklistId)
+			.checkContent("초과 항목")
 			.build();
 
 		// when + then
-		assertThrows(IllegalStateException.class, () -> checkService.addCheckItem(dto));
+		assertThrows(IllegalStateException.class, () -> checkService.addCheckItem(overLimitDto));
 	}
 
 	@Test
