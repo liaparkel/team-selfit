@@ -1,19 +1,17 @@
 // API 엔드포인트 설정
 const API_BASE_URL = '/api/account';
 
-// 폼 상태 관리 (안전한 초기화)
+// 폼 상태 관리 (비밀번호 관련 필드 제거)
 const formState = {
     email: {value: '', valid: false, checked: false},
-    password: {value: '', valid: false},
-    passwordConfirm: {value: '', valid: false},
     name: {value: '', valid: false},
     nickname: {value: '', valid: false, checked: false},
     gender: null,
-    birthDate: {value: null, valid: true}, // 객체로 초기화
-    height: {value: null, valid: true},    // 객체로 초기화
-    weight: {value: null, valid: true},    // 객체로 초기화
+    birthDate: {value: null, valid: true}, // 빈 값이면 기본적으로 유효함
+    height: {value: null, valid: true},    // 빈 값이면 기본적으로 유효함
+    weight: {value: null, valid: true},    // 빈 값이면 기본적으로 유효함
     exerciseType: null,
-    memberType: "DEFAULT",
+    memberType: "GOOGLE",
     agreeTerms: false
 };
 
@@ -90,14 +88,13 @@ async function checkNicknameDuplicateAPI(nickname) {
 }
 
 /**
- * 회원가입 API
+ * 회원가입 API (비밀번호 제거)
  * @param {Object} userData - 회원가입 데이터
  * @returns {Promise<{success: boolean}>}
  */
 async function signupAPI(userData) {
     const requestData = {
         email: userData.email,
-        pw: userData.password,
         name: userData.name,
         nickname: userData.nickname,
         memberType: userData.memberType,
@@ -199,49 +196,14 @@ function clearError($element) {
 // =========================== 이벤트 리스너 등록 ===========================
 
 $(document).ready(function () {
-    // formState 안전성 확인
-    ensureFormStateIntegrity();
     initEventListeners();
     // 페이지 로드 시 Thymeleaf로 설정된 값들로 폼 상태 초기화
     initFormStateFromThymeleaf();
 });
 
-/**
- * formState의 무결성을 보장하는 함수
- */
-function ensureFormStateIntegrity() {
-    // 필수 객체 필드들이 제대로 초기화되었는지 확인
-    if (!formState.birthDate || typeof formState.birthDate !== 'object') {
-        formState.birthDate = {value: '', valid: true};
-    }
-    if (!formState.height || typeof formState.height !== 'object') {
-        formState.height = {value: '', valid: true};
-    }
-    if (!formState.weight || typeof formState.weight !== 'object') {
-        formState.weight = {value: '', valid: true};
-    }
-    if (!formState.email || typeof formState.email !== 'object') {
-        formState.email = {value: '', valid: false, checked: false};
-    }
-    if (!formState.password || typeof formState.password !== 'object') {
-        formState.password = {value: '', valid: false};
-    }
-    if (!formState.passwordConfirm || typeof formState.passwordConfirm !== 'object') {
-        formState.passwordConfirm = {value: '', valid: false};
-    }
-    if (!formState.name || typeof formState.name !== 'object') {
-        formState.name = {value: '', valid: false};
-    }
-    if (!formState.nickname || typeof formState.nickname !== 'object') {
-        formState.nickname = {value: '', valid: false, checked: false};
-    }
-}
-
 function initEventListeners() {
-    // 필수 입력 필드 검증
+    // 필수 입력 필드 검증 (비밀번호 관련 제거)
     $('#email').on('input', validateEmail);
-    $('#password').on('input', validatePassword);
-    $('#passwordConfirm').on('input', validatePasswordConfirm);
     $('#name').on('input', validateName);
     $('#nickname').on('input', validateNickname);
     $('#agreeTerms').on('change', validateForm);
@@ -331,61 +293,6 @@ function validateEmail() {
     validateForm();
 }
 
-function validatePassword() {
-    const password = $('#password').val();
-    const passwordRegex = /^(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
-
-    formState.password.value = password;
-    formState.password.valid = passwordRegex.test(password);
-
-    const $wrapper = $('#password').closest('.input-wrapper');
-
-    if (password === '') {
-        $wrapper.removeClass('valid');
-        clearError($('#password'));
-    } else if (!formState.password.valid) {
-        $wrapper.removeClass('valid');
-        showError($('#password'), '8~20자, 숫자, 특수문자를 포함해주세요.');
-    } else {
-        $wrapper.addClass('valid');
-        clearError($('#password'));
-    }
-
-    // 비밀번호 확인도 다시 검증
-    if ($('#passwordConfirm').val()) {
-        validatePasswordConfirm();
-    }
-
-    validateForm();
-}
-
-function validatePasswordConfirm() {
-    const passwordConfirm = $('#passwordConfirm').val();
-    const password = $('#password').val();
-
-    formState.passwordConfirm.value = passwordConfirm;
-    // 비밀번호 확인은 일치하고 + 비밀번호가 유효할 때만 true
-    formState.passwordConfirm.valid = passwordConfirm === password && formState.password.valid;
-
-    const $passwordConfirm = $('#passwordConfirm');
-
-    if (passwordConfirm === '') {
-        clearError($passwordConfirm);
-        $passwordConfirm.removeClass('is-invalid');
-    } else if (passwordConfirm !== password) {
-        showError($passwordConfirm, '비밀번호가 일치하지 않습니다.');
-        $passwordConfirm.addClass('is-invalid');
-    } else if (!formState.password.valid) {
-        showError($passwordConfirm, '올바른 비밀번호 형식이 아닙니다.');
-        $passwordConfirm.addClass('is-invalid');
-    } else {
-        clearError($passwordConfirm);
-        $passwordConfirm.removeClass('is-invalid');
-    }
-
-    validateForm();
-}
-
 function validateName() {
     const name = $('#name').val().trim();
 
@@ -436,14 +343,9 @@ function validateNickname() {
 // =========================== 선택적 필드 검증 함수들 ===========================
 
 /**
- * 생년월일 검증 (입력된 경우에만 검증) - 안전한 접근
+ * 생년월일 검증 (입력된 경우에만 검증)
  */
 function validateBirthDate() {
-    // formState.birthDate가 존재하는지 확인
-    if (!formState.birthDate || typeof formState.birthDate !== 'object') {
-        formState.birthDate = {value: '', valid: true};
-    }
-
     const birthDate = $('#birthDate').val().trim();
 
     formState.birthDate.value = birthDate;
@@ -492,14 +394,9 @@ function validateBirthDate() {
 }
 
 /**
- * 키 검증 (입력된 경우에만 검증) - 안전한 접근
+ * 키 검증 (입력된 경우에만 검증)
  */
 function validateHeight() {
-    // formState.height가 존재하는지 확인
-    if (!formState.height || typeof formState.height !== 'object') {
-        formState.height = {value: '', valid: true};
-    }
-
     const height = $('#height').val().trim();
 
     formState.height.value = height;
@@ -527,14 +424,9 @@ function validateHeight() {
 }
 
 /**
- * 몸무게 검증 (입력된 경우에만 검증) - 안전한 접근
+ * 몸무게 검증 (입력된 경우에만 검증)
  */
 function validateWeight() {
-    // formState.weight가 존재하는지 확인
-    if (!formState.weight || typeof formState.weight !== 'object') {
-        formState.weight = {value: '', valid: true};
-    }
-
     const weight = $('#weight').val().trim();
 
     formState.weight.value = weight;
@@ -562,42 +454,26 @@ function validateWeight() {
 }
 
 function validateForm() {
-    // formState 무결성 재확인
-    ensureFormStateIntegrity();
-
     formState.agreeTerms = $('#agreeTerms').is(':checked');
 
-    // 안전한 검증을 위해 각 필드의 존재 여부를 확인
-    const emailValid = formState.email && formState.email.valid && formState.email.checked;
-    const passwordValid = formState.password && formState.password.valid;
-    const passwordConfirmValid = formState.passwordConfirm && formState.passwordConfirm.valid;
-    const nameValid = formState.name && formState.name.valid;
-    const nicknameValid = formState.nickname && formState.nickname.valid && formState.nickname.checked;
-    const birthDateValid = formState.birthDate ? formState.birthDate.valid : true;
-    const heightValid = formState.height ? formState.height.valid : true;
-    const weightValid = formState.weight ? formState.weight.valid : true;
-
-    const isValid = emailValid &&
-        passwordValid &&
-        passwordConfirmValid &&
-        nameValid &&
-        nicknameValid &&
-        birthDateValid &&
-        heightValid &&
-        weightValid &&
+    // 필수 필드들만 검증에 포함 (비밀번호 제외, 생년월일/키/몸무게는 입력된 경우에만 검증)
+    const isValid = formState.email.valid && formState.email.checked &&
+        formState.name.valid &&
+        formState.nickname.valid && formState.nickname.checked &&
+        formState.birthDate.valid &&
+        formState.height.valid &&
+        formState.weight.valid &&
         formState.agreeTerms;
 
     $('#submitBtn').prop('disabled', !isValid);
 
     console.log('폼 검증 상태:', {
-        email: {valid: emailValid},
-        password: passwordValid,
-        passwordConfirm: passwordConfirmValid,
-        name: nameValid,
-        nickname: {valid: nicknameValid},
-        birthDate: birthDateValid,
-        height: heightValid,
-        weight: weightValid,
+        email: {valid: formState.email.valid, checked: formState.email.checked},
+        name: formState.name.valid,
+        nickname: {valid: formState.nickname.valid, checked: formState.nickname.checked},
+        birthDate: formState.birthDate.valid,
+        height: formState.height.valid,
+        weight: formState.weight.valid,
         agreeTerms: formState.agreeTerms,
         isValid: isValid
     });
@@ -709,15 +585,15 @@ async function handleSignup() {
     toggleButtonLoading($submitBtn, true);
 
     try {
+        // 비밀번호 제거된 사용자 데이터
         const userData = {
             email: formState.email.value,
-            password: formState.password.value,
             name: formState.name.value,
             nickname: formState.nickname.value,
             gender: formState.gender,
-            birthDate: formState.birthDate ? formState.birthDate.value : '',
-            height: formState.height ? formState.height.value : '',
-            weight: formState.weight ? formState.weight.value : '',
+            birthDate: formState.birthDate.value,
+            height: formState.height.value,
+            weight: formState.weight.value,
             exerciseType: formState.exerciseType,
             memberType: formState.memberType,
             agreeTerms: formState.agreeTerms
@@ -761,21 +637,18 @@ function formatBirthDate() {
 }
 
 function resetForm() {
-    // formState 무결성 확인 후 초기화
-    ensureFormStateIntegrity();
-
     // 폼 상태 초기화
-    formState.email = {value: '', valid: false, checked: false};
-    formState.password = {value: '', valid: false};
-    formState.passwordConfirm = {value: '', valid: false};
-    formState.name = {value: '', valid: false};
-    formState.nickname = {value: '', valid: false, checked: false};
-    formState.birthDate = {value: '', valid: true};
-    formState.height = {value: '', valid: true};
-    formState.weight = {value: '', valid: true};
-    formState.gender = '';
-    formState.exerciseType = '';
-    formState.agreeTerms = false;
+    Object.keys(formState).forEach(key => {
+        if (typeof formState[key] === 'object') {
+            if (key === 'birthDate' || key === 'height' || key === 'weight') {
+                formState[key] = {value: '', valid: true}; // 선택적 필드는 기본적으로 유효함
+            } else {
+                formState[key] = {value: '', valid: false, checked: false};
+            }
+        } else {
+            formState[key] = '';
+        }
+    });
 
     // 입력 필드 초기화
     $('input').each(function () {
