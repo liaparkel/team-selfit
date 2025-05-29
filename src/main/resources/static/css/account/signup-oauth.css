@@ -1,0 +1,228 @@
+@import url('../entry-global.css');
+
+/* 콘텐츠 래퍼 */
+.content-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    z-index: 4;
+}
+
+/* header */
+.header-frame {
+    width: 100%;
+    height: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-text {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--bg3);
+}
+
+.main-content-frame {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem 1rem;
+}
+
+.signup-form {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+/* 필수 표시 */
+.required-mark {
+    color: var(--danger);
+    font-weight: bold;
+    margin-left: 2px;
+}
+
+/* 입력 필드 스타일 */
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 0.75rem;
+}
+
+.form-control:focus {
+    border-color: var(--color-4);
+    box-shadow: 0 0 0 0.2rem rgba(76, 216, 137, 0.25);
+}
+
+/* 입력 래퍼 (체크 아이콘 포함) */
+.input-wrapper {
+    position: relative;
+}
+
+.input-wrapper .form-control {
+    padding-right: 2.5rem;
+}
+
+.check-icon {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-4);
+    font-size: 1.2rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* 검증 성공 시 스타일 */
+.input-wrapper.valid .form-control {
+    border-color: var(--color-4);
+    background-color: rgba(76, 216, 137, 0.1);
+}
+
+.input-wrapper.valid .check-icon {
+    opacity: 1;
+}
+
+/* 중복확인 버튼 */
+.btn-duplicate {
+    background-color: var(--color-4);
+    color: white;
+    border: 1px solid var(--color-4);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+    min-width: 100px;
+}
+
+.btn-duplicate:hover:not(:disabled) {
+    background-color: var(--color-3);
+    border-color: var(--color-3);
+    color: white;
+}
+
+.btn-duplicate.checked {
+    background-color: var(--color-3);
+    border-color: var(--color-3);
+}
+
+.btn-duplicate:disabled {
+    background-color: #ccc;
+    border-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* 버튼 그룹 공통 스타일 */
+.btn-group {
+    display: flex;
+    justify-content: flex-start;
+    width: 20%;
+}
+
+.btn-group .btn {
+    min-width: 60px;
+    padding: 0.5rem 1rem;
+    font-size: 14px;
+}
+
+/* 성별 버튼 */
+.gender-btn {
+    border-radius: 0;
+}
+
+.gender-btn:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+.gender-btn:last-child {
+    border-radius: 0 8px 8px 0;
+}
+
+.gender-btn.active {
+    background-color: var(--color-4);
+    border-color: var(--color-4);
+    color: white;
+}
+
+.gender-btn:hover:not(.active) {
+    background-color: var(--color-3);
+    border-color: var(--color-3);
+    color: white;
+}
+
+/* 운동 유형 버튼 */
+.exercise-btn {
+    border-radius: 0;
+}
+
+.exercise-btn:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+.exercise-btn:last-child {
+    border-radius: 0 8px 8px 0;
+}
+
+.exercise-btn.active {
+    background-color: var(--color-4);
+    border-color: var(--color-4);
+    color: white;
+}
+
+.exercise-btn:hover:not(.active) {
+    background-color: var(--color-3);
+    border-color: var(--color-3);
+    color: white;
+}
+
+/* 제출 버튼 */
+.btn-primary {
+    background-color: var(--color-4);
+    border-color: var(--color-4);
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: var(--color-3);
+    border-color: var(--color-3);
+}
+
+.btn-primary:disabled {
+    background-color: #ccc;
+    border-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* 체크박스 스타일 */
+.form-check-input:checked {
+    background-color: var(--color-4);
+    border-color: var(--color-4);
+}
+
+/* 에러 메시지 */
+.invalid-feedback {
+    display: block;
+    color: var(--danger);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* 로딩 상태 */
+.btn-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 숫자만 입력 필드 */
+.number-only {
+    /* 기본 스타일 유지 */
+}

@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class CustomUserDetails implements UserDetails {
+public class CustomUserDetails implements UserDetails, AuthenticatedUser {
 
 	private final User user;
 
@@ -27,10 +27,6 @@ public class CustomUserDetails implements UserDetails {
 	@Override
 	public String getUsername() {
 		return user.getEmail();
-	}
-
-	public int getMemberId() {
-		return user.getMemberId();
 	}
 
 	@Override
@@ -51,5 +47,10 @@ public class CustomUserDetails implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return UserDetails.super.isEnabled();
+	}
+
+	@Override
+	public int getMemberId() {
+		return user.getMemberId();
 	}
 }
