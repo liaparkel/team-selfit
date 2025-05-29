@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -40,14 +39,14 @@ public class SecurityConfig {
 		http.csrf(csrf -> csrf.disable());
 		http
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/board/list").permitAll()
-				.requestMatchers(HttpMethod.POST, "/api/account/member").permitAll()
-				.requestMatchers("/account/login").permitAll()
-				.requestMatchers("/account/signup").permitAll()
-				.requestMatchers("/board/**").hasRole("USER")
-				.requestMatchers("/dashboard/**").hasRole("USER")
-				.requestMatchers("/account/**").hasRole("USER")
-				.requestMatchers("/api/account/member/**").hasRole("USER")
+				// .requestMatchers("/board/list").permitAll()
+				// .requestMatchers(HttpMethod.POST, "/api/account/member").permitAll()
+				// .requestMatchers("/account/login").permitAll()
+				// .requestMatchers("/account/signup").permitAll()
+				// .requestMatchers("/board/**").hasRole("USER")
+				// .requestMatchers("/dashboard/**").hasRole("USER")
+				// .requestMatchers("/account/**").hasRole("USER")
+				// .requestMatchers("/api/account/member/**").hasRole("USER")
 				.anyRequest().permitAll()
 			);
 
