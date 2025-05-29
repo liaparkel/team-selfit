@@ -2,16 +2,16 @@ package com.oopsw.selfit.repository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.oopsw.selfit.dto.Comment;
+import com.oopsw.selfit.domain.Comments;
 
 @Transactional
 @SpringBootTest
@@ -22,49 +22,92 @@ public class CommentRepositoryTests {
 
 	@Test
 	public void testGetCommentsYes() {
-		// given: 데이터 준비
-		Map<String, Object> map = new HashMap<>();
-		map.put("boardId", 1);  // 댓글이 존재할 수 있는 게시글
-		map.put("limit", 10);
-		map.put("offset", 0);
+		// // given: 데이터 준비
+		// Map<String, Object> map = new HashMap<>();
+		// map.put("boardId", 1);  // 댓글이 존재할 수 있는 게시글
+		// map.put("limit", 10);
+		// map.put("offset", 0);
+		//
+		// // when: 실행
+		// List<Comment> comments = commentRepository.getComments(map);
+		//
+		// // then: 실행결과 체크
+		// assertNotNull(comments);
 
-		// when: 실행
-		List<Comment> comments = commentRepository.getComments(map);
+		// given: boardId = 1 에 댓글 2개 저장
+		commentRepository.save(Comments.builder()
+			.commentContent("댓글 1")
+			.boardId(1L)
+			.memberId(1L)
+			.build());
 
-		// then: 실행결과 체크
+		commentRepository.save(Comments.builder()
+			.commentContent("댓글 2")
+			.boardId(1L)
+			.memberId(1L)
+			.build());
+
+		// when: 0번 페이지, 1개씩 페이징
+		Pageable pageable = PageRequest.of(0, 5);
+		List<Comments> comments = commentRepository.findByBoardIdOrderByCommentCreatedDateDesc(1L, pageable);
+
+		// then
 		assertNotNull(comments);
+		assertEquals(1, comments.size());
+		assertEquals("댓글 2", comments.get(0).getCommentContent());
+
 	}
 
 	@Test
 	public void testGetCommentsInvalid() {
-		// given: 데이터 준비
-		Map<String, Object> map = new HashMap<>();
-		map.put("boardId", -999); // 존재하지 않는 게시글
-		map.put("limit", 10);
-		map.put("offset", 0);
+		// // given: 데이터 준비
+		// Map<String, Object> map = new HashMap<>();
+		// map.put("boardId", -999); // 존재하지 않는 게시글
+		// map.put("limit", 10);
+		// map.put("offset", 0);
+		//
+		// // when: 실행
+		// List<Comment> comments = commentRepository.getComments(map);
+		//
+		// // then: 실행결과 체크
+		// assertNotNull(comments); // 실패 아님. 빈 리스트 가능
+		// assertEquals(0, comments.size());
+
+		// given: 존재하지 않는 boardId = -999
+		Long invalidBoardId = -999L;
+		Pageable pageable = PageRequest.of(0, 10);
 
 		// when: 실행
-		List<Comment> comments = commentRepository.getComments(map);
+		List<Comments> comments = commentRepository.findByBoardIdOrderByCommentCreatedDateDesc(invalidBoardId,
+			pageable);
 
 		// then: 실행결과 체크
-		assertNotNull(comments); // 실패 아님. 빈 리스트 가능
+		assertNotNull(comments); // 빈 리스트여도 null 아님
 		assertEquals(0, comments.size());
 	}
 
 	@Test
 	public void testAddCommentYes() {
-		// given: 데이터 준비
-		Comment comment = Comment.builder()
-			.commentContent("테스트 댓글입니다.")
-			.commentDate(null)
-			.boardId(1)
-			.memberId(1)
+		// // given: 데이터 준비
+		// Comment comment = Comment.builder()
+		// 	.commentContent("테스트 댓글입니다.")
+		// 	.commentDate(null)
+		// 	.boardId(1)
+		// 	.memberId(1)
+		// 	.build();
+		//
+		// // when: 실행
+		// int result = commentRepository.addComment(comment);
+		//
+		// // then: 실행결과 체크
+		// assertEquals(1, result);
+		Comments comment = Comments.builder()
+			.commentContent("댓글 내용")
+			.boardId(1L)
+			.memberId(1L)
 			.build();
 
-		// when: 실행
-		int result = commentRepository.addComment(comment);
-
-		// then: 실행결과 체크
-		assertEquals(1, result);
+		Comments saved = commentRepository.save(comment);
+		assertNotNull(saved.getCommentId());
 	}
 }
