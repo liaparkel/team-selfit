@@ -153,8 +153,18 @@ public class MemberRepositoryTests {
 		//given
 		Member member = memberRepository.getMember(1);
 		member.setNickname("newNickname");
-		System.out.println(member);
-		System.out.println(member.getPw());
+
+		//when
+		int result = memberRepository.setMember(member);
+
+		//then
+		assertEquals(1, result);
+	}
+
+	@Test
+	public void testSetMemberNoChange() {
+		//given
+		Member member = memberRepository.getMember(1);
 
 		//when
 		int result = memberRepository.setMember(member);
