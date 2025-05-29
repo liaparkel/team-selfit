@@ -1071,4 +1071,11 @@ public class DashboardRepositoryTests {
 		//then
 		assertEquals(70, result);
 	}
+
+	@Test
+	void testGetFoodNoteId() {
+		Food f = Food.builder().memberId(1).intakeDate("2025-05-01").build();
+		int result = dashboardRepository.getFoodNoteId(f);
+		System.out.println(result);
+	}
 }

@@ -90,4 +90,6 @@ public interface DashboardRepository {
 	int getMet(int exerciseId);
 
 	int getWeight(int exerciseNoteId);
+
+	int getFoodNoteId(Food food);
 }
