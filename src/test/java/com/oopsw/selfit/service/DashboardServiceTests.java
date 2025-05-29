@@ -747,4 +747,244 @@ public class DashboardServiceTests {
 		assertNotEquals("감량", result);
 	}
 
+	// @Test
+	// void testGetYearExerciseAvgInfoYes() {
+	// 	// given
+	// 	int memberId = 1;
+	// 	int exerciseYear = 2025;
+	//
+	// 	// when
+	// 	List<Map<String, Object>> result = dashboardService.getYearExerciseAvgInfo(memberId, exerciseYear);
+	//
+	// 	// then
+	// 	assertNotNull(result);
+	// 	assertFalse(result.isEmpty());
+	// }
+	//
+	// @Test
+	// void testGetYearExerciseAvgInfoNoDataForYear() {
+	// 	// given
+	// 	int memberId = 1;
+	// 	int exerciseYear = 9999;
+	//
+	// 	// when
+	// 	List<Map<String, Object>> result = dashboardService.getYearExerciseAvgInfo(memberId, exerciseYear);
+	//
+	// 	// then
+	// 	assertNotNull(result);
+	// 	assertTrue(result.isEmpty());
+	// }
+	//
+	// @Test
+	// void testGetYearExerciseAvgInfoNotExistMemberId() {
+	// 	// given
+	// 	int memberId = 9999;
+	// 	int exerciseYear = 2025;
+	//
+	// 	// when & then
+	// 	assertThrows(NullPointerException.class, () -> {
+	// 		dashboardService.getYearExerciseAvgInfo(memberId, exerciseYear);
+	// 	});
+	// }
+	//
+	// @Test
+	// void testGetYearExerciseAvgAgeYes() {
+	// 	// given
+	// 	int memberId = 1;
+	// 	int exerciseYear = 2025;
+	//
+	// 	// when
+	// 	List<Map<String, Object>> result = dashboardService.getYearExerciseAvgAge(memberId, exerciseYear);
+	//
+	// 	// then
+	// 	assertNotNull(result);
+	// 	assertFalse(result.isEmpty());
+	// }
+	//
+	// @Test
+	// void testGetYearExerciseAvgAgeNoDataForYear() {
+	// 	// given
+	// 	int memberId = 1;
+	// 	int exerciseYear = 9999;
+	//
+	// 	// when
+	// 	List<Map<String, Object>> result = dashboardService.getYearExerciseAvgAge(memberId, exerciseYear);
+	//
+	// 	// then
+	// 	assertNotNull(result);
+	// 	assertTrue(result.isEmpty());
+	// }
+	//
+	// @Test
+	// void testGetYearExerciseAvgAgeNotExistMemberId() {
+	// 	// given
+	// 	int memberId = 9999;
+	// 	int exerciseYear = 2025;
+	//
+	// 	// when & then
+	// 	assertThrows(NullPointerException.class, () -> {
+	// 		dashboardService.getYearExerciseAvgAge(memberId, exerciseYear);
+	// 	});
+	// }
+
+	@Test
+	void testGetYearExerciseAvgAllYes() {
+		// given
+		int memberId = 1;
+		int exerciseYear = 2025;
+
+		// when
+		List<Map<String, Object>> result = dashboardService.getYearExerciseAvgAll(memberId, exerciseYear);
+
+		// then
+		assertNotNull(result);
+		assertFalse(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearExerciseAvgAllNoDataForYear() {
+		// given
+		int memberId = 1;
+		int exerciseYear = 9999;
+
+		// when
+		List<Map<String, Object>> result = dashboardService.getYearExerciseAvgAll(memberId, exerciseYear);
+
+		// then
+		assertNotNull(result);
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearExerciseAvgAllNotExistMemberId() {
+		// given
+		int memberId = 9999;
+		int exerciseYear = 2025;
+
+		// when & then
+		assertThrows(NullPointerException.class, () -> {
+			dashboardService.getYearExerciseAvgAll(memberId, exerciseYear);
+		});
+	}
+
+	// @Test
+	// void testGetYearIntakeAvgInfoYes() {
+	// 	// given
+	// 	int memberId = 1;
+	// 	int intakeYear = 2025;
+	//
+	// 	// when
+	// 	List<Map<String, Object>> result = dashboardService.getYearIntakeAvgInfo(memberId, intakeYear);
+	//
+	// 	// then
+	// 	assertNotNull(result);
+	// 	assertFalse(result.isEmpty());
+	// }
+	//
+	// @Test
+	// void testGetYearIntakeAvgInfoNoDataForYear() {
+	// 	// given
+	// 	int memberId = 1;
+	// 	int intakeYear = 9999;
+	//
+	// 	// when
+	// 	List<Map<String, Object>> result = dashboardService.getYearIntakeAvgInfo(memberId, intakeYear);
+	//
+	// 	// then
+	// 	assertNotNull(result);
+	// 	assertTrue(result.isEmpty());
+	// }
+	//
+	// @Test
+	// void testGetYearIntakeAvgInfoNotExistMemberId() {
+	// 	// given
+	// 	int memberId = 9999;
+	// 	int intakeYear = 2025;
+	//
+	// 	// when & then
+	// 	assertThrows(NullPointerException.class, () -> {
+	// 		dashboardService.getYearIntakeAvgInfo(memberId, intakeYear);
+	// 	});
+	// }
+	//
+	// @Test
+	// void testGetYearIntakeAvgAgeYes() {
+	// 	// given
+	// 	int memberId = 1;
+	// 	int intakeYear = 2025;
+	//
+	// 	// when
+	// 	List<Map<String, Object>> result = dashboardService.getYearIntakeAvgAge(memberId, intakeYear);
+	//
+	// 	// then
+	// 	assertNotNull(result);
+	// 	assertFalse(result.isEmpty());
+	// }
+	//
+	// @Test
+	// void testGetYearIntakeAvgAgeNoDataForYear() {
+	// 	// given
+	// 	int memberId = 1;
+	// 	int intakeYear = 9999;
+	//
+	// 	// when
+	// 	List<Map<String, Object>> result = dashboardService.getYearIntakeAvgAge(memberId, intakeYear);
+	//
+	// 	// then
+	// 	assertNotNull(result);
+	// 	assertTrue(result.isEmpty());
+	// }
+	//
+	// @Test
+	// void testGetYearIntakeAvgAgeNotExistMemberId() {
+	// 	// given
+	// 	int memberId = 9999;
+	// 	int intakeYear = 2025;
+	//
+	// 	// when & then
+	// 	assertThrows(NullPointerException.class, () -> {
+	// 		dashboardService.getYearIntakeAvgAge(memberId, intakeYear);
+	// 	});
+	// }
+
+	@Test
+	void testGetYearIntakeAvgAllYes() {
+		// given
+		int memberId = 1;
+		int intakeYear = 2025;
+
+		// when
+		List<Map<String, Object>> result = dashboardService.getYearIntakeAvgAll(memberId, intakeYear);
+
+		// then
+		assertNotNull(result);
+		assertFalse(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearIntakeAvgAllNoDataForYear() {
+		// given
+		int memberId = 1;
+		int intakeYear = 9999;
+
+		// when
+		List<Map<String, Object>> result = dashboardService.getYearIntakeAvgAll(memberId, intakeYear);
+
+		// then
+		assertNotNull(result);
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearIntakeAvgAllNotExistMemberId() {
+		// given
+		int memberId = 9999;
+		int intakeYear = 2025;
+
+		// when & then
+		assertThrows(NullPointerException.class, () -> {
+			dashboardService.getYearIntakeAvgAll(memberId, intakeYear);
+		});
+	}
+
 }

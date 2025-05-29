@@ -67,15 +67,15 @@ public interface DashboardRepository {
 
 	String getGoal(int memberId);
 
-	List<Map<String, Object>> getYearExerciseAvgInfo(Map<String, Object> param);
-
-	List<Map<String, Object>> getYearExerciseAvgAge(Map<String, Object> param);
+	// List<Map<String, Object>> getYearExerciseAvgInfo(Map<String, Object> param);
+	//
+	// List<Map<String, Object>> getYearExerciseAvgAge(Map<String, Object> param);
 
 	List<Map<String, Object>> getYearExerciseAvgAll(Map<String, Object> param);
 
-	List<Map<String, Object>> getYearIntakeAvgInfo(Map<String, Object> param);
-
-	List<Map<String, Object>> getYearIntakeAvgAge(Map<String, Object> param);
+	// List<Map<String, Object>> getYearIntakeAvgInfo(Map<String, Object> param);
+	//
+	// List<Map<String, Object>> getYearIntakeAvgAge(Map<String, Object> param);
 
 	List<Map<String, Object>> getYearIntakeAvgAll(Map<String, Object> param);
 
