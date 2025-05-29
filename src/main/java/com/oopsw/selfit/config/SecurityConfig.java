@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import com.google.gson.Gson;
 import com.oopsw.selfit.auth.CustomOAuth2UserService;
@@ -24,14 +23,6 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
 	private final Gson gson = new Gson();
-
-	//account
-	@GetMapping("/account/login")
-	public String login() {
-		return "account/login";
-	}
-
-	@GetMapping("/account/signup")
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws
