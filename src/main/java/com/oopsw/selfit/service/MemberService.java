@@ -43,6 +43,9 @@ public class MemberService {
 
 	public boolean addMember(Member member) {
 
+		if (!member.getMemberType().equals("DEFAULT")) {
+			member.setPw(generateRandomString());
+		}
 		member.setPw(encoder.encode(member.getPw()));
 
 		return memberRepository.addMember(member) > 0;
@@ -64,6 +67,13 @@ public class MemberService {
 
 	public boolean removeMember(int memberId) {
 		return memberRepository.removeMember(memberId) > 0;
+	}
+
+	private String generateRandomString() {
+		long currentTime = System.currentTimeMillis(); // 현재 시간(ms)
+		int randomNumber = (int)(Math.random() * 100000); // 0 ~ 99999
+
+		return currentTime + "_" + randomNumber;
 	}
 
 }
