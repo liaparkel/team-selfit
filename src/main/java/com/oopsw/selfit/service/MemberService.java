@@ -1,7 +1,5 @@
 package com.oopsw.selfit.service;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,9 +29,8 @@ public class MemberService {
 		return memberRepository.getLoginInfo(email);
 	}
 
-	public boolean checkPw(String email, String pw) {
-		String encodedPw = memberRepository.getLoginInfo(email).getPw();
-		return encoder.matches(pw, encodedPw);
+	public boolean checkPw(int memberId, String pw) {
+		return encoder.matches(pw.strip(), memberRepository.getPw(memberId));
 	}
 
 	public boolean isEmailExists(String email) {
@@ -68,5 +65,5 @@ public class MemberService {
 	public boolean removeMember(int memberId) {
 		return memberRepository.removeMember(memberId) > 0;
 	}
-	
+
 }
