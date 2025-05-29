@@ -34,5 +34,4 @@ public class CustomOAuth2User implements OAuth2User {
 		return user.getEmail();
 	}
 
-	// OAuth2User 메서드 구현...
 }
