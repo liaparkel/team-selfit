@@ -85,4 +85,9 @@ public interface DashboardRepository {
 
 	int isExerciseNote(int memberId, String exerciseDate);
 
+	int getUnitKcal(int foodId);
+
+	int getMet(int exerciseId);
+
+	int getWeight(int exerciseNoteId);
 }

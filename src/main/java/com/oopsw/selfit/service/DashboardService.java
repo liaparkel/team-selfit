@@ -95,12 +95,14 @@ public class DashboardService {
 		return dashboardRepository.getAutoCompleteFood(partWord);
 	}
 
+
 	public boolean addFoodList(Food food) {
+		int exists = dashboardRepository.isChecklist(food.getMemberId(), food.getIntakeDate());
+		isAlreadyExists(exists, "식단 기록", food.getIntakeDate());
 		if (dashboardRepository.addFoodList(food) == 0) {
 			return false;
 		}
 		return true;
-
 	}
 
 	public boolean removeFoodList(Food food) {
@@ -110,7 +112,14 @@ public class DashboardService {
 		return true;
 	}
 
+	public int getUnitKcal(int foodId) {
+		return dashboardRepository.getUnitKcal(foodId);
+	}
+
 	public boolean addFood(Food food) {
+		validatePositive(food.getIntake(), "섭취량");
+		//섭취칼로리 = (float)단위칼로리/100 * 섭취량
+		food.setIntakeKcal(((float)getUnitKcal(food.getFoodId()))/100*food.getIntake());
 		if (dashboardRepository.addFood(food) == 0) {
 			return false;
 		}
@@ -136,6 +145,8 @@ public class DashboardService {
 	}
 
 	public boolean addExerciseList(Exercise exercise) {
+		int exists = dashboardRepository.isChecklist(exercise.getMemberId(), exercise.getExerciseDate());
+		isAlreadyExists(exists, "운동 기록", exercise.getExerciseDate());
 		if (dashboardRepository.addExerciseList(exercise) == 0) {
 			return false;
 		}
@@ -150,6 +161,14 @@ public class DashboardService {
 	}
 
 	public boolean addExercise(Exercise exercise) {
+		validatePositive(exercise.getExerciseMin(), "운동시간");
+		//소모칼로리 = MET * 체중 * 운동시간(분) /60
+		exercise.setExerciseKcal(
+			dashboardRepository.getWeight(exercise.getExerciseNoteId()) *
+				dashboardRepository.getMet(exercise.getExerciseId()) *
+					exercise.getExerciseMin() / 60
+		);
+
 		if (dashboardRepository.addExercise(exercise) == 0) {
 			return false;
 		}
