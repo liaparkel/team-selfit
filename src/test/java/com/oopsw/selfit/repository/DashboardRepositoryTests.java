@@ -276,7 +276,7 @@ public class DashboardRepositoryTests {
 	@Test
 	void testAddFoodYes() {
 		// given
-		Food request = Food.builder().intake("200").intakeKcal("95").foodNoteId(2).foodId(8).build();
+		Food request = Food.builder().intake(200).intakeKcal(95).foodNoteId(2).foodId(8).build();
 
 		// when
 		int result = dashboardRepository.addFood(request);
@@ -288,7 +288,7 @@ public class DashboardRepositoryTests {
 	@Test
 	void testAddFoodNotExistFoodId() {
 		// given
-		Food request = Food.builder().intake("200").intakeKcal("95").foodNoteId(2).foodId(99999).build();
+		Food request = Food.builder().intake(200).intakeKcal(95).foodNoteId(2).foodId(99999).build();
 
 		// when & then
 		assertThrows(DataIntegrityViolationException.class, () -> {
@@ -299,7 +299,7 @@ public class DashboardRepositoryTests {
 	@Test
 	void testSetIntakeYes() {
 		// given
-		Food request = Food.builder().foodInfoId(2).intake("300").build();
+		Food request = Food.builder().foodInfoId(2).intake(300).build();
 
 		// when
 		int result = dashboardRepository.setIntake(request);
@@ -311,7 +311,7 @@ public class DashboardRepositoryTests {
 	@Test
 	void testSetIntakeNoInvalidId() {
 		// given
-		Food request = Food.builder().foodInfoId(99999).intake("300").build();
+		Food request = Food.builder().foodInfoId(99999).intake(300).build();
 
 		// when
 		int result = dashboardRepository.setIntake(request);
@@ -420,7 +420,7 @@ public class DashboardRepositoryTests {
 		// given
 		Exercise request = Exercise.builder()
 			.exerciseMin(40)
-			.exerciseKcal("112")
+			.exerciseKcal(112)
 			.exerciseId(6)
 			.exerciseNoteId(1)
 			.build();
@@ -437,7 +437,7 @@ public class DashboardRepositoryTests {
 		// given
 		Exercise request = Exercise.builder()
 			.exerciseMin(40)
-			.exerciseKcal("112")
+			.exerciseKcal(112)
 			.exerciseId(6)
 			.exerciseNoteId(99999)
 			.build();
@@ -1042,4 +1042,33 @@ public class DashboardRepositoryTests {
 		assertEquals(0, result);
 	}
 
+	@Test
+	void testGetUnitKcal() {
+		// given
+		int foodId = 1;
+		// when
+		int result = dashboardRepository.getUnitKcal(foodId);
+		// then
+		assertEquals(95, result);
+	}
+
+	@Test
+	void testGetMet() {
+		// given
+		int exerciseId = 1;
+		//when
+		int result = dashboardRepository.getMet(exerciseId);
+		//then
+		assertEquals(6, result);
+	}
+
+	@Test
+	void testGetWeight() {
+		// given
+		int exerciseNoteId = 1;
+		// when
+		int result = dashboardRepository.getWeight(exerciseNoteId);
+		//then
+		assertEquals(70, result);
+	}
 }
