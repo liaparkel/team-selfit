@@ -172,7 +172,7 @@ $(() => {
                 url: '/api/account/member/check-pw',
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify(password),
+                data: JSON.stringify({'pw': password}),
                 dataType: 'json',
                 success: function (data) {
                     if (data.success) {
