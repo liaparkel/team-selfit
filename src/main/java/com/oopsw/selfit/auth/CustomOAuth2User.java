@@ -11,10 +11,11 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class CustomOAuth2User implements OAuth2User {
+public class CustomOAuth2User implements OAuth2User, AuthenticatedUser {
 	private final User user;
 	private final Map<String, Object> attributes;
 
+	@Override
 	public int getMemberId() {
 		return user.getMemberId();
 	}
