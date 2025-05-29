@@ -115,7 +115,7 @@ public class CheckRepositoryTests {
 	}
 
 	@Test
-	public void testIsCheckItemInvalidId() {
+	public void testIsCheckItemInvalid() {
 		// given
 		Long checkId = 7L;
 
