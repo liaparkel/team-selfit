@@ -279,4 +279,20 @@
         WHERE MEMBER_ID = #{memberId}
           AND EXERCISE_DATE = #{exerciseDate}
     </select>
+    <select id="getUnitKcal" parameterType="int" resultType="int">
+        SELECT UNIT_KCAL AS UNITKCAL FROM FOOD
+        WHERE FOOD_ID=#{foodId}
+    </select>
+    <select id="getMet" parameterType="int" resultType="int">
+        SELECT MET
+        FROM EXERCISE
+        WHERE EXERCISE_ID=#{exerciseId}
+    </select>
+    <select id="getWeight" parameterType="int" resultType="int">
+        SELECT M.WEIGHT
+        FROM EXERCISE_NOTE EN
+        INNER JOIN EXERCISE_INFO EI ON EI.EXERCISE_NOTE_ID=EN.EXERCISE_NOTE_ID
+        INNER JOIN MEMBER M ON EN.MEMBER_ID=M.MEMBER_ID
+        WHERE EN.EXERCISE_NOTE_ID=#{exerciseNoteId}
+    </select>
 </mapper>
