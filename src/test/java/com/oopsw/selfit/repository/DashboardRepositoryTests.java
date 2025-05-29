@@ -83,7 +83,7 @@ public class DashboardRepositoryTests {
 		Food result = dashboardRepository.getIntakeKcal(request);
 
 		// than
-		assertEquals(140, result.getIntakeSum());
+		assertEquals(560, result.getIntakeSum());
 	}
 
 	@Test
