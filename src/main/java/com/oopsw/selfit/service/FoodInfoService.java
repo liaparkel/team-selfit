@@ -1,5 +1,12 @@
 package com.oopsw.selfit.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.oopsw.selfit.domain.FoodInfo;
+import com.oopsw.selfit.dto.Food;
 import com.oopsw.selfit.repository.DashboardRepository;
 import com.oopsw.selfit.repository.FoodInfoRepository;
 
