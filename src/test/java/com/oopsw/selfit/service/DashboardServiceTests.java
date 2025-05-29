@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.binding.BindingException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.oopsw.selfit.dto.Checklist;
 import com.oopsw.selfit.dto.Exercise;
 import com.oopsw.selfit.dto.Food;
+import com.oopsw.selfit.dto.Member;
 
 @Transactional
 @SpringBootTest
@@ -56,6 +58,20 @@ public class DashboardServiceTests {
 	}
 
 	@Test
+	void testGetBmrNotExistMemberId() {
+		// given
+		int memberId = 99999;
+
+		// when & then
+		assertThrows(NullPointerException.class, () -> {
+			int bmr = dashboardService.getBmr(memberId);
+		});
+
+
+
+	}
+
+	@Test
 	void testGetIntakeKcalYes() {
 		// given
 		Food f = Food.builder().memberId(1).intakeDate("2025-05-21").build();
@@ -66,6 +82,16 @@ public class DashboardServiceTests {
 	}
 
 	@Test
+	void testGetIntakeKcalNotExistMemberId() {
+		// given
+		Food request = Food.builder().memberId(99999).intakeDate("2025-05-21").build();
+		// when
+		Food result = dashboardService.getIntakeKcal(request);
+		// than
+		assertNull(result);
+	}
+
+	@Test
 	void testGetExerciseKcalYes() {
 		// given
 		Exercise e = Exercise.builder().memberId(1).exerciseDate("2025-05-21").build();
@@ -73,6 +99,18 @@ public class DashboardServiceTests {
 		Exercise newe = dashboardService.getExerciseKcal(e);
 		// then
 		assertEquals(212, newe.getExerciseSum());
+	}
+
+	@Test
+	void testGetExerciseKcalNotExistMemberId() {
+		// given
+		Exercise request = Exercise.builder().memberId(99999).exerciseDate("2025-05-21").build();
+
+		// when
+		Exercise result = dashboardService.getExerciseKcal(request);
+
+		// than
+		assertNull(result);
 	}
 
 	@Test
@@ -89,6 +127,46 @@ public class DashboardServiceTests {
 	}
 
 	@Test
+	void testGetYearIntakeKcalNotExistMemberId() {
+		// given
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("memberId", 99999);
+		map.put("intakeYear", "2025");
+		// when
+		List<Food> result = dashboardService.getYearIntakeKcal(map);
+		// then
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearExerciseKcalYes() {
+		// given
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("memberId", 1);
+		map.put("exerciseYear", "2025");
+
+		// when
+		List<Exercise> result = dashboardService.getYearExerciseKcal(map);
+
+		// then
+		assertFalse(result.isEmpty());
+	}
+
+	@Test
+	void testGetYearExerciseKcalNotExistMemberId() {
+		// given
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("memberId", 99999);
+		map.put("exerciseYear", "2025");
+
+		// when
+		List<Exercise> result = dashboardService.getYearExerciseKcal(map);
+
+		// then
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
 	void testGetIntakeDetailYes() {
 		// given
 		Food f = Food.builder().memberId(1).intakeDate("2025-05-01").build();
@@ -96,6 +174,16 @@ public class DashboardServiceTests {
 		List list = dashboardService.getIntakeDetail(f);
 		// then
 		assertEquals(1, list.size());
+	}
+
+	@Test
+	void testGetIntakeDetailNotExistMemberId() {
+		// given
+		Food request = Food.builder().memberId(99999).intakeDate("2025-05-21").build();
+		// when
+		List<Food> result = dashboardService.getIntakeDetail(request);
+		// then
+		assertTrue(result.isEmpty());
 	}
 
 	@Test
@@ -109,6 +197,16 @@ public class DashboardServiceTests {
 	}
 
 	@Test
+	void testGetAutoCompleteFoodInvalidKeyword() {
+		// given
+		String partWord = "selfit";
+		// when
+		List<String> result = dashboardService.getAutoCompleteFood(partWord);
+		// then
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
 	void testAddFoodListYes() {
 		// given
 		Food request = Food.builder().memberId(1).intakeDate("2025-06-05").build();
@@ -119,6 +217,28 @@ public class DashboardServiceTests {
 	}
 
 	@Test
+	void testAddFoodListNotExistMemberId() {
+		// given
+		Food request = Food.builder().memberId(99999).intakeDate("2025-05-05").build();
+
+		// when & then
+		assertThrows(DataIntegrityViolationException.class, () -> {
+			dashboardService.addFoodList(request);
+		});    //SQLIntegrityConstraintViolationException을 Spring이 자동 변환
+	}
+
+	@Test
+	void testAddFoodListDuplicateDate() {
+		// given
+		Food request = Food.builder().memberId(1).intakeDate("2025-05-01").build();
+
+		// when & then
+		assertThrows(IllegalStateException.class, () -> {
+			dashboardService.addFoodList(request);
+		});    //SQLIntegrityConstraintViolationException을 Spring이 자동 변환
+	}
+
+	@Test
 	void testRemoveFoodListYes() {
 		// given
 		Food request = Food.builder().memberId(1).intakeDate("2025-06-02").build();
@@ -126,6 +246,18 @@ public class DashboardServiceTests {
 		boolean result = dashboardService.removeFoodList(request);
 		// then
 		assertTrue(result);
+	}
+
+	@Test
+	void testRemoveFoodListNotExistMemberId() {
+		// given
+		Food request = Food.builder().memberId(99999).intakeDate("2025-06-02").build();
+
+		// when
+		boolean result = dashboardService.removeFoodList(request);
+
+		// then
+		assertFalse(result);
 	}
 
 	@Test
@@ -141,7 +273,7 @@ public class DashboardServiceTests {
 	@Test
 	void testAddFoodYes() {
 		// given
-		Food request = Food.builder().intake("200").intakeKcal("95").foodNoteId(2).foodId(8).build();
+		Food request = Food.builder().intake(200).foodNoteId(2).foodId(8).build();
 		// when
 		boolean result = dashboardService.addFood(request);
 		// then
@@ -149,13 +281,46 @@ public class DashboardServiceTests {
 	}
 
 	@Test
+	void testAddFoodZero() {
+		// given
+		Food request = Food.builder().intake(-200).foodNoteId(2).foodId(8).build();
+		// when & then
+		assertThrows(IllegalArgumentException.class, () -> {
+			dashboardService.addFood(request);
+		});
+	}
+
+	@Test
+	void testAddFoodNotExistFoodId() {
+		// given
+		Food request = Food.builder().intake(200).intakeKcal(95).foodNoteId(2).foodId(99999).build();
+
+		// when & then
+		assertThrows(BindingException.class, () -> {
+			dashboardService.addFood(request);
+		});    //SQLIntegrityConstraintViolationException을 Spring이 자동 변환
+	}
+
+	@Test
 	void testSetIntakeYes() {
 		// given
-		Food request = Food.builder().foodInfoId(2).intake("300").build();
+		Food request = Food.builder().foodInfoId(2).intake(300).build();
 		// when
 		boolean result = dashboardService.setIntake(request);
 		// then
 		assertTrue(result);
+	}
+
+	@Test
+	void testSetIntakeNoInvalidId() {
+		// given
+		Food request = Food.builder().foodInfoId(99999).intake(300).build();
+
+		// when
+		boolean result = dashboardService.setIntake(request);
+
+		// then
+		assertFalse(result);
 	}
 
 	@Test
@@ -169,6 +334,18 @@ public class DashboardServiceTests {
 	}
 
 	@Test
+	void testRemoveFoodNoInvalidId() {
+		// given
+		int foodInfoId = 99999;
+
+		// when
+		boolean result = dashboardService.removeFood(foodInfoId);
+
+		// then
+		assertFalse(result);
+	}
+
+	@Test
 	void testGetAutoCompleteExerciseYes() {
 		// given
 		String partWord = "기";
@@ -176,6 +353,18 @@ public class DashboardServiceTests {
 		List<String> result = dashboardService.getAutoCompleteExercise(partWord);
 		// then
 		assertFalse(result.isEmpty());
+	}
+
+	@Test
+	void testGetAutoCompleteExerciseInvalidKeyword() {
+		// given
+		String partWord = "selfit";
+
+		// when
+		List<String> result = dashboardService.getAutoCompleteExercise(partWord);
+
+		// then
+		assertTrue(result.isEmpty());
 	}
 
 	@Test
@@ -189,6 +378,28 @@ public class DashboardServiceTests {
 	}
 
 	@Test
+	void testAddExerciseListNotExistMemberId() {
+		// given
+		Exercise request = Exercise.builder().memberId(99999).exerciseDate("2025-06-05").build();
+
+		// when & then
+		assertThrows(DataIntegrityViolationException.class, () -> {
+			dashboardService.addExerciseList(request);
+		});
+	}
+
+	@Test
+	void testAddExerciseListDuplicateDate() {
+		// given
+		Exercise request = Exercise.builder().memberId(1).exerciseDate("2025-05-01").build();
+
+		// when & then
+		assertThrows(IllegalStateException.class, () -> {
+			dashboardService.addExerciseList(request);
+		});    //SQLIntegrityConstraintViolationException을 Spring이 자동 변환
+	}
+
+	@Test
 	void testRemoveExerciseListYes() {
 		// given
 		Exercise request = Exercise.builder().memberId(10).exerciseDate("2025-05-10").build();
@@ -199,18 +410,58 @@ public class DashboardServiceTests {
 	}
 
 	@Test
+	void testRemoveExerciseListNo_NotExistMemberId() {
+		// given
+		Exercise request = Exercise.builder().memberId(99999).exerciseDate("2025-05-10").build();
+
+		// when
+		boolean result = dashboardService.removeExerciseList(request);
+
+		// then
+		assertFalse(result);
+	}
+
+	@Test
 	void testAddExerciseYes() {
 		// given
 		Exercise request = Exercise.builder()
-			.exerciseMin(40)
-			.exerciseKcal("112")
-			.exerciseId(6)
+			.exerciseMin(160)
+			.exerciseId(7)
 			.exerciseNoteId(1)
 			.build();
 		// when
 		boolean result = dashboardService.addExercise(request);
 		// then
 		assertTrue(result);
+	}
+
+	@Test
+	void testAddExerciseZero() {
+		// given
+		Exercise request = Exercise.builder()
+			.exerciseMin(-20)
+			.exerciseId(6)
+			.exerciseNoteId(1)
+			.build();
+		// when & then
+		assertThrows(IllegalArgumentException.class, () -> {
+			boolean result = dashboardService.addExercise(request);
+		});
+	}
+
+	@Test
+	void testAddExerciseNotExistNoteId() {
+		// given
+		Exercise request = Exercise.builder()
+			.exerciseMin(40)
+			.exerciseId(6)
+			.exerciseNoteId(99999)
+			.build();
+
+		// when & then
+		assertThrows(BindingException.class, () -> {
+			dashboardService.addExercise(request);
+		});
 	}
 
 	@Test
@@ -223,7 +474,19 @@ public class DashboardServiceTests {
 		System.out.println(result);
 		assertFalse(result.isEmpty());
 	}
-	// 윤호님 코드 예정
+
+	@Test
+	void testGetExerciseDetailNotExistMemberId() {
+		// given
+		Exercise request = Exercise.builder().memberId(99999).exerciseDate("2025-05-21").build();
+
+		// when
+		List<Exercise> result = dashboardService.getExerciseDetail(request);
+
+		// then
+		assertTrue(result.isEmpty());
+	}
+
 	@Test
 	void testSetExerciseMinYes() {
 		// given
