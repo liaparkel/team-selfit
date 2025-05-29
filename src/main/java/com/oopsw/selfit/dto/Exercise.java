@@ -16,7 +16,7 @@ public class Exercise {
 	private int exerciseId;
 	private String exerciseName;
 	private int exerciseMin;
-	private String exerciseKcal;
+	private int exerciseKcal;
 	private float met;
 	private String exerciseDate;
 	private int exerciseSum; //소모 칼로리 합
