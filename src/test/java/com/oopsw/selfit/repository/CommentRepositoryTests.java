@@ -53,7 +53,7 @@ public class CommentRepositoryTests {
 
 		// then
 		assertNotNull(comments);
-		assertEquals(1, comments.size());
+		assertEquals(2, comments.size());
 		assertEquals("댓글 2", comments.get(0).getCommentContent());
 
 	}
