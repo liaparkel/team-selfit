@@ -7,9 +7,9 @@ spring:
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://34.47.102.46:3306/selfit?characterEncoding=UTF-8
-    username: kosta
-    password: hr7292
+    url: jdbc:mariadb://${DB_IP}:3306/${DB_NAME}?characterEncoding=UTF-8
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
   jpa:
     open-in-view: false
@@ -29,19 +29,16 @@ spring:
     check-template-location: true
 
   security:
-    user:
-      name: user
-      password: 1234
-
-#    oauth2:
-#      client:
-#        registration:
-#          google:
-#            client-id: 1063644905699-fvf909nphpb5h4c52b8hp7diuq0fciee.apps.googleusercontent.com
-#            client-secret: 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
-#            scope:
-#              - profile
-#              - email
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_ID}
+            client-secret: ${GOOGLE_SECRET}
+            redirect-uri: "http://localhost:8881/login/oauth2/code/google"
+            scope:
+              - profile
+              - email
 mybatis:
   mapper-locations: classpath:mappers/*.xml
   configuration:
@@ -49,8 +46,8 @@ mybatis:
 
 food:
   base-url: http://api.data.go.kr/openapi/tn_pubr_public_nutri_process_info_api
-  key: ${FOODAPI_KEY:Gngvp3UKvhulX6Jks8LsIebA534zldKcl1z7nB5IY7GLCTi91UO4BmwWutMo0zLFPMNFltzHI7Ab3uL1IoVt/g==}
+  key: ${FOODAPI_KEY}
 
 exercise:
   base-url: https://api.odcloud.kr/api/15068730/v1/uddi:e57a5dba-bbbf-414e-a5cd-866c48378daa
-  key: ${EXERCISE_KEY:Gngvp3UKvhulX6Jks8LsIebA534zldKcl1z7nB5IY7GLCTi91UO4BmwWutMo0zLFPMNFltzHI7Ab3uL1IoVt/g==}
+  key: ${EXERCISE_KEY}

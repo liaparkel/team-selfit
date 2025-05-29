@@ -46,10 +46,6 @@ public class MemberService {
 
 	public boolean addMember(Member member) {
 
-		if (!member.getMemberType().equals("DEFAULT")) {
-			member.setPw(getRandomValue());
-		}
-
 		member.setPw(encoder.encode(member.getPw()));
 
 		return memberRepository.addMember(member) > 0;
@@ -72,12 +68,5 @@ public class MemberService {
 	public boolean removeMember(int memberId) {
 		return memberRepository.removeMember(memberId) > 0;
 	}
-
-	private String getRandomValue() {
-		String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-		int random = (int)(Math.random() * 1_000_000);
-
-		String randomStr = String.format("%06d", random);
-		return randomStr + "_" + time;
-	}
+	
 }
