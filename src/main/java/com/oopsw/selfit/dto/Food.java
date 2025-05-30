@@ -18,7 +18,7 @@ public class Food {
 	private int intake;
 	private int unitKcal;
 	private float intakeKcal;
-	private String foodWeight;
+	//private String foodWeight;
 	private String intakeDate;
 	private Integer intakeSum; //섭취칼로리 합
 
