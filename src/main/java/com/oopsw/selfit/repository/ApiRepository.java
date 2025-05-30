@@ -9,7 +9,12 @@ import com.oopsw.selfit.dto.FoodApi;
 
 @Mapper
 public interface ApiRepository {
-	int addFoodApi(List<FoodApi> list);
+	void addFoodApi(List<FoodApi> list);
 
-	int addExerciseApi(List<ExerciseApi> list);
+	void addExerciseApi(List<ExerciseApi> list);
+
+	int existFoodApi(String foodCode);
+
+	int existExercise(String exerciseName, float met);
+
 }
