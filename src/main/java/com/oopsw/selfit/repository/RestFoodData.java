@@ -40,10 +40,18 @@ public class RestFoodData {
 	}
 
 	private void insertIfNotExists(List<FoodApi> dtos) {
-		if (dtos == null || dtos.isEmpty()) {
+		if (dtos == null || dtos.isEmpty())
 			return;
+
+		List<FoodApi> toInsert = dtos.stream()
+			// null·빈문자열 체크
+			.filter(dto -> dto.getFoodCd() != null && !dto.getFoodCd().isBlank())
+			// DB에 없는 코드만
+			.filter(dto -> apiRepository.existFoodApi(dto.getFoodCd()) == 0)
+			.toList();
+
+		if (!toInsert.isEmpty()) {
+			apiRepository.addFoodApi(toInsert);
 		}
-		// API 에서 받은 DTO 리스트를 곧바로 MyBatis 매퍼로 전달
-		apiRepository.addFoodApi(dtos);
 	}
 }
