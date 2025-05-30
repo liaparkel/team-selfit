@@ -119,27 +119,27 @@ public class MemberServiceTests {
 
 	@Test
 	public void testAddMemberGoogle() {
-		// // given
-		// Member member = Member.builder()
-		// 	.email("newuser@gmail.com")
-		// 	.name("새사용자")
-		// 	.nickname("newbie")
-		// 	.gender("남성")
-		// 	.birthday("2000-01-01")
-		// 	.height(175.0f)
-		// 	.weight(70.0f)
-		// 	.goal("유지")
-		// 	.memberType("GOOGLE")
-		// 	.profileImg("default.png")
-		// 	.build();
-		//
-		// // when
-		// boolean result = memberService.addMember(member);
-		// String encodedPw = memberService.getLoginInfo(member.getEmail()).getPw();
-		//
-		// // then
-		// assertTrue(result);
-		// assertNotNull(encodedPw);
+		// given
+		Member member = Member.builder()
+			.email("newuser@gmail.com")
+			.name("새사용자")
+			.nickname("newbie")
+			.gender("남성")
+			.birthday("2000-01-01")
+			.height(175.0f)
+			.weight(70.0f)
+			.goal("유지")
+			.memberType("GOOGLE")
+			.profileImg("default.png")
+			.build();
+
+		// when
+		boolean result = memberService.addMember(member);
+		String encodedPw = memberService.getLoginInfo(member.getEmail()).getPw();
+
+		// then
+		assertTrue(result);
+		assertNotNull(encodedPw);
 	}
 
 	@Test
