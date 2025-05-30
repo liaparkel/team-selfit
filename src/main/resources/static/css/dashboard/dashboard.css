@@ -1,7 +1,7 @@
-@import url('../global.css');
+@import url("../global.css");
 
 /* ========== 메인 컨테이너 ========== */
-.main-container {
+.main-content {
     display: flex;
     flex: 1;
     height: 100%;
