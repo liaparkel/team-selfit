@@ -102,7 +102,7 @@
         INSERT INTO EXERCISE_INFO (EXERCISE_MIN, EXERCISE_KCAL, EXERCISE_ID, EXERCISE_NOTE_ID)
         VALUES (#{exerciseMin}, #{exerciseKcal}, #{exerciseId}, #{exerciseNoteId})
     </insert>
-    <select id="getExerciseDetail" parameterType="com.oopsw.selfit.dto.Exercise"
+     <select id="getExerciseDetail" parameterType="com.oopsw.selfit.dto.Exercise"
             resultType="com.oopsw.selfit.dto.Exercise">
         SELECT EN.EXERCISE_DATE AS exerciseDate,
                E.EXERCISE_NAME  AS exerciseName,
@@ -119,11 +119,11 @@
         SET EXERCISE_MIN = #{exerciseMin}
         WHERE EXERCISE_INFO_ID = #{exerciseInfoId}
     </update>
-    <delete id="removeExercise" parameterType="Integer">
+    <!-- <delete id="removeExercise" parameterType="Integer">
         DELETE
         FROM EXERCISE_INFO
         WHERE EXERCISE_INFO_ID = #{exerciseInfoId}
-    </delete>
+    </delete> -->
     <select id="getYearExerciseAge" parameterType="com.oopsw.selfit.dto.Exercise" resultType="map">
         SELECT YEAR (EN.EXERCISE_DATE) AS year, SUM (EI.EXERCISE_KCAL) AS exerciseSum
         FROM EXERCISE_NOTE EN
@@ -294,5 +294,27 @@
         INNER JOIN EXERCISE_INFO EI ON EI.EXERCISE_NOTE_ID=EN.EXERCISE_NOTE_ID
         INNER JOIN MEMBER M ON EN.MEMBER_ID=M.MEMBER_ID
         WHERE EN.EXERCISE_NOTE_ID=#{exerciseNoteId}
+    </select>
+    <select id="getExercisesByIds" parameterType="list" resultType="com.oopsw.selfit.dto.Exercise">
+        SELECT
+        EXERCISE_ID   AS exerciseId,
+        EXERCISE_NAME AS exerciseName,
+        MET           AS met
+        FROM EXERCISE
+        WHERE EXERCISE_ID IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+    <select id="getFoodsByIds" parameterType="java.util.List" resultType="com.oopsw.selfit.dto.Food">
+        SELECT
+        FOOD_ID       AS foodId,
+        FOOD_NAME     AS foodName,
+        UNIT_KCAL     AS unitKcal
+        FROM FOOD
+        WHERE FOOD_ID IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
     </select>
 </mapper>

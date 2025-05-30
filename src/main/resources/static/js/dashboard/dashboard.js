@@ -13,8 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 차트 옵션을 함수로 만들어서 크기에 따라 동적으로 생성
     function createRadialOptions(size = 380) {
-        // 320에서 380으로 변경
-        // 280에서 320으로 변경
         const intakeValue = 2500 // 섭취 값 (실제 칼로리) - 목표 초과
         const exerciseValue = 1200 // 운동 값 (실제 칼로리) - 목표 미달
 
@@ -40,14 +38,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     endAngle: 270,
                     dataLabels: {
                         name: {
-                            fontSize: size > 200 ? "18px" : "16px", // 글씨 크기 증가
+                            fontSize: size > 200 ? "18px" : "16px",
                             color: "#374151",
                         },
                         value: {
-                            fontSize: size > 200 ? "16px" : "14px", // 글씨 크기 증가
+                            fontSize: size > 200 ? "16px" : "14px",
                             color: "#111827",
                             formatter: (val, opts) => {
-                                // 실제 칼로리 값으로 표시
                                 if (opts.seriesIndex === 0) return intakeValue + " kcal"
                                 if (opts.seriesIndex === 1) return exerciseValue + " kcal"
                                 return val + "%"
@@ -57,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             show: true,
                             showAlways: false,
                             label: "평균",
-                            fontSize: "16px", // 14px에서 16px로 증가
+                            fontSize: "16px",
                             fontWeight: 600,
                             color: "#374151",
                             formatter: (w) => {
@@ -77,28 +74,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 },
             },
             fill: [
-                // 섭취 (첫 번째 시리즈)
                 {
                     type: "gradient",
                     gradient: {
                         shade: "light",
                         type: "horizontal",
                         shadeIntensity: 0.6,
-                        gradientToColors: [intakeExceeded ? "#fbbf24" : "#10b981"], // 목표 초과시 노란색, 아니면 밝은 초록
+                        gradientToColors: [intakeExceeded ? "#fbbf24" : "#10b981"],
                         inverseColors: false,
                         opacityFrom: 1,
                         opacityTo: 1,
-                        stops: [0, 50, 51, 100], // 50% 지점(실제 100% 목표)에서 색상 변화
+                        stops: [0, 50, 51, 100],
                     },
                 },
-                // 운동 (두 번째 시리즈)
                 {
                     type: "gradient",
                     gradient: {
                         shade: "light",
                         type: "horizontal",
                         shadeIntensity: 0.6,
-                        gradientToColors: [exerciseExceeded ? "#f472b6" : "#22d3ee"], // 목표 초과시 핑크색, 아니면 밝은 청록
+                        gradientToColors: [exerciseExceeded ? "#f472b6" : "#22d3ee"],
                         inverseColors: false,
                         opacityFrom: 1,
                         opacityTo: 1,
@@ -107,8 +102,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 },
             ],
             colors: [
-                intakeExceeded ? "#f59e0b" : "#33C181", // 목표 초과시 주황색, 아니면 기본 초록
-                exerciseExceeded ? "#ec4899" : "#11C6CF", // 목표 초과시 핑크색, 아니면 기본 청록
+                intakeExceeded ? "#f59e0b" : "#33C181",
+                exerciseExceeded ? "#ec4899" : "#11C6CF",
             ],
             labels: ["섭취", "운동"],
             legend: {
@@ -120,9 +115,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // 더미 데이터 정의 (더 명확한 차이를 위해 수정)
+    // 수정된 더미 데이터 - "섭취", "운동" 키 사용
     const chartData = {
-        종합: {
+        섭취: {
             "2025년": {
                 myData: [
                     2800, 1500, 3200, 1800, 3500, 2100, 3800, 1600, 2900, 2400, 3300, 1900, 3600, 2200, 3100, 1700, 2700, 2600,
@@ -148,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 ],
             },
         },
-        나이: {
+        운동: {
             "2025년": {
                 myData: [
                     1800, 2000, 2400, 2800, 3200, 3600, 3800, 3500, 3200, 2800, 2400, 2000, 1800, 1600, 1400, 1800, 2200, 2600,
@@ -174,37 +169,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 ],
             },
         },
-        "키&몸무게": {
-            "2025년": {
-                myData: [
-                    1200, 1400, 1800, 2200, 2600, 3000, 3400, 3600, 3800, 3500, 3200, 2800, 2400, 2000, 2400, 2800, 3200, 3600,
-                ],
-                avgData: [
-                    2600, 2500, 2400, 2300, 2400, 2500, 2600, 2700, 2800, 2900, 3000, 2900, 2800, 2700, 2600, 2700, 2800, 2900,
-                ],
-            },
-            "2024년": {
-                myData: [
-                    1000, 1200, 1600, 2000, 2400, 2800, 3200, 3400, 3600, 3300, 3000, 2600, 2200, 1800, 2200, 2600, 3000, 3400,
-                ],
-                avgData: [
-                    2500, 2400, 2300, 2200, 2300, 2400, 2500, 2600, 2700, 2800, 2900, 2800, 2700, 2600, 2500, 2600, 2700, 2800,
-                ],
-            },
-            "2023년": {
-                myData: [
-                    800, 1000, 1400, 1800, 2200, 2600, 3000, 3200, 3400, 3100, 2800, 2400, 2000, 1600, 2000, 2400, 2800, 3200,
-                ],
-                avgData: [
-                    2400, 2300, 2200, 2100, 2200, 2300, 2400, 2500, 2600, 2700, 2800, 2700, 2600, 2500, 2400, 2500, 2600, 2700,
-                ],
-            },
-        },
     }
 
     // 라인 차트 옵션 생성 함수
     function createLineOptions(compareType, year) {
-        const data = chartData[compareType][year]
+        const data = chartData[compareType]?.[year]
+
+        // 데이터가 없는 경우 기본값 사용
+        if (!data) {
+            console.warn(`데이터를 찾을 수 없습니다: ${compareType}, ${year}`)
+            return createDefaultLineOptions(compareType, year)
+        }
 
         return {
             series: [
@@ -237,24 +212,8 @@ document.addEventListener("DOMContentLoaded", () => {
             xaxis: {
                 type: "category",
                 categories: [
-                    "05-01",
-                    "05-02",
-                    "05-03",
-                    "05-04",
-                    "05-05",
-                    "05-06",
-                    "05-07",
-                    "05-08",
-                    "05-09",
-                    "05-10",
-                    "05-11",
-                    "05-12",
-                    "05-13",
-                    "05-14",
-                    "05-15",
-                    "05-16",
-                    "05-17",
-                    "05-18",
+                    "05-01", "05-02", "05-03", "05-04", "05-05", "05-06", "05-07", "05-08", "05-09",
+                    "05-10", "05-11", "05-12", "05-13", "05-14", "05-15", "05-16", "05-17", "05-18",
                 ],
                 tickAmount: 6,
                 labels: {
@@ -331,11 +290,107 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // 기본 차트 옵션 (데이터가 없을 때)
+    function createDefaultLineOptions(compareType, year) {
+        const defaultData = Array(18).fill(0).map(() => Math.floor(Math.random() * 2000) + 1000)
+
+        return {
+            series: [
+                {
+                    name: "나의 기록",
+                    data: defaultData,
+                },
+                {
+                    name: "평균 기록",
+                    data: defaultData.map(val => val + Math.floor(Math.random() * 500) - 250),
+                },
+            ],
+            chart: {
+                height: 240,
+                type: "line",
+                animations: {
+                    enabled: true,
+                    easing: "easeinout",
+                    speed: 800,
+                },
+            },
+            stroke: {
+                width: [5, 3],
+                curve: "smooth",
+                dashArray: [0, 5],
+            },
+            xaxis: {
+                type: "category",
+                categories: [
+                    "05-01", "05-02", "05-03", "05-04", "05-05", "05-06", "05-07", "05-08", "05-09",
+                    "05-10", "05-11", "05-12", "05-13", "05-14", "05-15", "05-16", "05-17", "05-18",
+                ],
+                tickAmount: 6,
+                labels: {
+                    style: {
+                        fontSize: "12px",
+                        colors: "#6b7280",
+                    },
+                },
+            },
+            yaxis: {
+                min: 0,
+                max: 4000,
+                tickAmount: 8,
+                labels: {
+                    formatter: (val) => val,
+                    style: {
+                        fontSize: "12px",
+                        colors: "#6b7280",
+                    },
+                },
+                title: {
+                    text: "kcal",
+                    rotate: -90,
+                    style: {
+                        fontSize: "14px",
+                        color: "#6b7280",
+                        fontWeight: 500,
+                    },
+                },
+            },
+            title: {
+                text: `기록 비교 - ${compareType} (${year})`,
+                align: "left",
+                style: {
+                    fontSize: "16px",
+                    color: "#666",
+                },
+            },
+            colors: ["#33C181", "#11C6CF"],
+            markers: {
+                size: 0,
+                hover: { size: 6 },
+            },
+            tooltip: {
+                shared: true,
+                intersect: false,
+                y: {
+                    formatter: (val) => val + " kcal",
+                },
+            },
+            legend: {
+                show: true,
+                position: "top",
+                horizontalAlign: "right",
+            },
+            grid: {
+                borderColor: "#f3f4f6",
+                padding: { left: 0, right: 0 },
+            },
+        }
+    }
+
     // 초기 차트 렌더링
     function renderChart() {
         const chartArea = document.querySelector(".chart-area")
         const isChecklistOpen = document.querySelector(".grid").classList.contains("checklist-open")
-        const size = isChecklistOpen ? 280 : 380 // 240에서 280으로, 320에서 380으로 변경
+        const size = isChecklistOpen ? 280 : 380
 
         if (radialChart) {
             radialChart.destroy()
@@ -368,7 +423,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const originalToggleChecklist = window.toggleChecklist
     window.toggleChecklist = () => {
         originalToggleChecklist()
-        // 애니메이션이 완료된 후 차트 재렌더링
         setTimeout(() => {
             renderChart()
         }, 300)
@@ -385,11 +439,9 @@ function toggleChecklist() {
     const grid = document.querySelector(".grid")
 
     if (panel.classList.contains("open")) {
-        // 닫기
         panel.classList.remove("open")
         grid.classList.remove("checklist-open")
     } else {
-        // 열기
         panel.classList.add("open")
         grid.classList.add("checklist-open")
     }
