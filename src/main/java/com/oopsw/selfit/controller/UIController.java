@@ -5,6 +5,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class UIController {
 
@@ -17,6 +19,16 @@ public class UIController {
 	@GetMapping("/account/signup")
 	public String signup() {
 		return "account/signup";
+	}
+
+	@GetMapping("/account/signup-oauth")
+	public String signupOauth(HttpSession session, Model model) {
+		String email = (String)session.getAttribute("email");
+		String name = (String)session.getAttribute("name");
+		model.addAttribute("email", email);
+		model.addAttribute("name", name);
+		System.out.println("회원가입페이지로 이동: " + email);
+		return "account/signup-oauth";
 	}
 
 	@GetMapping("/account/mypage")
@@ -35,7 +47,7 @@ public class UIController {
 		return "dashboard/dashboard";
 	}
 
-	@GetMapping("/checklist")
+	@GetMapping("/dashboard/checklist")
 	public String checklist() {
 		return "dashboard/checklist";
 	}
