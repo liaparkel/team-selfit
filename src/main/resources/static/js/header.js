@@ -54,4 +54,31 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+    fetchCategoryList();
 });
+
+function fetchCategoryList() {
+    axios.get('/api/category')
+        .then(res => {
+            const categoryList = res.data;
+            const communityMenu = document.querySelector('[data-group="community"] .submenu');
+
+            if (!communityMenu) return;
+
+            communityMenu.innerHTML = ''; // 기존 비우고
+
+            categoryList.forEach(category => {
+                const div = document.createElement('div');
+                div.className = 'submenu-item';
+                div.textContent = category.categoryName;
+                div.addEventListener('click', () => {
+                    location.href = `/board/list?categoryId=${category.categoryId}`;
+                });
+                communityMenu.appendChild(div);
+            });
+        })
+        .catch(err => {
+            console.error('카테고리 불러오기 실패:', err);
+        });
+
+}
