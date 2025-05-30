@@ -39,9 +39,17 @@ public class RestExerciseData {
 	}
 
 	private void insertIfNotExists(List<ExerciseApi> dtos) {
-		if (dtos == null || dtos.isEmpty())
-			return;
-		apiRepository.addExerciseApi(dtos);
+		if (dtos == null || dtos.isEmpty()) return;
+		List<ExerciseApi> toInsert = dtos.stream()
+			// 운동명 + MET 조합으로 중복 체크
+			.filter(dto -> apiRepository
+				.existExercise(dto.getExerciseName(), dto.getMet()) == 0
+			)
+			.toList();
+
+		if (!toInsert.isEmpty()) {
+			apiRepository.addExerciseApi(toInsert);
+		}
 	}
 }
 
