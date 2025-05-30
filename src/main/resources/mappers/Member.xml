@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.oopsw.selfit.repository.MemberRepository">
+
+    <select id="getPw">
+        SELECT PW
+        FROM MEMBER
+        WHERE MEMBER_ID = #{memberId}
+    </select>
     <select id="getLoginInfo" resultType="com.oopsw.selfit.dto.LoginInfo">
         SELECT MEMBER_ID, PW
         FROM MEMBER
@@ -62,7 +68,7 @@
             PROFILE_IMG = #{profileImg}
         WHERE MEMBER_ID = #{memberId}
     </update>
-    
+
     <delete id="removeMember">
         DELETE
         FROM MEMBER

@@ -11,6 +11,8 @@ public interface MemberRepository {
 
 	LoginInfo getLoginInfo(String email);
 
+	String getPw(int memberId);
+
 	String checkExistEmail(String email);
 
 	String checkExistNickname(String nickname);
@@ -20,6 +22,6 @@ public interface MemberRepository {
 	int addMember(Member member);
 
 	int setMember(Member newMember);
-	
+
 	int removeMember(int memberId);
 }
