@@ -61,7 +61,7 @@ $(() => {
         const offset = (page - 1) * itemsPerPage;
 
         $.ajax({
-            url: '/api/account/member/bookmarks',
+            url: `/api/account/member/bookmarks/${offset}`,
             type: 'GET',
             contentType: 'application/json',
             data: JSON.stringify(offset),
@@ -172,7 +172,7 @@ $(() => {
                 url: '/api/account/member/check-pw',
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify(password),
+                data: JSON.stringify({'pw': password}),
                 dataType: 'json',
                 success: function (data) {
                     if (data.success) {

@@ -1,9 +1,9 @@
 package com.oopsw.selfit.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -14,51 +14,48 @@ import com.oopsw.selfit.repository.FoodInfoRepository;
 
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class FoodInfoService {
 	private final FoodInfoRepository foodInfoRepository;
 	private final DashboardRepository dashboardRepository;
 
-	// public List<Food> getIntakeDetail(int memberId, String intakeDate) {
-	// 	// JPA로 FoodInfo 리스트 조회
-	// 	List<FoodInfo> foodInfos = foodInfoRepository.getIntakeDetail(memberId, intakeDate);
-	//
-	// 	// MyBatis로 조인된 정보 가져옴
-	// 	Food param = Food.builder()
-	// 		.memberId(memberId)
-	// 		.intakeDate(intakeDate)
-	// 		.build();
-	// 	List<Food> joinedList = dashboardRepository.getIntakeDetail(param);
-	//
-	// 	// foodInfoId 기준으로 joinedList를 Map으로 수동 변환
-	// 	Map<Integer, Food> joinedMap = new HashMap<>();
-	// 	for (Food f : joinedList) {
-	// 		joinedMap.put(f.getFoodInfoId(), f);
-	// 	}
-	//
-	// 	// JPA 정보 + MyBatis 정보 병합해서 최종 결과 생성
-	// 	List<Food> result = new ArrayList<>();
-	// 	for (FoodInfo fi : foodInfos) {
-	// 		Food j = joinedMap.get(fi.getFoodInfoId());
-	// 		if (j == null)
-	// 			continue; // 혹시 매칭 안 되는 ID는 건너뜀
-	//
-	// 		Food food = Food.builder()
-	// 			.memberId(memberId)
-	// 			.foodNoteId(fi.getFoodNoteId())
-	// 			.foodInfoId(fi.getFoodInfoId())
-	// 			.foodId(fi.getFoodId())
-	// 			.intake((int)fi.getIntake())
-	// 			.intakeKcal(fi.getIntakeKcal())
-	// 			.foodName(j.getFoodName())
-	// 			.unitKcal(j.getUnitKcal())
-	// 			.intakeDate(j.getIntakeDate())
-	// 			.build();
-	//
-	// 		result.add(food);
-	// 	}
-	//
-	// 	return result;
-	// }
+	public List<FoodInfo> getRawInfosByNote(int noteId) {
+		return foodInfoRepository.findByFoodNoteId(noteId);
+	}
+
+	public List<Food> getFoodsForNote(int noteId, int memberId, String date) {
+		// 1) raw FK 목록
+		List<FoodInfo> infos = foodInfoRepository.findByFoodNoteId(noteId);
+		if (infos.isEmpty())
+			return List.of();
+
+		// 2) distinct foodId 수집
+		List<Integer> foodIds = infos.stream()
+			.map(FoodInfo::getFoodId)
+			.distinct()
+			.toList();
+
+		// 3) 배치 조회 (MyBatis IN 쿼리 또는 JPA)
+		List<Food> metas = dashboardRepository.getFoodsByIds(foodIds);
+		Map<Integer, Food> metaMap = metas.stream()
+			.collect(Collectors.toMap(Food::getFoodId, Function.identity()));
+
+		// 4) DTO 조립
+		return infos.stream()
+			.map(fi -> {
+				Food m = metaMap.get(fi.getFoodId());
+				float intake = fi.getIntake();
+				double intakeKcal = m.getUnitKcal() * intake / 100.0;
+				return Food.builder()
+					.foodName(m.getFoodName())
+					.foodNoteId(fi.getFoodNoteId())
+					.unitKcal(m.getUnitKcal())
+					.intakeKcal((float)intakeKcal)
+					.intake((int)intake)
+					.build();
+			})
+			.toList();
+
+	}
 }

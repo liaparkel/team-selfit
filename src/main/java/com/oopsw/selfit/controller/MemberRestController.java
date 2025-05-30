@@ -84,7 +84,10 @@ public class MemberRestController {
 	}
 
 	@PutMapping("/member")
-	public ResponseEntity<Map<String, Boolean>> setMember(@RequestBody Member member) {
+	public ResponseEntity<Map<String, Boolean>> setMember(@AuthenticationPrincipal AuthenticatedUser loginUser, @RequestBody Member member) {
+		System.out.println(member);
+		System.out.println(member.getPw());
+		member.setMemberId(loginUser.getMemberId());
 		return ResponseEntity.ok(Map.of("success", memberService.setMember(member)));
 	}
 

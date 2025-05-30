@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>selfit - 건강 관리 서비스</title>
-    <link rel="stylesheet" href="/css/global.css">
     <link rel="stylesheet" href="/css/dashboard/dashboard.css">
-    <script src="/js/header.js" defer></script>
     <script src="/js/dashboard/dashboard.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -14,14 +12,11 @@
 <body>
 
 <div id="container">
-
     <div th:replace="~{fragments/layout :: header}"></div>
-
     <div id="section1">
-
         <div th:replace="~{fragments/layout :: sidebar}"></div>
         <!-- 메인 콘텐츠 컨테이너 -->
-        <div class="main-container">
+        <div class="main-content">
             <div class="content">
                 <!-- 체크리스트 토글 버튼 -->
                 <div class="content-header">
@@ -143,9 +138,8 @@
                                 <div class="chart-legend"></div>
                                 <div class="chart-selectors">
                                     <select class="compare-selector">
-                                        <option>종합</option>
-                                        <option>나이</option>
-                                        <option>키&몸무게</option>
+                                        <option>섭취</option>
+                                        <option>운동</option>
                                     </select>
                                     <select class="year-selector">
                                         <option>2025년</option>
