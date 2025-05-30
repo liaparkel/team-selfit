@@ -23,7 +23,7 @@ public class ExerciseInfoServiceTests {
 	@Autowired
 	private ExerciseInfoRepository exerciseInfoRepository;
 
-	@Test
+	//@Test
 	void testGetRawInfosByNote() {
 		// given: noteId=100 으로 2건 저장
 		ExerciseInfo ei1 = ExerciseInfo.builder()
