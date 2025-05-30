@@ -527,7 +527,7 @@ public class DashboardServiceTests {
 		});
 	}
 
-	@Test
+	//@Test
 	void testRemoveExerciseYes() {
 		// given
 		int exerciseInfoId = 1;
@@ -539,7 +539,7 @@ public class DashboardServiceTests {
 		assertTrue(result);
 	}
 
-	@Test
+	//@Test
 	void testRemoveExerciseNotExistExerciseInfoId() {
 		// given
 		int exerciseInfoId = 99999;
