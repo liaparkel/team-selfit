@@ -1,183 +1,231 @@
+// 로그인한 회원 ID (테스트용 고정)
+const memberId = 1;
+
 let calendar;
 let currentSelectedDate = null;
-const checklistData = {};
+const checklistData = {}; // { "YYYY-MM-DD": [ { checkId, checklistId, text, completed } ] }
 let checklistList = [];
 let editIndex = null;
 let itemToDeleteIndex = null;
 
-function renderChecklistEvents(calendar) {
-    const events = [];
-    for (const date in checklistData) {
-        const items = checklistData[date];
-        if (items.length > 0) {
-            const htmlItems = items.slice(0, 3).map(item => `
-        <div class="check-item-box">
-          <div style="width:18px;height:18px;display:flex;align-items:center;justify-content:center;border:1px solid #ced4da;border-radius:4px;background:#fff">
-            <i class="bi ${item.completed ? 'bi-check-lg text-success' : ''} check-icon"></i>
-          </div>
-          <span style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${item.text}</span>
-        </div>
-      `);
-            events.push({
-                start: date,
-                allDay: true,
-                display: 'block',
-                extendedProps: {checklistHTML: htmlItems.join('')}
-            });
-        }
+// Axios 기본 설정
+axios.defaults.headers.common['Content-Type'] = 'application/json';
+
+// 해당 연-월의 체크리스트 데이터를 서버에서 불러와 checklistData에 저장
+async function loadMonthlyChecklist(year, month) {
+    const daysInMonth = new Date(year, month, 0).getDate();
+    const promises = [];
+    for (let day = 1; day <= daysInMonth; day++) {
+        const date = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        promises.push(
+            axios.post('/api/dashboard/checklist/items', {memberId, checkDate: date})
+                .then(res => checklistData[date] = res.data.map(item => ({
+                    checkId: item.checkId,
+                    checklistId: item.checklistId,
+                    text: item.checkContent,
+                    completed: item.isCheck === 1
+                })))
+                .catch(() => checklistData[date] = [])
+        );
     }
-    calendar.removeAllEvents();
-    calendar.addEventSource(events);
+    await Promise.all(promises);
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    const calendarEl = document.getElementById('calendar');
-    if (!calendarEl) return;
+// FullCalendar 이벤트 데이터 생성 (최대 3개 아이템)
+function buildCalendarEvents() {
+    return Object.entries(checklistData)
+        .filter(([_, items]) => items && items.length)
+        .map(([date, items]) => {
+            const html = items.slice(0, 3).map(item =>
+                `<div class="check-item-box d-flex align-items-center mb-1">
+           <i class="bi ${item.completed ? 'bi-check-square text-success' : 'bi-square'}"></i>
+           <span class="check-text text-truncate" title="${item.text}">${item.text}</span>
+         </div>`
+            ).join('');
+            return {start: date, allDay: true, display: 'block', extendedProps: {checklistHTML: html}};
+        });
+}
 
-    calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        locale: 'ko',
-        height: 650,
-        headerToolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: ''
-        },
-        buttonText: {
-            today: '오늘'
-        },
-        eventDisplay: 'block',
-        eventContent: function (arg) {
-            const div = document.createElement('div');
-            div.innerHTML = arg.event.extendedProps.checklistHTML || '';
-            return {domNodes: [div]};
-        },
-        dateClick: function (info) {
-            const formatted = info.dateStr.replace(/-/g, '.');
-            currentSelectedDate = info.dateStr;
-
-            const panel = document.getElementById('check-panel');
-            const dateEl = document.getElementById('panel-date');
-            if (panel && dateEl) {
-                dateEl.innerText = formatted;
-                panel.style.display = 'block';
-                editIndex = null;
-                document.getElementById('add-check-btn').innerText = '등록';
-                renderChecklistList();
-            }
-
-            document.getElementById('check-name').value = '';
-        },
-        events: []
-    });
-
-    calendar.render();
-    renderChecklistEvents(calendar);
-});
-
+// 패널 목록 렌더링 (수정 중인 행에 .editing 클래스)
 function renderChecklistList() {
     const listEl = document.getElementById('check-list');
-    if (!listEl) return;
-
+    if (!listEl || !currentSelectedDate) return;
     listEl.innerHTML = '';
     checklistList = checklistData[currentSelectedDate] || [];
-    checklistData[currentSelectedDate] = checklistList;
 
     checklistList.forEach((item, idx) => {
         const row = document.createElement('div');
         row.className = 'check-row d-flex justify-content-between align-items-center';
         if (idx === editIndex) row.classList.add('editing');
-
-        const checkIcon = item.completed ? 'bi-check-lg' : '';
-        const textStyle = item.completed ? 'text-decoration-line-through text-muted' : '';
-
         row.innerHTML = `
       <div class="d-flex align-items-center gap-2">
-        <i class="bi ${checkIcon} toggle-check" data-index="${idx}" role="button"></i>
-        <span class="${textStyle}">${item.text}</span>
+        <i class="bi ${item.completed ? 'bi-check2 text-success' : ''} toggle-check" data-index="${idx}" role="button"></i>
+        <span class="flex-grow-1 ${item.completed ? 'text-decoration-line-through text-muted' : ''}">${item.text}</span>
       </div>
       <div class="d-flex gap-2">
-        <i class="bi bi-pencil-square text-black fs-5" role="button" data-index="${idx}"></i>
-        <i class="bi bi-x-square text-black fs-5" role="button" data-bs-toggle="modal" data-bs-target="#delete-modal" data-index="${idx}"></i>
+        <i class="bi bi-pencil-square edit-btn" data-index="${idx}" role="button"></i>
+        <i class="bi bi-x-square delete-btn" data-index="${idx}" data-bs-toggle="modal" data-bs-target="#delete-modal" role="button"></i>
       </div>
     `;
-
         listEl.appendChild(row);
     });
 }
 
-const addBtn = document.getElementById('add-check-btn');
-addBtn.classList.add("add-check-btn");
+// 수정 버튼 클릭 핸들러
+function onEditClick(e) {
+    const idx = Number(e.target.dataset.index);
+    editIndex = idx;
+    document.getElementById('check-name').value = checklistList[idx].text;
+    document.getElementById('add-check-btn').innerText = '수정';
+    renderChecklistList();
+}
 
-document.getElementById('add-check-btn').addEventListener('click', function () {
+// 체크 토글 핸들러
+async function onCheckboxChange(e) {
+    const idx = Number(e.target.dataset.index);
+    const item = checklistList[idx];
+    const completed = !item.completed;
+    await axios.put('/api/dashboard/checklist/item/check', {checkId: item.checkId, isCheck: completed ? 1 : 0});
+    item.completed = completed;
+    renderChecklistList();
+    calendar.refetchEvents();
+}
+
+// 등록/수정 핸들러
+async function onAddOrEdit() {
     const input = document.getElementById('check-name');
     const text = input.value.trim();
     if (!text) return;
 
+    // 수정 모드
     if (editIndex !== null) {
-        checklistList[editIndex].text = text;
+        const item = checklistList[editIndex];
+        await axios.put('/api/dashboard/checklist/item', {
+            checkId: item.checkId,
+            checkContent: text
+        });
+        item.text = text;
         editIndex = null;
         document.getElementById('add-check-btn').innerText = '등록';
     } else {
-        checklistList.push({text, completed: false});
-    }
-    input.value = '';
+        let cid;  // 실제 checklistId
 
+        // 1) 이미 생성된 체크리스트가 있는지 확인
+        const itemsRes = await axios.post('/api/dashboard/checklist/items', {
+            memberId,
+            checkDate: currentSelectedDate
+        });
+        if (itemsRes.data.length > 0) {
+            // 기존 checklistId 사용
+            cid = itemsRes.data[0].checklistId;
+        } else {
+            // 2) 없으면 체크리스트 생성 (boolean 반환)
+            const createRes = await axios.post('/api/dashboard/checklist', {
+                memberId,
+                checkDate: currentSelectedDate
+            });
+            if (!createRes.data) {
+                console.error('체크리스트 생성 실패');
+                return;
+            }
+
+            // 3) 생성 직후 다시 조회하여 실제 checklistId를 얻는다
+            const newItemsRes = await axios.post('/api/dashboard/checklist/items', {
+                memberId,
+                checkDate: currentSelectedDate
+            });
+            if (newItemsRes.data.length === 0) {
+                console.error('생성 후 체크리스트 항목 조회 실패');
+                return;
+            }
+            cid = newItemsRes.data[0].checklistId;
+            // 그리고 목록도 새로 갱신
+            checklistList = newItemsRes.data.map(i => ({
+                checkId: i.checkId,
+                checklistId: i.checklistId,
+                text: i.checkContent,
+                completed: i.isCheck === 1
+            }));
+        }
+
+        // 4) 체크 항목 추가
+        const itemRes = await axios.post('/api/dashboard/checklist/item', {
+            checklistId: cid,
+            checkContent: text
+        });
+        checklistList.push({
+            checkId: itemRes.data,
+            checklistId: cid,
+            text,
+            completed: false
+        });
+    }
+
+    // 입력 초기화 및 UI 갱신
+    input.value = '';
     checklistData[currentSelectedDate] = checklistList;
     renderChecklistList();
-    renderChecklistEvents(calendar);
-});
 
-document.getElementById('check-list').addEventListener('click', function (e) {
-    const target = e.target;
-    if (target.classList.contains('bi-x-square')) {
-        itemToDeleteIndex = parseInt(target.dataset.index);
-    } else if (target.classList.contains('bi-pencil-square')) {
-        editIndex = parseInt(target.dataset.index);
-        const item = checklistList[editIndex];
-        document.getElementById('check-name').value = item.text;
-        document.getElementById('add-check-btn').innerText = '수정';
-        renderChecklistList();
-    } else if (target.classList.contains('toggle-check')) {
-        const index = parseInt(target.dataset.index);
-        checklistList[index].completed = !checklistList[index].completed;
-        renderChecklistList();
-        renderChecklistEvents(calendar);
-    }
-});
+    // 달력 이벤트 다시 불러오기
+    calendar.refetchEvents();
+}
 
-document.getElementById('confirm-delete-btn')?.addEventListener('click', function () {
-    if (itemToDeleteIndex !== null) {
-        checklistList.splice(itemToDeleteIndex, 1);
-        itemToDeleteIndex = null;
-        renderChecklistList();
-        renderChecklistEvents(calendar);
+// 삭제 확정 핸들러
+async function onDeleteConfirmed() {
+    if (itemToDeleteIndex === null) return;
+    const item = checklistList[itemToDeleteIndex];
+    await axios.delete('/api/dashboard/checklist/item', {data: {checkId: item.checkId}});
+    checklistList.splice(itemToDeleteIndex, 1);
+    checklistData[currentSelectedDate] = checklistList;
+    renderChecklistList();
+    calendar.refetchEvents();
+    bootstrap.Modal.getInstance(document.getElementById('delete-modal')).hide();
+    itemToDeleteIndex = null;
+}
 
-        const modalEl = document.getElementById('delete-modal');
-        const modal = bootstrap.Modal.getInstance(modalEl);
-        if (modal) modal.hide();
-    }
-});
+// 날짜 클릭 핸들러: 패널 열고 상세 로드
+async function onDateClick(info) {
+    currentSelectedDate = info.dateStr;
+    document.getElementById('panel-date').innerText = currentSelectedDate.replace(/-/g, '.');
+    document.getElementById('check-panel').style.display = 'block';
+    editIndex = null;
+    document.getElementById('add-check-btn').innerText = '등록';
+    document.getElementById('check-name').value = '';
+    await loadMonthlyChecklist(info.date.getFullYear(), info.date.getMonth() + 1);
+    checklistList = checklistData[currentSelectedDate] || [];
+    renderChecklistList();
+}
 
-document.getElementById('close-panel-btn').addEventListener('click', function () {
-    document.getElementById('check-panel').style.display = 'none';
-});
+// 초기화 및 FullCalendar 설정
+document.addEventListener('DOMContentLoaded', async () => {
+    const calendarEl = document.getElementById('calendar');
+    if (!calendarEl) return;
+    calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth', locale: 'ko', height: 650,
+        headerToolbar: {left: 'prev,next today', center: 'title', right: ''}, buttonText: {today: '오늘'},
+        eventDisplay: 'block', events: async (fetchInfo, success) => {
+            await loadMonthlyChecklist(fetchInfo.start.getFullYear(), fetchInfo.start.getMonth() + 1);
+            success(buildCalendarEvents());
+        },
+        eventContent: info => {
+            const d = document.createElement('div');
+            d.innerHTML = info.event.extendedProps.checklistHTML || '';
+            return {domNodes: [d]};
+        },
+        dateClick: onDateClick
+    });
+    calendar.render();
+    calendar.refetchEvents();
 
-document.addEventListener('click', function (e) {
-    const panel = document.getElementById('check-panel');
-    const modal = document.querySelector('.modal.show');
-
-    if (!panel || panel.style.display === 'none') return;
-
-    const isClickInside = panel.contains(e.target) ||
-        e.target.closest('.fc-daygrid-day') ||
-        e.target.closest('.modal') ||
-        e.target.closest('.modal-content') ||
-        e.target.classList.contains('modal-backdrop') ||
-        e.target.closest('.bi-x-square') || e.target.closest('.bi-pencil-square') ||
-        e.target.closest('.toggle-check');
-
-    if (!isClickInside && !modal) {
-        panel.style.display = 'none';
-    }
+    // 패널 인터랙션 바인딩
+    document.getElementById('add-check-btn').addEventListener('click', onAddOrEdit);
+    document.getElementById('check-list').addEventListener('click', e => {
+        if (e.target.classList.contains('edit-btn')) onEditClick(e);
+        if (e.target.classList.contains('delete-btn')) itemToDeleteIndex = Number(e.target.dataset.index);
+        if (e.target.classList.contains('toggle-check')) onCheckboxChange(e);
+    });
+    document.getElementById('confirm-delete-btn').addEventListener('click', onDeleteConfirmed);
+    document.getElementById('close-panel-btn').addEventListener('click', () => {
+        document.getElementById('check-panel').style.display = 'none';
+    });
 });
