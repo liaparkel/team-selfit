@@ -1,24 +1,95 @@
 // API 엔드포인트 설정
-const API_BASE_URL = '/api/account';
+const API_BASE_URL = "/api/account"
 
 // 폼 상태 관리 (안전한 초기화)
 const formState = {
-    email: {value: '', valid: false, checked: false},
-    password: {value: '', valid: false},
-    passwordConfirm: {value: '', valid: false},
-    name: {value: '', valid: false},
-    nickname: {value: '', valid: false, checked: false},
+    email: {value: "", valid: false, checked: false},
+    password: {value: "", valid: false},
+    passwordConfirm: {value: "", valid: false},
+    name: {value: "", valid: false},
+    nickname: {value: "", valid: false, checked: false},
     gender: null,
     birthDate: {value: null, valid: true}, // 객체로 초기화
-    height: {value: null, valid: true},    // 객체로 초기화
-    weight: {value: null, valid: true},    // 객체로 초기화
+    height: {value: null, valid: true}, // 객체로 초기화
+    weight: {value: null, valid: true}, // 객체로 초기화
     exerciseType: null,
     memberType: "DEFAULT",
-    agreeTerms: false
-};
+    agreeTerms: false,
+}
 
 // jQuery 선언
-const $ = window.jQuery;
+const $ = window.jQuery
+
+// =========================== 모달 함수들 ===========================
+
+/**
+ * 일반 알림 모달 표시
+ * @param {string} message - 표시할 메시지
+ * @param {function} callback - 확인 버튼 클릭 시 실행할 콜백 함수
+ */
+function showAlertModal(message, callback = null) {
+    $("#alertModalMessage").text(message)
+    const alertModal = new bootstrap.Modal(document.getElementById("alertModal"))
+
+    // 기존 이벤트 리스너 제거
+    $("#alertModalConfirm").off("click")
+
+    // 새로운 이벤트 리스너 추가
+    if (callback) {
+        $("#alertModalConfirm").on("click", () => {
+            alertModal.hide()
+            callback()
+        })
+    }
+
+    alertModal.show()
+}
+
+/**
+ * 성공 모달 표시
+ * @param {string} message - 표시할 메시지
+ * @param {function} callback - 확인 버튼 클릭 시 실행할 콜백 함수
+ */
+function showSuccessModal(message, callback = null) {
+    $("#successModalMessage").text(message)
+    const successModal = new bootstrap.Modal(document.getElementById("successModal"))
+
+    // 기존 이벤트 리스너 제거
+    $("#successModalConfirm").off("click")
+
+    // 새로운 이벤트 리스너 추가
+    if (callback) {
+        $("#successModalConfirm").on("click", () => {
+            successModal.hide()
+            callback()
+        })
+    }
+
+    successModal.show()
+}
+
+/**
+ * 에러 모달 표시
+ * @param {string} message - 표시할 메시지
+ * @param {function} callback - 확인 버튼 클릭 시 실행할 콜백 함수
+ */
+function showErrorModal(message, callback = null) {
+    $("#errorModalMessage").text(message)
+    const errorModal = new bootstrap.Modal(document.getElementById("errorModal"))
+
+    // 기존 이벤트 리스너 제거
+    $("#errorModalConfirm").off("click")
+
+    // 새로운 이벤트 리스너 추가
+    if (callback) {
+        $("#errorModalConfirm").on("click", () => {
+            errorModal.hide()
+            callback()
+        })
+    }
+
+    errorModal.show()
+}
 
 // =========================== API 함수들 (jQuery AJAX) ===========================
 
@@ -29,30 +100,30 @@ const $ = window.jQuery;
  */
 async function checkEmailDuplicateAPI(email) {
     const requestData = {
-        email: email
-    };
+        email: email,
+    }
 
-    console.log('이메일 중복확인 요청:', requestData);
+    console.log("이메일 중복확인 요청:", requestData)
 
     try {
         // jQuery AJAX 요청
         const response = await $.ajax({
             url: `${API_BASE_URL}/check-email`,
-            type: 'POST',
-            contentType: 'application/json',
+            type: "POST",
+            contentType: "application/json",
             data: JSON.stringify(requestData),
             timeout: 10000,
             headers: {
-                'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        });
+                Accept: "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+            },
+        })
 
-        console.log('이메일 중복확인 응답:', response);
-        return response;
+        console.log("이메일 중복확인 응답:", response)
+        return response
     } catch (error) {
-        console.error('이메일 중복확인 API 오류:', error);
-        return null;
+        console.error("이메일 중복확인 API 오류:", error)
+        return null
     }
 }
 
@@ -63,29 +134,29 @@ async function checkEmailDuplicateAPI(email) {
  */
 async function checkNicknameDuplicateAPI(nickname) {
     const requestData = {
-        nickname: nickname
-    };
+        nickname: nickname,
+    }
 
-    console.log('닉네임 중복확인 요청:', requestData);
+    console.log("닉네임 중복확인 요청:", requestData)
 
     try {
         const response = await $.ajax({
             url: `${API_BASE_URL}/check-nickname`,
-            type: 'POST',
-            contentType: 'application/json',
+            type: "POST",
+            contentType: "application/json",
             data: JSON.stringify(requestData),
             timeout: 10000,
             headers: {
-                'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        });
+                Accept: "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+            },
+        })
 
-        console.log('닉네임 중복확인 응답:', response);
-        return response;
+        console.log("닉네임 중복확인 응답:", response)
+        return response
     } catch (error) {
-        console.error('닉네임 중복확인 API 오류:', error);
-        return null;
+        console.error("닉네임 중복확인 API 오류:", error)
+        return null
     }
 }
 
@@ -102,44 +173,44 @@ async function signupAPI(userData) {
         nickname: userData.nickname,
         memberType: userData.memberType,
         agreeTerms: userData.agreeTerms,
-    };
+    }
 
     if (userData.gender != null) {
-        requestData.gender = userData.gender;
+        requestData.gender = userData.gender
     }
     if (userData.birthDate != null) {
-        requestData.birthday = userData.birthDate;
+        requestData.birthday = userData.birthDate
     }
     if (userData.height) {
-        requestData.height = parseFloat(userData.height);
+        requestData.height = Number.parseFloat(userData.height)
     }
     if (userData.weight) {
-        requestData.weight = parseFloat(userData.weight);
+        requestData.weight = Number.parseFloat(userData.weight)
     }
     if (userData.exerciseType != null) {
-        requestData.goal = userData.exerciseType;
+        requestData.goal = userData.exerciseType
     }
 
-    console.log('회원가입 요청:', requestData);
+    console.log("회원가입 요청:", requestData)
 
     try {
         const response = await $.ajax({
             url: `${API_BASE_URL}/member`,
-            type: 'POST',
-            contentType: 'application/json',
+            type: "POST",
+            contentType: "application/json",
             data: JSON.stringify(requestData),
             timeout: 15000,
             headers: {
-                'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        });
+                Accept: "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+            },
+        })
 
-        console.log('회원가입 응답:', response);
-        return response;
+        console.log("회원가입 응답:", response)
+        return response
     } catch (error) {
-        console.error('회원가입 API 오류:', error);
-        return null;
+        console.error("회원가입 API 오류:", error)
+        return null
     }
 }
 
@@ -151,19 +222,19 @@ async function signupAPI(userData) {
  * @param {boolean} loading - 로딩 상태
  */
 function toggleButtonLoading($button, loading) {
-    const $textSpan = $button.find('.btn-text');
-    const $loadingSpan = $button.find('.btn-loading');
+    const $textSpan = $button.find(".btn-text")
+    const $loadingSpan = $button.find(".btn-loading")
 
     if (loading) {
-        $textSpan.addClass('d-none');
-        $loadingSpan.removeClass('d-none');
-        $button.prop('disabled', true);
+        $textSpan.addClass("d-none")
+        $loadingSpan.removeClass("d-none")
+        $button.prop("disabled", true)
     } else {
-        $textSpan.removeClass('d-none');
-        $loadingSpan.addClass('d-none');
+        $textSpan.removeClass("d-none")
+        $loadingSpan.addClass("d-none")
         // 확인완료 상태가 아닐 때만 버튼 활성화
-        if (!$button.hasClass('checked')) {
-            $button.prop('disabled', false);
+        if (!$button.hasClass("checked")) {
+            $button.prop("disabled", false)
         }
     }
 }
@@ -174,14 +245,14 @@ function toggleButtonLoading($button, loading) {
  * @param {string} message - 에러 메시지
  */
 function showError($element, message) {
-    const $feedback = $element.closest('.mb-3, .col-4').find('.invalid-feedback');
+    const $feedback = $element.closest(".mb-3, .col-4").find(".invalid-feedback")
     if ($feedback.length === 0) {
         // invalid-feedback이 없으면 생성
-        const $newFeedback = $('<div class="invalid-feedback"></div>');
-        $element.closest('.mb-3, .col-4').append($newFeedback);
-        $newFeedback.text(message);
+        const $newFeedback = $('<div class="invalid-feedback"></div>')
+        $element.closest(".mb-3, .col-4").append($newFeedback)
+        $newFeedback.text(message)
     } else {
-        $feedback.text(message);
+        $feedback.text(message)
     }
 }
 
@@ -190,247 +261,249 @@ function showError($element, message) {
  * @param {jQuery} $element - jQuery 입력 요소
  */
 function clearError($element) {
-    const $feedback = $element.closest('.mb-3, .col-4').find('.invalid-feedback');
+    const $feedback = $element.closest(".mb-3, .col-4").find(".invalid-feedback")
     if ($feedback.length) {
-        $feedback.text('');
+        $feedback.text("")
     }
 }
 
 // =========================== 이벤트 리스너 등록 ===========================
 
-$(document).ready(function () {
+$(document).ready(() => {
     // formState 안전성 확인
-    ensureFormStateIntegrity();
-    initEventListeners();
+    ensureFormStateIntegrity()
+    initEventListeners()
     // 페이지 로드 시 Thymeleaf로 설정된 값들로 폼 상태 초기화
-    initFormStateFromThymeleaf();
-});
+    initFormStateFromThymeleaf()
+})
 
 /**
  * formState의 무결성을 보장하는 함수
  */
 function ensureFormStateIntegrity() {
     // 필수 객체 필드들이 제대로 초기화되었는지 확인
-    if (!formState.birthDate || typeof formState.birthDate !== 'object') {
-        formState.birthDate = {value: '', valid: true};
+    if (!formState.birthDate || typeof formState.birthDate !== "object") {
+        formState.birthDate = {value: "", valid: true}
     }
-    if (!formState.height || typeof formState.height !== 'object') {
-        formState.height = {value: '', valid: true};
+    if (!formState.height || typeof formState.height !== "object") {
+        formState.height = {value: "", valid: true}
     }
-    if (!formState.weight || typeof formState.weight !== 'object') {
-        formState.weight = {value: '', valid: true};
+    if (!formState.weight || typeof formState.weight !== "object") {
+        formState.weight = {value: "", valid: true}
     }
-    if (!formState.email || typeof formState.email !== 'object') {
-        formState.email = {value: '', valid: false, checked: false};
+    if (!formState.email || typeof formState.email !== "object") {
+        formState.email = {value: "", valid: false, checked: false}
     }
-    if (!formState.password || typeof formState.password !== 'object') {
-        formState.password = {value: '', valid: false};
+    if (!formState.password || typeof formState.password !== "object") {
+        formState.password = {value: "", valid: false}
     }
-    if (!formState.passwordConfirm || typeof formState.passwordConfirm !== 'object') {
-        formState.passwordConfirm = {value: '', valid: false};
+    if (!formState.passwordConfirm || typeof formState.passwordConfirm !== "object") {
+        formState.passwordConfirm = {value: "", valid: false}
     }
-    if (!formState.name || typeof formState.name !== 'object') {
-        formState.name = {value: '', valid: false};
+    if (!formState.name || typeof formState.name !== "object") {
+        formState.name = {value: "", valid: false}
     }
-    if (!formState.nickname || typeof formState.nickname !== 'object') {
-        formState.nickname = {value: '', valid: false, checked: false};
+    if (!formState.nickname || typeof formState.nickname !== "object") {
+        formState.nickname = {value: "", valid: false, checked: false}
     }
 }
 
 function initEventListeners() {
     // 필수 입력 필드 검증
-    $('#email').on('input', validateEmail);
-    $('#password').on('input', validatePassword);
-    $('#passwordConfirm').on('input', validatePasswordConfirm);
-    $('#name').on('input', validateName);
-    $('#nickname').on('input', validateNickname);
-    $('#agreeTerms').on('change', validateForm);
+    $("#email").on("input", validateEmail)
+    $("#password").on("input", validatePassword)
+    $("#passwordConfirm").on("input", validatePasswordConfirm)
+    $("#name").on("input", validateName)
+    $("#nickname").on("input", validateNickname)
+    $("#agreeTerms").on("change", validateForm)
 
     // 선택적 필드 검증
-    $('#birthDate').on('input', function () {
-        formatBirthDate();
-        validateBirthDate();
-    });
-    $('#height').on('input', validateHeight);
-    $('#weight').on('input', validateWeight);
+    $("#birthDate").on("input", () => {
+        formatBirthDate()
+        validateBirthDate()
+    })
+    $("#height").on("input", validateHeight)
+    $("#weight").on("input", validateWeight)
 
     // 중복확인 버튼
-    $('#emailCheck').on('click', handleEmailDuplicateCheck);
-    $('#nicknameCheck').on('click', handleNicknameDuplicateCheck);
+    $("#emailCheck").on("click", handleEmailDuplicateCheck)
+    $("#nicknameCheck").on("click", handleNicknameDuplicateCheck)
 
     // 성별 선택
-    $('.gender-btn').on('click', function () {
-        $('.gender-btn').removeClass('active');
-        $(this).addClass('active');
-        formState.gender = $(this).data('gender');
-    });
+    $(".gender-btn").on("click", function () {
+        $(".gender-btn").removeClass("active")
+        $(this).addClass("active")
+        formState.gender = $(this).data("gender")
+    })
 
     // 운동유형 선택
-    $('.exercise-btn').on('click', function () {
-        $('.exercise-btn').removeClass('active');
-        $(this).addClass('active');
-        formState.exerciseType = $(this).data('type');
-    });
+    $(".exercise-btn").on("click", function () {
+        $(".exercise-btn").removeClass("active")
+        $(this).addClass("active")
+        formState.exerciseType = $(this).data("type")
+    })
 
     // 생년월일 백스페이스 처리
-    $('#birthDate').on('keydown', handleBirthDateKeydown);
+    $("#birthDate").on("keydown", handleBirthDateKeydown)
 
     // 숫자만 입력 허용
-    $('.number-only').on('input', function () {
-        const value = $(this).val().replace(/[^0-9]/g, '');
-        $(this).val(value);
-    });
+    $(".number-only").on("input", function () {
+        const value = $(this)
+            .val()
+            .replace(/[^0-9]/g, "")
+        $(this).val(value)
+    })
 
     // 회원가입 버튼
-    $('#submitBtn').on('click', handleSignup);
+    $("#submitBtn").on("click", handleSignup)
 }
 
 // =========================== Thymeleaf 값 초기화 ===========================
 
 function initFormStateFromThymeleaf() {
     // 이메일 값이 있으면 폼 상태 업데이트
-    const emailValue = $('#email').val();
+    const emailValue = $("#email").val()
     if (emailValue) {
-        formState.email.value = emailValue;
-        validateEmail();
+        formState.email.value = emailValue
+        validateEmail()
     }
 
     // 이름 값이 있으면 폼 상태 업데이트
-    const nameValue = $('#name').val();
+    const nameValue = $("#name").val()
     if (nameValue) {
-        formState.name.value = nameValue;
-        validateName();
+        formState.name.value = nameValue
+        validateName()
     }
 }
 
 // =========================== 검증 함수들 ===========================
 
 function validateEmail() {
-    const email = $('#email').val().trim();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const email = $("#email").val().trim()
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-    formState.email.value = email;
-    formState.email.valid = emailRegex.test(email);
+    formState.email.value = email
+    formState.email.valid = emailRegex.test(email)
 
     // 값이 변경되면 중복확인 초기화
     if (formState.email.checked) {
-        formState.email.checked = false;
-        const $wrapper = $('#email').closest('.input-wrapper');
-        $wrapper.removeClass('valid');
-        resetDuplicateButton($('#emailCheck'), '중복확인');
+        formState.email.checked = false
+        const $wrapper = $("#email").closest(".input-wrapper")
+        $wrapper.removeClass("valid")
+        resetDuplicateButton($("#emailCheck"), "중복확인")
     }
 
-    if (email === '') {
-        clearError($('#email'));
+    if (email === "") {
+        clearError($("#email"))
     } else if (!formState.email.valid) {
-        showError($('#email'), '올바른 이메일 형식을 입력해주세요.');
+        showError($("#email"), "올바른 이메일 형식을 입력해주세요.")
     } else {
-        clearError($('#email'));
+        clearError($("#email"))
     }
 
-    validateForm();
+    validateForm()
 }
 
 function validatePassword() {
-    const password = $('#password').val();
-    const passwordRegex = /^(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
+    const password = $("#password").val()
+    const passwordRegex = /^(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/
 
-    formState.password.value = password;
-    formState.password.valid = passwordRegex.test(password);
+    formState.password.value = password
+    formState.password.valid = passwordRegex.test(password)
 
-    const $wrapper = $('#password').closest('.input-wrapper');
+    const $wrapper = $("#password").closest(".input-wrapper")
 
-    if (password === '') {
-        $wrapper.removeClass('valid');
-        clearError($('#password'));
+    if (password === "") {
+        $wrapper.removeClass("valid")
+        clearError($("#password"))
     } else if (!formState.password.valid) {
-        $wrapper.removeClass('valid');
-        showError($('#password'), '8~20자, 숫자, 특수문자를 포함해주세요.');
+        $wrapper.removeClass("valid")
+        showError($("#password"), "8~20자, 숫자, 특수문자를 포함해주세요.")
     } else {
-        $wrapper.addClass('valid');
-        clearError($('#password'));
+        $wrapper.addClass("valid")
+        clearError($("#password"))
     }
 
     // 비밀번호 확인도 다시 검증
-    if ($('#passwordConfirm').val()) {
-        validatePasswordConfirm();
+    if ($("#passwordConfirm").val()) {
+        validatePasswordConfirm()
     }
 
-    validateForm();
+    validateForm()
 }
 
 function validatePasswordConfirm() {
-    const passwordConfirm = $('#passwordConfirm').val();
-    const password = $('#password').val();
+    const passwordConfirm = $("#passwordConfirm").val()
+    const password = $("#password").val()
 
-    formState.passwordConfirm.value = passwordConfirm;
+    formState.passwordConfirm.value = passwordConfirm
     // 비밀번호 확인은 일치하고 + 비밀번호가 유효할 때만 true
-    formState.passwordConfirm.valid = passwordConfirm === password && formState.password.valid;
+    formState.passwordConfirm.valid = passwordConfirm === password && formState.password.valid
 
-    const $passwordConfirm = $('#passwordConfirm');
+    const $passwordConfirm = $("#passwordConfirm")
 
-    if (passwordConfirm === '') {
-        clearError($passwordConfirm);
-        $passwordConfirm.removeClass('is-invalid');
+    if (passwordConfirm === "") {
+        clearError($passwordConfirm)
+        $passwordConfirm.removeClass("is-invalid")
     } else if (passwordConfirm !== password) {
-        showError($passwordConfirm, '비밀번호가 일치하지 않습니다.');
-        $passwordConfirm.addClass('is-invalid');
+        showError($passwordConfirm, "비밀번호가 일치하지 않습니다.")
+        $passwordConfirm.addClass("is-invalid")
     } else if (!formState.password.valid) {
-        showError($passwordConfirm, '올바른 비밀번호 형식이 아닙니다.');
-        $passwordConfirm.addClass('is-invalid');
+        showError($passwordConfirm, "올바른 비밀번호 형식이 아닙니다.")
+        $passwordConfirm.addClass("is-invalid")
     } else {
-        clearError($passwordConfirm);
-        $passwordConfirm.removeClass('is-invalid');
+        clearError($passwordConfirm)
+        $passwordConfirm.removeClass("is-invalid")
     }
 
-    validateForm();
+    validateForm()
 }
 
 function validateName() {
-    const name = $('#name').val().trim();
+    const name = $("#name").val().trim()
 
-    formState.name.value = name;
-    formState.name.valid = name.length >= 2;
+    formState.name.value = name
+    formState.name.valid = name.length >= 2
 
-    const $wrapper = $('#name').closest('.input-wrapper');
+    const $wrapper = $("#name").closest(".input-wrapper")
 
-    if (name === '') {
-        $wrapper.removeClass('valid');
-        clearError($('#name'));
+    if (name === "") {
+        $wrapper.removeClass("valid")
+        clearError($("#name"))
     } else if (!formState.name.valid) {
-        $wrapper.removeClass('valid');
-        showError($('#name'), '이름은 2자 이상 입력해주세요.');
+        $wrapper.removeClass("valid")
+        showError($("#name"), "이름은 2자 이상 입력해주세요.")
     } else {
-        $wrapper.addClass('valid');
-        clearError($('#name'));
+        $wrapper.addClass("valid")
+        clearError($("#name"))
     }
 
-    validateForm();
+    validateForm()
 }
 
 function validateNickname() {
-    const nickname = $('#nickname').val().trim();
+    const nickname = $("#nickname").val().trim()
 
-    formState.nickname.value = nickname;
-    formState.nickname.valid = nickname.length >= 2;
+    formState.nickname.value = nickname
+    formState.nickname.valid = nickname.length >= 2
 
     // 값이 변경되면 중복확인 초기화
     if (formState.nickname.checked) {
-        formState.nickname.checked = false;
-        const $wrapper = $('#nickname').closest('.input-wrapper');
-        $wrapper.removeClass('valid');
-        resetDuplicateButton($('#nicknameCheck'), '중복확인');
+        formState.nickname.checked = false
+        const $wrapper = $("#nickname").closest(".input-wrapper")
+        $wrapper.removeClass("valid")
+        resetDuplicateButton($("#nicknameCheck"), "중복확인")
     }
 
-    if (nickname === '') {
-        clearError($('#nickname'));
+    if (nickname === "") {
+        clearError($("#nickname"))
     } else if (!formState.nickname.valid) {
-        showError($('#nickname'), '닉네임은 2자 이상 입력해주세요.');
+        showError($("#nickname"), "닉네임은 2자 이상 입력해주세요.")
     } else {
-        clearError($('#nickname'));
+        clearError($("#nickname"))
     }
 
-    validateForm();
+    validateForm()
 }
 
 // =========================== 선택적 필드 검증 함수들 ===========================
@@ -440,55 +513,53 @@ function validateNickname() {
  */
 function validateBirthDate() {
     // formState.birthDate가 존재하는지 확인
-    if (!formState.birthDate || typeof formState.birthDate !== 'object') {
-        formState.birthDate = {value: '', valid: true};
+    if (!formState.birthDate || typeof formState.birthDate !== "object") {
+        formState.birthDate = {value: "", valid: true}
     }
 
-    const birthDate = $('#birthDate').val().trim();
+    const birthDate = $("#birthDate").val().trim()
 
-    formState.birthDate.value = birthDate;
+    formState.birthDate.value = birthDate
 
     // 빈 값이면 유효한 것으로 처리
-    if (birthDate === '') {
-        formState.birthDate.valid = true;
-        clearError($('#birthDate'));
-        validateForm();
-        return;
+    if (birthDate === "") {
+        formState.birthDate.valid = true
+        clearError($("#birthDate"))
+        validateForm()
+        return
     }
 
     // YYYY.MM.DD 형식 검증 (정확히 10자리)
-    const birthDateRegex = /^\d{4}\.\d{2}\.\d{2}$/;
+    const birthDateRegex = /^\d{4}\.\d{2}\.\d{2}$/
 
     if (!birthDateRegex.test(birthDate)) {
-        formState.birthDate.valid = false;
-        showError($('#birthDate'), '생년월일을 YYYY.MM.DD 형식으로 모두 입력해주세요.');
-        validateForm();
-        return;
+        formState.birthDate.valid = false
+        showError($("#birthDate"), "생년월일을 YYYY.MM.DD 형식으로 모두 입력해주세요.")
+        validateForm()
+        return
     }
 
     // 날짜 유효성 검증
-    const parts = birthDate.split('.');
-    const year = parseInt(parts[0]);
-    const month = parseInt(parts[1]);
-    const day = parseInt(parts[2]);
+    const parts = birthDate.split(".")
+    const year = Number.parseInt(parts[0])
+    const month = Number.parseInt(parts[1])
+    const day = Number.parseInt(parts[2])
 
-    const date = new Date(year, month - 1, day);
-    const isValidDate = date.getFullYear() === year &&
-        date.getMonth() === month - 1 &&
-        date.getDate() === day;
+    const date = new Date(year, month - 1, day)
+    const isValidDate = date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day
 
     if (!isValidDate) {
-        formState.birthDate.valid = false;
-        showError($('#birthDate'), '올바른 날짜를 입력해주세요.');
+        formState.birthDate.valid = false
+        showError($("#birthDate"), "올바른 날짜를 입력해주세요.")
     } else if (year < 1900 || year > new Date().getFullYear()) {
-        formState.birthDate.valid = false;
-        showError($('#birthDate'), '올바른 연도를 입력해주세요.');
+        formState.birthDate.valid = false
+        showError($("#birthDate"), "올바른 연도를 입력해주세요.")
     } else {
-        formState.birthDate.valid = true;
-        clearError($('#birthDate'));
+        formState.birthDate.valid = true
+        clearError($("#birthDate"))
     }
 
-    validateForm();
+    validateForm()
 }
 
 /**
@@ -496,34 +567,34 @@ function validateBirthDate() {
  */
 function validateHeight() {
     // formState.height가 존재하는지 확인
-    if (!formState.height || typeof formState.height !== 'object') {
-        formState.height = {value: '', valid: true};
+    if (!formState.height || typeof formState.height !== "object") {
+        formState.height = {value: "", valid: true}
     }
 
-    const height = $('#height').val().trim();
+    const height = $("#height").val().trim()
 
-    formState.height.value = height;
+    formState.height.value = height
 
     // 빈 값이면 유효한 것으로 처리
-    if (height === '') {
-        formState.height.valid = true;
-        clearError($('#height'));
-        validateForm();
-        return;
+    if (height === "") {
+        formState.height.valid = true
+        clearError($("#height"))
+        validateForm()
+        return
     }
 
-    const heightNum = parseInt(height);
+    const heightNum = Number.parseInt(height)
 
     // 입력된 경우 범위만 검증
     if (heightNum < 50 || heightNum > 250) {
-        formState.height.valid = false;
-        showError($('#height'), '올바른 키를 입력해주세요. (50-250cm)');
+        formState.height.valid = false
+        showError($("#height"), "올바른 키를 입력해주세요. (50-250cm)")
     } else {
-        formState.height.valid = true;
-        clearError($('#height'));
+        formState.height.valid = true
+        clearError($("#height"))
     }
 
-    validateForm();
+    validateForm()
 }
 
 /**
@@ -531,53 +602,54 @@ function validateHeight() {
  */
 function validateWeight() {
     // formState.weight가 존재하는지 확인
-    if (!formState.weight || typeof formState.weight !== 'object') {
-        formState.weight = {value: '', valid: true};
+    if (!formState.weight || typeof formState.weight !== "object") {
+        formState.weight = {value: "", valid: true}
     }
 
-    const weight = $('#weight').val().trim();
+    const weight = $("#weight").val().trim()
 
-    formState.weight.value = weight;
+    formState.weight.value = weight
 
     // 빈 값이면 유효한 것으로 처리
-    if (weight === '') {
-        formState.weight.valid = true;
-        clearError($('#weight'));
-        validateForm();
-        return;
+    if (weight === "") {
+        formState.weight.valid = true
+        clearError($("#weight"))
+        validateForm()
+        return
     }
 
-    const weightNum = parseInt(weight);
+    const weightNum = Number.parseInt(weight)
 
     // 입력된 경우 범위만 검증
     if (weightNum < 20 || weightNum > 300) {
-        formState.weight.valid = false;
-        showError($('#weight'), '올바른 몸무게를 입력해주세요. (20-300kg)');
+        formState.weight.valid = false
+        showError($("#weight"), "올바른 몸무게를 입력해주세요. (20-300kg)")
     } else {
-        formState.weight.valid = true;
-        clearError($('#weight'));
+        formState.weight.valid = true
+        clearError($("#weight"))
     }
 
-    validateForm();
+    validateForm()
 }
 
 function validateForm() {
     // formState 무결성 재확인
-    ensureFormStateIntegrity();
+    ensureFormStateIntegrity()
 
-    formState.agreeTerms = $('#agreeTerms').is(':checked');
+    formState.agreeTerms = $("#agreeTerms").is(":checked")
 
     // 안전한 검증을 위해 각 필드의 존재 여부를 확인
-    const emailValid = formState.email && formState.email.valid && formState.email.checked;
-    const passwordValid = formState.password && formState.password.valid;
-    const passwordConfirmValid = formState.passwordConfirm && formState.passwordConfirm.valid;
-    const nameValid = formState.name && formState.name.valid;
-    const nicknameValid = formState.nickname && formState.nickname.valid && formState.nickname.checked;
-    const birthDateValid = formState.birthDate ? formState.birthDate.valid : true;
-    const heightValid = formState.height ? formState.height.valid : true;
-    const weightValid = formState.weight ? formState.weight.valid : true;
+    const emailValid = formState.email && formState.email.valid && formState.email.checked
+    const passwordValid = formState.password && formState.password.valid
+    const passwordConfirmValid = formState.passwordConfirm && formState.passwordConfirm.valid
+    const nameValid = formState.name && formState.name.valid
+    const nicknameValid = formState.nickname && formState.nickname.valid && formState.nickname.checked
+    const birthDateValid = formState.birthDate ? formState.birthDate.valid : true
+    const heightValid = formState.height ? formState.height.valid : true
+    const weightValid = formState.weight ? formState.weight.valid : true
 
-    const isValid = emailValid &&
+    const isValid =
+        emailValid &&
         passwordValid &&
         passwordConfirmValid &&
         nameValid &&
@@ -585,11 +657,11 @@ function validateForm() {
         birthDateValid &&
         heightValid &&
         weightValid &&
-        formState.agreeTerms;
+        formState.agreeTerms
 
-    $('#submitBtn').prop('disabled', !isValid);
+    $("#submitBtn").prop("disabled", !isValid)
 
-    console.log('폼 검증 상태:', {
+    console.log("폼 검증 상태:", {
         email: {valid: emailValid},
         password: passwordValid,
         passwordConfirm: passwordConfirmValid,
@@ -599,8 +671,8 @@ function validateForm() {
         height: heightValid,
         weight: weightValid,
         agreeTerms: formState.agreeTerms,
-        isValid: isValid
-    });
+        isValid: isValid,
+    })
 }
 
 /**
@@ -608,26 +680,26 @@ function validateForm() {
  * @param {Event} e - 키보드 이벤트
  */
 function handleBirthDateKeydown(e) {
-    const $input = $(e.target);
-    const value = $input.val();
+    const $input = $(e.target)
+    const value = $input.val()
 
     // 백스페이스 키 (keyCode 8)
     if (e.keyCode === 8) {
         // 현재 커서 위치
-        const cursorPos = $input[0].selectionStart;
+        const cursorPos = $input[0].selectionStart
 
         // 커서 바로 앞 문자가 '.'인 경우
-        if (cursorPos > 0 && value.charAt(cursorPos - 1) === '.') {
-            e.preventDefault();
+        if (cursorPos > 0 && value.charAt(cursorPos - 1) === ".") {
+            e.preventDefault()
 
             // '.' 앞의 문자까지 제거
-            const newValue = value.substring(0, cursorPos - 2) + value.substring(cursorPos);
-            $input.val(newValue);
+            const newValue = value.substring(0, cursorPos - 2) + value.substring(cursorPos)
+            $input.val(newValue)
 
             // 커서 위치 조정
             setTimeout(() => {
-                $input[0].setSelectionRange(cursorPos - 2, cursorPos - 2);
-            }, 0);
+                $input[0].setSelectionRange(cursorPos - 2, cursorPos - 2)
+            }, 0)
         }
     }
 }
@@ -636,77 +708,77 @@ function handleBirthDateKeydown(e) {
 
 async function handleEmailDuplicateCheck() {
     if (!formState.email.valid) {
-        alert('올바른 이메일을 입력해주세요.');
-        return;
+        showAlertModal("올바른 이메일을 입력해주세요.")
+        return
     }
 
-    const $emailCheck = $('#emailCheck');
-    toggleButtonLoading($emailCheck, true);
+    const $emailCheck = $("#emailCheck")
+    toggleButtonLoading($emailCheck, true)
 
     try {
-        const response = await checkEmailDuplicateAPI(formState.email.value);
+        const response = await checkEmailDuplicateAPI(formState.email.value)
 
         if (!response.result) {
-            formState.email.checked = true;
-            $emailCheck.addClass('checked');
-            $emailCheck.find('.btn-text').text('확인완료');
-            $emailCheck.prop('disabled', true); // 확인완료 후 버튼 비활성화
+            formState.email.checked = true
+            $emailCheck.addClass("checked")
+            $emailCheck.find(".btn-text").text("확인완료")
+            $emailCheck.prop("disabled", true) // 확인완료 후 버튼 비활성화
 
-            const $wrapper = $('#email').closest('.input-wrapper');
-            $wrapper.addClass('valid');
+            const $wrapper = $("#email").closest(".input-wrapper")
+            $wrapper.addClass("valid")
 
-            validateForm();
+            validateForm()
         } else {
-            showError($('#email'), response.message || '이미 사용중인 이메일입니다.');
+            showError($("#email"), response.message || "이미 사용중인 이메일입니다.")
         }
     } catch (error) {
-        console.error('이메일 중복확인 오류:', error);
-        showError($('#email'), '중복확인 중 오류가 발생했습니다.');
+        console.error("이메일 중복확인 오류:", error)
+        showError($("#email"), "중복확인 중 오류가 발생했습니다.")
     } finally {
-        toggleButtonLoading($emailCheck, false);
+        toggleButtonLoading($emailCheck, false)
     }
 }
 
 async function handleNicknameDuplicateCheck() {
     if (!formState.nickname.valid) {
-        alert('올바른 닉네임을 입력해주세요.');
-        return;
+        showAlertModal("올바른 닉네임을 입력해주세요.")
+        return
     }
 
-    const $nicknameCheck = $('#nicknameCheck');
-    toggleButtonLoading($nicknameCheck, true);
+    const $nicknameCheck = $("#nicknameCheck")
+    toggleButtonLoading($nicknameCheck, true)
 
     try {
-        const response = await checkNicknameDuplicateAPI(formState.nickname.value);
+        const response = await checkNicknameDuplicateAPI(formState.nickname.value)
 
         if (!response.result) {
-            formState.nickname.checked = true;
-            $nicknameCheck.addClass('checked');
-            $nicknameCheck.find('.btn-text').text('확인완료');
-            $nicknameCheck.prop('disabled', true); // 확인완료 후 버튼 비활성화
+            formState.nickname.checked = true
+            $nicknameCheck.addClass("checked")
+            $nicknameCheck.find(".btn-text").text("확인완료")
+            $nicknameCheck.prop("disabled", true) // 확인완료 후 버튼 비활성화
 
-            const $wrapper = $('#nickname').closest('.input-wrapper');
-            $wrapper.addClass('valid');
+            const $wrapper = $("#nickname").closest(".input-wrapper")
+            $wrapper.addClass("valid")
 
-            validateForm();
+            validateForm()
         } else {
-            showError($('#nickname'), response.message || '이미 사용중인 닉네임입니다.');
+            showError($("#nickname"), response.message || "이미 사용중인 닉네임입니다.")
         }
     } catch (error) {
-        console.error('닉네임 중복확인 오류:', error);
-        showError($('#nickname'), '중복확인 중 오류가 발생했습니다.');
+        console.error("닉네임 중복확인 오류:", error)
+        showError($("#nickname"), "중복확인 중 오류가 발생했습니다.")
     } finally {
-        toggleButtonLoading($nicknameCheck, false);
+        toggleButtonLoading($nicknameCheck, false)
     }
 }
 
 async function handleSignup() {
-    if ($('#submitBtn').prop('disabled')) {
-        return;
+    if ($("#submitBtn").prop("disabled")) {
+        return
     }
 
-    const $submitBtn = $('#submitBtn');
-    toggleButtonLoading($submitBtn, true);
+    const $submitBtn = $("#submitBtn")
+    toggleButtonLoading($submitBtn, true)
 
     try {
         const userData = {
@@ -715,103 +787,104 @@ async function handleSignup() {
             name: formState.name.value,
             nickname: formState.nickname.value,
             gender: formState.gender,
-            birthDate: formState.birthDate ? formState.birthDate.value : '',
-            height: formState.height ? formState.height.value : '',
-            weight: formState.weight ? formState.weight.value : '',
+            birthDate: formState.birthDate ? formState.birthDate.value : "",
+            height: formState.height ? formState.height.value : "",
+            weight: formState.weight ? formState.weight.value : "",
             exerciseType: formState.exerciseType,
             memberType: formState.memberType,
-            agreeTerms: formState.agreeTerms
-        };
+            agreeTerms: formState.agreeTerms,
+        }
 
-        const response = await signupAPI(userData);
+        const response = await signupAPI(userData)
 
         if (response.success) {
-            alert('회원가입이 완료되었습니다!');
-            window.location.href = '/dashboard';
+            showSuccessModal("회원가입이 완료되었습니다!", () => {
+                window.location.href = "/dashboard"
+            })
         } else {
-            alert(response.message || '회원가입 중 오류가 발생했습니다.');
+            showErrorModal(response.message || "회원가입 중 오류가 발생했습니다.")
         }
     } catch (error) {
-        console.error('회원가입 오류:', error);
-        alert('회원가입 중 오류가 발생했습니다.');
+        console.error("회원가입 오류:", error)
+        showErrorModal("회원가입 중 오류가 발생했습니다.")
     } finally {
-        toggleButtonLoading($submitBtn, false);
+        toggleButtonLoading($submitBtn, false)
     }
 }
 
 // =========================== 기타 함수들 ===========================
 
 function resetDuplicateButton($button, text) {
-    $button.removeClass('checked');
-    $button.find('.btn-text').text(text);
-    $button.prop('disabled', false); // 버튼 재활성화
+    $button.removeClass("checked")
+    $button.find(".btn-text").text(text)
+    $button.prop("disabled", false) // 버튼 재활성화
 }
 
 function formatBirthDate() {
-    let value = $('#birthDate').val().replace(/\D/g, ''); // 숫자만 추출
+    let value = $("#birthDate").val().replace(/\D/g, "") // 숫자만 추출
 
     if (value.length >= 4) {
-        value = value.substring(0, 4) + '.' + value.substring(4);
+        value = value.substring(0, 4) + "." + value.substring(4)
     }
     if (value.length >= 7) {
-        value = value.substring(0, 7) + '.' + value.substring(7, 9);
+        value = value.substring(0, 7) + "." + value.substring(7, 9)
     }
 
-    $('#birthDate').val(value);
+    $("#birthDate").val(value)
 }
 
 function resetForm() {
     // formState 무결성 확인 후 초기화
-    ensureFormStateIntegrity();
+    ensureFormStateIntegrity()
 
     // 폼 상태 초기화
-    formState.email = {value: '', valid: false, checked: false};
-    formState.password = {value: '', valid: false};
-    formState.passwordConfirm = {value: '', valid: false};
-    formState.name = {value: '', valid: false};
-    formState.nickname = {value: '', valid: false, checked: false};
-    formState.birthDate = {value: '', valid: true};
-    formState.height = {value: '', valid: true};
-    formState.weight = {value: '', valid: true};
-    formState.gender = '';
-    formState.exerciseType = '';
-    formState.agreeTerms = false;
+    formState.email = {value: "", valid: false, checked: false}
+    formState.password = {value: "", valid: false}
+    formState.passwordConfirm = {value: "", valid: false}
+    formState.name = {value: "", valid: false}
+    formState.nickname = {value: "", valid: false, checked: false}
+    formState.birthDate = {value: "", valid: true}
+    formState.height = {value: "", valid: true}
+    formState.weight = {value: "", valid: true}
+    formState.gender = ""
+    formState.exerciseType = ""
+    formState.agreeTerms = false
 
     // 입력 필드 초기화
-    $('input').each(function () {
-        $(this).val('').removeClass('is-invalid');
-    });
+    $("input").each(function () {
+        $(this).val("").removeClass("is-invalid")
+    })
 
     // 체크박스 초기화
-    $('#agreeTerms').prop('checked', false);
+    $("#agreeTerms").prop("checked", false)
 
     // 버튼 상태 초기화
-    $('.gender-btn, .exercise-btn').removeClass('active');
+    $(".gender-btn, .exercise-btn").removeClass("active")
 
     // 검증 상태 초기화
-    $('.input-wrapper').removeClass('valid');
+    $(".input-wrapper").removeClass("valid")
 
     // 중복확인 버튼 초기화
-    resetDuplicateButton($('#emailCheck'), '중복확인');
-    resetDuplicateButton($('#nicknameCheck'), '중복확인');
+    resetDuplicateButton($("#emailCheck"), "중복확인")
+    resetDuplicateButton($("#nicknameCheck"), "중복확인")
 
     // 에러 메시지 제거
-    $('.invalid-feedback').text('');
+    $(".invalid-feedback").text("")
 
     // 제출 버튼 비활성화
-    $('#submitBtn').prop('disabled', true);
+    $("#submitBtn").prop("disabled", true)
 }
 
 // =========================== jQuery AJAX 전역 설정 ===========================
 
 // AJAX 요청 전역 설정
 $.ajaxSetup({
-    error: function (xhr, status, error) {
-        console.error('AJAX 오류:', {
+    error: (xhr, status, error) => {
+        console.error("AJAX 오류:", {
             status: xhr.status,
             statusText: xhr.statusText,
             responseText: xhr.responseText,
-            error: error
-        });
-    }
-});
+            error: error,
+        })
+    },
+})
