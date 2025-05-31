@@ -1,15 +1,8 @@
 package com.oopsw.selfit.service;
 
-import java.util.List;
-import static org.junit.jupiter.api.Assertions.*;
-
-
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.oopsw.selfit.domain.ExerciseInfo;
-import com.oopsw.selfit.dto.Exercise;
 import com.oopsw.selfit.repository.DashboardRepository;
 import com.oopsw.selfit.repository.ExerciseInfoRepository;
 
@@ -71,8 +64,5 @@ public class ExerciseInfoServiceTests {
 	// 	// (디버그용)
 	// 	System.out.println(">> getExercisesForDate 결과: " + list);
 	// }
-
-
-
 
 }

@@ -7,15 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.oopsw.selfit.domain.FoodInfo;
-
 @Transactional
 @SpringBootTest
 public class FoodInfoRepositoryTests {
 	@Autowired
 	private FoodInfoRepository foodInfoRepository;
 
-	//@Test
+	// @Test
 	// public void testRemoveFood() {
 	// 	// given
 	// 	FoodInfo foodInfo = FoodInfo.builder()
@@ -32,18 +30,31 @@ public class FoodInfoRepositoryTests {
 	//
 	// 	// then
 	// 	assertFalse(foodInfoRepository.existsById(id));
-
-	}
-
-	// @Test
-	// public void testRemoveFoodNotExistFoodInfoId() {
-	// 	// given
-	// 	int foodInfoId = 99999;
 	//
-	// 	// when
-	// 	foodInfoRepository.deleteById(foodInfoId);
-	//
-	// 	// then
-	// 	assertFalse(foodInfoRepository.existsById(foodInfoId));
 	// }
 
+	@Test
+	public void testRemoveFoodNotExistFoodInfoId() {
+		// given
+		int foodInfoId = 99999;
+
+		// when
+		foodInfoRepository.deleteById(foodInfoId);
+
+		// then
+		assertFalse(foodInfoRepository.existsById(foodInfoId));
+	}
+
+	@Test
+	public void testFindByMemberIdAndIntakeDate() {
+		int memberId = 1;
+		String intakeDate = "2020-01-01";
+	}
+
+	@Test
+	public void testfindByFoodId() {
+		int foodId = 1;
+		foodInfoRepository.findById(1);
+	}
+
+}

@@ -95,9 +95,6 @@ public class SecurityConfig {
 	public AuthenticationFailureHandler failureHandler() {
 		return (request, response, exception) -> {
 			String loginId = request.getParameter("loginId"); // 사용자가 입력한 로그인 ID
-			System.out.println(loginId);
-			System.out.println(request.getParameter("loginPassword"));
-			System.out.println(exception.getMessage());
 
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			response.setContentType("application/json;charset=UTF-8");

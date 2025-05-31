@@ -1,9 +1,23 @@
+import {showAlertModal, showSuccessModal, showErrorModal} from './basic-modal.js';
+
+$(function () {
+
+    const $emailCheck = $('#emailCheck');
+    formState.email.checked = true;
+    $emailCheck.addClass('checked');
+    $emailCheck.find('.btn-text').text('확인완료');
+    $emailCheck.prop('disabled', true); // 확인완료 후 버튼 비활성화
+
+    const $wrapper = $('#email').closest('.input-wrapper');
+    $wrapper.addClass('valid');
+});
+
 // API 엔드포인트 설정
 const API_BASE_URL = '/api/account';
 
 // 폼 상태 관리 (비밀번호 관련 필드 제거)
 const formState = {
-    email: {value: '', valid: false, checked: false},
+    email: {value: '', valid: true, checked: true},
     name: {value: '', valid: false},
     nickname: {value: '', valid: false, checked: false},
     gender: null,
@@ -15,44 +29,6 @@ const formState = {
     agreeTerms: false
 };
 
-// jQuery 선언
-const $ = window.jQuery;
-
-// =========================== API 함수들 (jQuery AJAX) ===========================
-
-/**
- * 이메일 중복 확인 API
- * @param {string} email - 확인할 이메일
- * @returns {Promise<{result: boolean}>}
- */
-async function checkEmailDuplicateAPI(email) {
-    const requestData = {
-        email: email
-    };
-
-    console.log('이메일 중복확인 요청:', requestData);
-
-    try {
-        // jQuery AJAX 요청
-        const response = await $.ajax({
-            url: `${API_BASE_URL}/check-email`,
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(requestData),
-            timeout: 10000,
-            headers: {
-                'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        });
-
-        console.log('이메일 중복확인 응답:', response);
-        return response;
-    } catch (error) {
-        console.error('이메일 중복확인 API 오류:', error);
-        return null;
-    }
-}
 
 /**
  * 닉네임 중복 확인 API
@@ -64,23 +40,18 @@ async function checkNicknameDuplicateAPI(nickname) {
         nickname: nickname
     };
 
-    console.log('닉네임 중복확인 요청:', requestData);
 
     try {
-        const response = await $.ajax({
-            url: `${API_BASE_URL}/check-nickname`,
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(requestData),
+        const response = await axios.post(`${API_BASE_URL}/check-nickname`, requestData, {
             timeout: 10000,
             headers: {
                 'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json'
             }
         });
 
-        console.log('닉네임 중복확인 응답:', response);
-        return response;
+        return response.data;
     } catch (error) {
         console.error('닉네임 중복확인 API 오류:', error);
         return null;
@@ -117,23 +88,18 @@ async function signupAPI(userData) {
         requestData.goal = userData.exerciseType;
     }
 
-    console.log('회원가입 요청:', requestData);
 
     try {
-        const response = await $.ajax({
-            url: `${API_BASE_URL}/member`,
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(requestData),
+        const response = await axios.post(`${API_BASE_URL}/member`, requestData, {
             timeout: 15000,
             headers: {
                 'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json'
             }
         });
 
-        console.log('회원가입 응답:', response);
-        return response;
+        return response.data;
     } catch (error) {
         console.error('회원가입 API 오류:', error);
         return null;
@@ -202,8 +168,6 @@ $(document).ready(function () {
 });
 
 function initEventListeners() {
-    // 필수 입력 필드 검증 (비밀번호 관련 제거)
-    $('#email').on('input', validateEmail);
     $('#name').on('input', validateName);
     $('#nickname').on('input', validateNickname);
     $('#agreeTerms').on('change', validateForm);
@@ -216,8 +180,6 @@ function initEventListeners() {
     $('#height').on('input', validateHeight);
     $('#weight').on('input', validateWeight);
 
-    // 중복확인 버튼
-    $('#emailCheck').on('click', handleEmailDuplicateCheck);
     $('#nicknameCheck').on('click', handleNicknameDuplicateCheck);
 
     // 성별 선택
@@ -254,7 +216,6 @@ function initFormStateFromThymeleaf() {
     const emailValue = $('#email').val();
     if (emailValue) {
         formState.email.value = emailValue;
-        validateEmail();
     }
 
     // 이름 값이 있으면 폼 상태 업데이트
@@ -267,31 +228,6 @@ function initFormStateFromThymeleaf() {
 
 // =========================== 검증 함수들 ===========================
 
-function validateEmail() {
-    const email = $('#email').val().trim();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    formState.email.value = email;
-    formState.email.valid = emailRegex.test(email);
-
-    // 값이 변경되면 중복확인 초기화
-    if (formState.email.checked) {
-        formState.email.checked = false;
-        const $wrapper = $('#email').closest('.input-wrapper');
-        $wrapper.removeClass('valid');
-        resetDuplicateButton($('#emailCheck'), '중복확인');
-    }
-
-    if (email === '') {
-        clearError($('#email'));
-    } else if (!formState.email.valid) {
-        showError($('#email'), '올바른 이메일 형식을 입력해주세요.');
-    } else {
-        clearError($('#email'));
-    }
-
-    validateForm();
-}
 
 function validateName() {
     const name = $('#name').val().trim();
@@ -467,16 +403,6 @@ function validateForm() {
 
     $('#submitBtn').prop('disabled', !isValid);
 
-    console.log('폼 검증 상태:', {
-        email: {valid: formState.email.valid, checked: formState.email.checked},
-        name: formState.name.valid,
-        nickname: {valid: formState.nickname.valid, checked: formState.nickname.checked},
-        birthDate: formState.birthDate.valid,
-        height: formState.height.valid,
-        weight: formState.weight.valid,
-        agreeTerms: formState.agreeTerms,
-        isValid: isValid
-    });
 }
 
 /**
@@ -509,39 +435,6 @@ function handleBirthDateKeydown(e) {
 }
 
 // =========================== 이벤트 핸들러들 ===========================
-
-async function handleEmailDuplicateCheck() {
-    if (!formState.email.valid) {
-        alert('올바른 이메일을 입력해주세요.');
-        return;
-    }
-
-    const $emailCheck = $('#emailCheck');
-    toggleButtonLoading($emailCheck, true);
-
-    try {
-        const response = await checkEmailDuplicateAPI(formState.email.value);
-
-        if (!response.result) {
-            formState.email.checked = true;
-            $emailCheck.addClass('checked');
-            $emailCheck.find('.btn-text').text('확인완료');
-            $emailCheck.prop('disabled', true); // 확인완료 후 버튼 비활성화
-
-            const $wrapper = $('#email').closest('.input-wrapper');
-            $wrapper.addClass('valid');
-
-            validateForm();
-        } else {
-            showError($('#email'), response.message || '이미 사용중인 이메일입니다.');
-        }
-    } catch (error) {
-        console.error('이메일 중복확인 오류:', error);
-        showError($('#email'), '중복확인 중 오류가 발생했습니다.');
-    } finally {
-        toggleButtonLoading($emailCheck, false);
-    }
-}
 
 async function handleNicknameDuplicateCheck() {
     if (!formState.nickname.valid) {
@@ -602,14 +495,12 @@ async function handleSignup() {
         const response = await signupAPI(userData);
 
         if (response.success) {
-            alert('회원가입이 완료되었습니다!');
-            window.location.href = '/dashboard';
+            showSuccessModal("회원가입이 완료되었습니다!", "/dashboard", true)
         } else {
-            alert(response.message || '회원가입 중 오류가 발생했습니다.');
+            showErrorModal(response.message || "회원가입 중 오류가 발생했습니다.")
         }
     } catch (error) {
-        console.error('회원가입 오류:', error);
-        alert('회원가입 중 오류가 발생했습니다.');
+        showErrorModal("회원가입 중 오류가 발생했습니다.")
     } finally {
         toggleButtonLoading($submitBtn, false);
     }
@@ -674,17 +565,3 @@ function resetForm() {
     // 제출 버튼 비활성화
     $('#submitBtn').prop('disabled', true);
 }
-
-// =========================== jQuery AJAX 전역 설정 ===========================
-
-// AJAX 요청 전역 설정
-$.ajaxSetup({
-    error: function (xhr, status, error) {
-        console.error('AJAX 오류:', {
-            status: xhr.status,
-            statusText: xhr.statusText,
-            responseText: xhr.responseText,
-            error: error
-        });
-    }
-});

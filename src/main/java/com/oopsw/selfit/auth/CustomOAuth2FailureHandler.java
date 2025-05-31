@@ -23,7 +23,6 @@ public class CustomOAuth2FailureHandler implements AuthenticationFailureHandler 
 		String email = (String)session.getAttribute("email");
 		String name = (String)session.getAttribute("name");
 
-		System.out.println("failure이동: " + email + " " + name);
 		response.sendRedirect("/account/signup-oauth");
 	}
 }
