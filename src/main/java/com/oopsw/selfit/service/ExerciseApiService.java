@@ -21,4 +21,19 @@ public class ExerciseApiService {
 		}
 		return exerciseApiRepository.fetchExerciseData(pageNo, numOfRows);
 	}
+
+	public Mono<List<ExerciseApi>> getExercisesByName(String exerciseName, int pageNo, int numOfRows) {
+		// 1) 입력값 검증
+		if (exerciseName == null || exerciseName.isBlank()) {
+			return Mono.error(new IllegalArgumentException("exerciseName을 반드시 입력해야 합니다."));
+		}
+		if (pageNo < 1 || numOfRows < 1) {
+			return Mono.error(new IllegalArgumentException("pageNo와 numOfRows는 1 이상이어야 합니다."));
+		}
+
+
+		// 2) repository 호출
+		return exerciseApiRepository.fetchExerciseDataByName(exerciseName, pageNo, numOfRows);
+	}
 }
+
