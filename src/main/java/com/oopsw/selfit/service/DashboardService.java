@@ -38,15 +38,15 @@ public class DashboardService {
 		}
 	}
 
-	public HashMap<String, Object> getFoodWeight(String foodName) {
-		HashMap<String, Object> map = new HashMap<>();
-		String foodWeight = dashboardRepository.getFoodWeight(foodName);
-		int numberPart = Integer.parseInt(foodWeight.replaceAll("[^0-9]", ""));
-		String unitPart = foodWeight.replaceAll("[0-9]", "");
-		map.put("numberPart", numberPart);
-		map.put("unitPart", unitPart);
-		return map;
-	}
+	// public HashMap<String, Object> getFoodWeight(String foodName) {
+	// 	HashMap<String, Object> map = new HashMap<>();
+	// 	String foodWeight = dashboardRepository.getFoodWeight(foodName);
+	// 	int numberPart = Integer.parseInt(foodWeight.replaceAll("[^0-9]", ""));
+	// 	String unitPart = foodWeight.replaceAll("[0-9]", "");
+	// 	map.put("numberPart", numberPart);
+	// 	map.put("unitPart", unitPart);
+	// 	return map;
+	// }
 
 	public int getBmr(int memberId) {
 		Member member = dashboardRepository.getBmr(memberId);
@@ -90,13 +90,13 @@ public class DashboardService {
 		return dashboardRepository.getYearExerciseKcal(map);
 	}
 
-	public List<Food> getIntakeDetail(Food food) {
-		return dashboardRepository.getIntakeDetail(food);
-	}
+	// public List<Food> getIntakeDetail(Food food) {
+	// 	return dashboardRepository.getIntakeDetail(food);
+	// }
 
-	public List<String> getAutoCompleteFood(String partWord) {
-		return dashboardRepository.getAutoCompleteFood(partWord);
-	}
+	// public List<String> getAutoCompleteFood(String partWord) {
+	// 	return dashboardRepository.getAutoCompleteFood(partWord);
+	// }
 
 	public boolean addFoodList(Food food) {
 		int exists = dashboardRepository.isChecklist(food.getMemberId(), food.getIntakeDate());
@@ -114,37 +114,37 @@ public class DashboardService {
 		return true;
 	}
 
-	public int getUnitKcal(int foodId) {
-		return dashboardRepository.getUnitKcal(foodId);
-	}
+	// public int getUnitKcal(int foodId) {
+	// 	return dashboardRepository.getUnitKcal(foodId);
+	// }
 
-	public boolean addFood(Food food) {
-		validatePositive(food.getIntake(), "섭취량");
-		//섭취칼로리 = (float)단위칼로리/100 * 섭취량
-		food.setIntakeKcal(((float)getUnitKcal(food.getFoodId())) / 100 * food.getIntake());
-		if (dashboardRepository.addFood(food) == 0) {
-			return false;
-		}
-		return true;
-	}
+	// public boolean addFood(Food food) {
+	// 	validatePositive(food.getIntake(), "섭취량");
+	// 	//섭취칼로리 = (float)단위칼로리/100 * 섭취량
+	// 	food.setIntakeKcal(((float)getUnitKcal(food.getFoodId())) / 100 * food.getIntake());
+	// 	if (dashboardRepository.addFood(food) == 0) {
+	// 		return false;
+	// 	}
+	// 	return true;
+	// }
 
-	public boolean setIntake(Food food) {
-		if (dashboardRepository.setIntake(food) == 0) {
-			return false;
-		}
-		return true;
-	}
+	// public boolean setIntake(Food food) {
+	// 	if (dashboardRepository.setIntake(food) == 0) {
+	// 		return false;
+	// 	}
+	// 	return true;
+	// }
 
-	public boolean removeFood(int foodInfoId) {
-		if (dashboardRepository.removeFood(foodInfoId) == 0) {
-			return false;
-		}
-		return true;
-	}
+	// public boolean removeFood(int foodInfoId) {
+	// 	if (dashboardRepository.removeFood(foodInfoId) == 0) {
+	// 		return false;
+	// 	}
+	// 	return true;
+	// }
 
-	public List<String> getAutoCompleteExercise(String partWord) {
-		return dashboardRepository.getAutoCompleteExercise(partWord);
-	}
+	// public List<String> getAutoCompleteExercise(String partWord) {
+	// 	return dashboardRepository.getAutoCompleteExercise(partWord);
+	// }
 
 	public boolean addExerciseList(Exercise exercise) {
 		int exists = dashboardRepository.isChecklist(exercise.getMemberId(), exercise.getExerciseDate());
@@ -162,33 +162,33 @@ public class DashboardService {
 		return true;
 	}
 
-	public boolean addExercise(Exercise exercise) {
-		validatePositive(exercise.getExerciseMin(), "운동시간");
-		//소모칼로리 = MET * 체중 * 운동시간(분) /60
-		exercise.setExerciseKcal(
-			dashboardRepository.getWeight(exercise.getExerciseNoteId()) *
-				dashboardRepository.getMet(exercise.getExerciseId()) *
-				exercise.getExerciseMin() / 60
-		);
+	// public boolean addExercise(Exercise exercise) {
+	// 	validatePositive(exercise.getExerciseMin(), "운동시간");
+	// 	//소모칼로리 = MET * 체중 * 운동시간(분) /60
+	// 	exercise.setExerciseKcal(
+	// 		dashboardRepository.getWeight(exercise.getExerciseNoteId()) *
+	// 			dashboardRepository.getMet(exercise.getExerciseId()) *
+	// 			exercise.getExerciseMin() / 60
+	// 	);
+	//
+	// 	if (dashboardRepository.addExercise(exercise) == 0) {
+	// 		return false;
+	// 	}
+	// 	return true;
+	// }
 
-		if (dashboardRepository.addExercise(exercise) == 0) {
-			return false;
-		}
-		return true;
-	}
+	// public List<Exercise> getExerciseDetail(Exercise exercise) {
+	// 	return dashboardRepository.getExerciseDetail(exercise);
+	// }
 
-	public List<Exercise> getExerciseDetail(Exercise exercise) {
-		return dashboardRepository.getExerciseDetail(exercise);
-	}
+	// public boolean setExerciseMin(Exercise exercise) {
+	// 	validatePositive(exercise.getExerciseMin(), "운동 시간");
+	// 	return dashboardRepository.setExerciseMin(exercise) > 0;
+	// }
 
-	public boolean setExerciseMin(Exercise exercise) {
-		validatePositive(exercise.getExerciseMin(), "운동 시간");
-		return dashboardRepository.setExerciseMin(exercise) > 0;
-	}
-
-	public boolean removeExercise(int exerciseInfoId) {
-		return dashboardRepository.removeExercise(exerciseInfoId) > 0;
-	}
+	// public boolean removeExercise(int exerciseInfoId) {
+	// 	return dashboardRepository.removeExercise(exerciseInfoId) > 0;
+	// }
 
 	public List<Checklist> getCheckList(Checklist checklist) {
 		return dashboardRepository.getCheckList(checklist);
