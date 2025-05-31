@@ -22,7 +22,7 @@ const formState = {
 // jQuery 선언
 const $ = window.jQuery
 
-// =========================== API 함수들 (jQuery AJAX) ===========================
+// =========================== API 함수들 (Axios) ===========================
 
 /**
  * 이메일 중복 확인 API
@@ -37,21 +37,17 @@ async function checkEmailDuplicateAPI(email) {
     console.log("이메일 중복확인 요청:", requestData)
 
     try {
-        // jQuery AJAX 요청
-        const response = await $.ajax({
-            url: `${API_BASE_URL}/check-email`,
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(requestData),
+        const response = await axios.post(`${API_BASE_URL}/check-email`, requestData, {
             timeout: 10000,
             headers: {
                 Accept: "application/json",
                 "X-Requested-With": "XMLHttpRequest",
+                "Content-Type": "application/json",
             },
         })
 
-        console.log("이메일 중복확인 응답:", response)
-        return response
+        console.log("이메일 중복확인 응답:", response.data)
+        return response.data
     } catch (error) {
         console.error("이메일 중복확인 API 오류:", error)
         return null
@@ -71,20 +67,17 @@ async function checkNicknameDuplicateAPI(nickname) {
     console.log("닉네임 중복확인 요청:", requestData)
 
     try {
-        const response = await $.ajax({
-            url: `${API_BASE_URL}/check-nickname`,
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(requestData),
+        const response = await axios.post(`${API_BASE_URL}/check-nickname`, requestData, {
             timeout: 10000,
             headers: {
                 Accept: "application/json",
                 "X-Requested-With": "XMLHttpRequest",
+                "Content-Type": "application/json",
             },
         })
 
-        console.log("닉네임 중복확인 응답:", response)
-        return response
+        console.log("닉네임 중복확인 응답:", response.data)
+        return response.data
     } catch (error) {
         console.error("닉네임 중복확인 API 오류:", error)
         return null
@@ -125,20 +118,17 @@ async function signupAPI(userData) {
     console.log("회원가입 요청:", requestData)
 
     try {
-        const response = await $.ajax({
-            url: `${API_BASE_URL}/member`,
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(requestData),
+        const response = await axios.post(`${API_BASE_URL}/member`, requestData, {
             timeout: 15000,
             headers: {
                 Accept: "application/json",
                 "X-Requested-With": "XMLHttpRequest",
+                "Content-Type": "application/json",
             },
         })
 
-        console.log("회원가입 응답:", response)
-        return response
+        console.log("회원가입 응답:", response.data)
+        return response.data
     } catch (error) {
         console.error("회원가입 API 오류:", error)
         return null
@@ -803,17 +793,3 @@ function resetForm() {
     // 제출 버튼 비활성화
     $("#submitBtn").prop("disabled", true)
 }
-
-// =========================== jQuery AJAX 전역 설정 ===========================
-
-// AJAX 요청 전역 설정
-$.ajaxSetup({
-    error: (xhr, status, error) => {
-        console.error("AJAX 오류:", {
-            status: xhr.status,
-            statusText: xhr.statusText,
-            responseText: xhr.responseText,
-            error: error,
-        })
-    },
-})

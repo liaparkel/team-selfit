@@ -40,10 +40,7 @@ const $ = window.jQuery
  */
 async function getMemberInfoAPI() {
   try {
-    const response = await $.ajax({
-      url: "/api/account/member",
-      type: "GET",
-      dataType: "json",
+    const response = await axios.get("/api/account/member", {
       timeout: 10000,
       headers: {
         Accept: "application/json",
@@ -51,8 +48,8 @@ async function getMemberInfoAPI() {
       },
     })
 
-    console.log("회원 정보 조회 응답:", response)
-    return response
+    console.log("회원 정보 조회 응답:", response.data)
+    return response.data
   } catch (error) {
     console.error("회원 정보 로드 실패:", error)
     $(".info-value").text("정보를 불러올 수 없습니다.")
@@ -71,20 +68,17 @@ async function checkNicknameDuplicateAPI(nickname) {
   console.log("닉네임 중복확인 요청:", requestData)
 
   try {
-    const response = await $.ajax({
-      url: `${API_BASE_URL}/check-nickname`,
-      type: "POST",
-      contentType: "application/json",
-      data: JSON.stringify(requestData),
+    const response = await axios.post(`${API_BASE_URL}/check-nickname`, requestData, {
       timeout: 10000,
       headers: {
         Accept: "application/json",
         "X-Requested-With": "XMLHttpRequest",
+        "Content-Type": "application/json",
       },
     })
 
-    console.log("닉네임 중복확인 응답:", response)
-    return response
+    console.log("닉네임 중복확인 응답:", response.data)
+    return response.data
   } catch (error) {
     console.error("닉네임 중복확인 API 오류:", error)
     return null
@@ -95,22 +89,18 @@ async function checkNicknameDuplicateAPI(nickname) {
  * 회원정보 수정 API
  */
 async function updateMemberAPI(userData) {
-
   try {
-    const response = await $.ajax({
-      url: "/api/account/member",
-      type: "PUT",
-      contentType: "application/json",
-      data: JSON.stringify(userData),
+    const response = await axios.put("/api/account/member", userData, {
       timeout: 15000,
       headers: {
         Accept: "application/json",
         "X-Requested-With": "XMLHttpRequest",
+        "Content-Type": "application/json",
       },
     })
 
-    console.log("회원정보 수정 응답:", response)
-    return response
+    console.log("회원정보 수정 응답:", response.data)
+    return response.data
   } catch (error) {
     console.error("회원정보 수정 API 오류:", error)
     return null
@@ -782,17 +772,5 @@ function handleBirthDateKeydown(e) {
     }
   }
 }
-
-// =========================== jQuery AJAX 전역 설정 ===========================
-
-$.ajaxSetup({
-  error: (xhr, status, error) => {
-    console.error("AJAX 오류:", {
-      status: xhr.status,
-      statusText: xhr.statusText,
-      error: error,
-    })
-  },
-})
 
 console.log("mypage-update.js 로드 완료")
