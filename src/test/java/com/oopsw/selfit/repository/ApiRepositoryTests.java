@@ -1,30 +1,59 @@
 package com.oopsw.selfit.repository;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.oopsw.selfit.dto.ExerciseApi;
+import com.oopsw.selfit.dto.FoodApi;
+
+import reactor.core.publisher.Mono;
 
 @SpringBootTest
-class ApiRepositoryTests {
+public class ApiRepositoryTests {
 
 	@Autowired
-	private RestFoodData restFoodData;
+	private ExerciseApiRepository exerciseApiRepository;
 	@Autowired
-	private RestExerciseData restExerciseData;
-
+	private FoodApiRepository foodApiRepository;
 
 	@Test
-	void addFoodApi() {
-		// 실제 API 호출
-		restFoodData.addFoodApi(1, 200).block();
+	public void testGetExerciseApi() {
+		// given
+		int page = 1;
+		int size = 10;
+
+		// when
+		Mono<List<ExerciseApi>> monoResult = exerciseApiRepository.fetchExerciseData(page, size);
+		List<ExerciseApi> resultList = monoResult.block();  // 동기 호출
+
+		// then
+		assertNotNull(resultList, "운동 API 결과 리스트는 null이 아니어야 한다");
+		assertFalse(resultList.isEmpty(), "운동 API 결과 리스트는 비어 있지 않아야 한다");
+
+		System.out.println(resultList);
 
 	}
 
 	@Test
-	void addExerciseApi() {
-		// 2) 첫 번째 API 호출 (+ 저장)
-		restExerciseData.addExerciseApi(1, 376).block();
+	public void testGetFoodApi() {
+		// given
+		int page = 1;
+		int size = 10;
+
+		// when
+		Mono<List<FoodApi>> monoResult = foodApiRepository.fetchFoodData(page, size);
+		List<FoodApi> resultList = monoResult.block();  // 동기 호출
+
+		// then
+		assertNotNull(resultList, "운동 API 결과 리스트는 null이 아니어야 한다");
+		assertFalse(resultList.isEmpty(), "운동 API 결과 리스트는 비어 있지 않아야 한다");
+
+		System.out.println(resultList);
 
 	}
 
