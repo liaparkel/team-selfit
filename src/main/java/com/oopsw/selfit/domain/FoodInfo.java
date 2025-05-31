@@ -23,15 +23,19 @@ public class FoodInfo {
 	@Column(name = "FOOD_INFO_ID")
 	private int foodInfoId;
 
+	@Column(name = "FOOD_NAME", nullable = false)
+	private String foodName;
+
 	@Column(name = "INTAKE", nullable = false)
 	private float intake;
 
 	@Column(name = "INTAKE_KCAL", nullable = false)
 	private float intakeKcal;
 
+	@Column(name = "UNIT_KCAL", nullable = false)
+	private int unitKcal;
+
 	@Column(name = "FOOD_NOTE_ID", nullable = false)
 	private int foodNoteId;
 
-	@Column(name = "FOOD_ID", nullable = false)
-	private int foodId;
 }
