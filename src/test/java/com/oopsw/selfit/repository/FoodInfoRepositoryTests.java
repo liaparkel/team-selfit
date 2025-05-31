@@ -45,4 +45,16 @@ public class FoodInfoRepositoryTests {
 		assertFalse(foodInfoRepository.existsById(foodInfoId));
 	}
 
+	@Test
+	public void testFindByMemberIdAndIntakeDate() {
+		int memberId = 1;
+		String intakeDate = "2020-01-01";
+	}
+
+	@Test
+	public void testfindByFoodId() {
+		int foodId = 1;
+		foodInfoRepository.findById(1);
+	}
+
 }
