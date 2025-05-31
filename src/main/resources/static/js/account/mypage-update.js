@@ -1,16 +1,18 @@
+import {showAlertModal, showSuccessModal, showErrorModal} from './basic-modal.js';
+
 // API 엔드포인트 설정
 const API_BASE_URL = "/api/account"
 
 // 폼 상태 관리 - 원본 데이터와 현재 데이터 분리
 const originalData = {
-  email: "",
-  name: "",
-  nickname: "",
-  gender: "",
-  birthDate: "",
-  height: "",
-  weight: "",
-  exerciseType: "",
+  email: null,
+  name: null,
+  nickname: null,
+  gender: null,
+  birthDate: null,
+  height: null,
+  weight: null,
+  exerciseType: null,
   memberType: "DEFAULT",
 }
 
@@ -20,11 +22,11 @@ const formState = {
   passwordConfirm: { value: "", valid: true },
   name: { value: "", valid: true },
   nickname: { value: "", valid: true, checked: true },
-  gender: "",
-  birthDate: { value: "", valid: true },
-  height: { value: "", valid: true },
-  weight: { value: "", valid: true },
-  exerciseType: "",
+  gender: null,
+  birthDate: { value: null, valid: true },
+  height: { value: null, valid: true },
+  weight: { value: null, valid: true },
+  exerciseType: null,
   memberType: "DEFAULT",
 }
 
@@ -269,7 +271,7 @@ async function loadMemberData() {
     }
   } catch (error) {
     console.error("회원 데이터 로드 오류:", error)
-    alert("회원 정보를 불러오는 중 오류가 발생했습니다.")
+    showAlertModal("회원 정보를 불러오는 중 오류가 발생했습니다.")
   }
 }
 
@@ -592,7 +594,7 @@ function validateWeight() {
 
 async function handleNicknameDuplicateCheck() {
   if (!formState.nickname.valid) {
-    alert("올바른 닉네임을 입력해주세요.")
+    showAlertModal("올바른 닉네임을 입력해주세요.")
     return
   }
 
@@ -633,9 +635,7 @@ function handleProfileImageChange(e) {
 }
 
 function handleCancel() {
-  if (confirm("수정을 취소하시겠습니까? 변경사항이 저장되지 않습니다.")) {
-    window.location.href = "/account/mypage"
-  }
+showAlertModal("수정을 취소하시겠습니까? 변경사항이 저장되지 않습니다.", "/account/mypage")
 }
 
 async function handleSave() {
@@ -664,7 +664,7 @@ async function handleSave() {
     if (!formState.nickname.valid || !formState.nickname.checked) {
       hasValidationErrors = true
       if (!formState.nickname.checked) {
-        alert("변경된 닉네임의 중복확인을 해주세요.")
+      showAlertModal("변경된 닉네임의 중복확인을 해주세요.")
         return
       }
     }
@@ -698,7 +698,7 @@ async function handleSave() {
   }
 
   if (hasValidationErrors) {
-    alert("입력 정보를 확인해주세요.")
+    showAlertModal("입력 정보를 확인해주세요.")
     return
   }
 
@@ -711,12 +711,15 @@ async function handleSave() {
       name: isFieldChanged("name", currentName) ? currentName : originalData.name,
       nickname: isFieldChanged("nickname", currentNickname) ? currentNickname : originalData.nickname,
       gender: formState.gender, // 성별은 현재 선택된 값
-      birthday: isFieldChanged("birthDate", currentBirthDate) ? currentBirthDate : originalData.birthDate,
+      birthday: isFieldChanged("birthDate", currentBirthDate)
+        ? (currentBirthDate === "" ? null : currentBirthDate)
+        : originalData.birthDate,
       height: isFieldChanged("height", currentHeight) ? currentHeight : originalData.height,
       weight: isFieldChanged("weight", currentWeight) ? currentWeight : originalData.weight,
       goal: formState.exerciseType, // 운동 목적은 현재 선택된 값
     }
-
+    console.log(currentBirthDate);
+    console.log(originalData.birthDate)
     // 비밀번호는 입력되고 검증된 경우에만 포함
     if (isFieldBeingEdited(currentPassword) && formState.password.valid && formState.passwordConfirm.valid) {
       userData.pw = currentPassword
@@ -728,14 +731,13 @@ async function handleSave() {
     const response = await updateMemberAPI(userData)
 
     if (response && response.success) {
-      alert("회원정보가 수정되었습니다.")
-      window.location.href = "/account/mypage"
+      showSuccessModal("회원정보가 수정되었습니다.", "/account/mypage", true )
     } else {
-      alert("수정에 실패했습니다. 다시 시도해주세요.")
+        showAlertModal("수정에 실패했습니다. 다시 시도해주세요.")
     }
   } catch (error) {
     console.error("회원정보 수정 오류:", error)
-    alert("수정 중 오류가 발생했습니다.")
+    showErrorModal("수정 중 오류가 발생했습니다.")
   } finally {
     toggleButtonLoading($saveBtn, false)
   }

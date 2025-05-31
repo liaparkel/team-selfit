@@ -133,46 +133,5 @@ $(document).ready(function () {
         }, 3000);
     }
 
-    // // 회원가입 링크 클릭 이벤트
-    // $('#signupLink').on('click', function (e) {
-    //     e.preventDefault();
-    //     // 회원가입 페이지로 이동
-    //     window.location.href = '/signup';
-    // });
-    //
-    // // 비밀번호 재설정 링크 클릭 이벤트
-    // $('#resetPasswordLink').on('click', function (e) {
-    //     e.preventDefault();
-    //     // 비밀번호 재설정 페이지로 이동
-    //     window.location.href = '/reset-password';
-    // });
-
-    // 구글 로그인 콜백 함수 (전역 함수로 정의)
-
-    // window.handleCredentialResponse = function (response) {
-    //     console.log('Google 로그인 응답:', response);
-    //
-    //     // 구글 로그인 토큰을 서버로 전송
-    //     $.ajax({
-    //         url: '/google-login-process',
-    //         type: 'POST',
-    //         contentType: 'application/json',
-    //         data: JSON.stringify({
-    //             credential: response.credential
-    //         }),
-    //         success: function (result) {
-    //             console.log('구글 로그인 성공:', result);
-    //             showAlert('구글 로그인에 성공했습니다!', 'success');
-    //
-    //             setTimeout(function () {
-    //                 window.location.href = '/dashboard';
-    //             }, 1000);
-    //         },
-    //         error: function (xhr, status, error) {
-    //             console.error('구글 로그인 실패:', error);
-    //             showAlert('구글 로그인에 실패했습니다.', 'error');
-    //         }
-    //     });
-    // };
 });
 

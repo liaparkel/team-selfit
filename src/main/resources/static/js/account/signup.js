@@ -1,3 +1,5 @@
+import {showAlertModal, showSuccessModal, showErrorModal} from './basic-modal.js';
+
 // API 엔드포인트 설정
 const API_BASE_URL = "/api/account"
 
@@ -19,77 +21,6 @@ const formState = {
 
 // jQuery 선언
 const $ = window.jQuery
-
-// =========================== 모달 함수들 ===========================
-
-/**
- * 일반 알림 모달 표시
- * @param {string} message - 표시할 메시지
- * @param {function} callback - 확인 버튼 클릭 시 실행할 콜백 함수
- */
-function showAlertModal(message, callback = null) {
-    $("#alertModalMessage").text(message)
-    const alertModal = new bootstrap.Modal(document.getElementById("alertModal"))
-
-    // 기존 이벤트 리스너 제거
-    $("#alertModalConfirm").off("click")
-
-    // 새로운 이벤트 리스너 추가
-    if (callback) {
-        $("#alertModalConfirm").on("click", () => {
-            alertModal.hide()
-            callback()
-        })
-    }
-
-    alertModal.show()
-}
-
-/**
- * 성공 모달 표시
- * @param {string} message - 표시할 메시지
- * @param {function} callback - 확인 버튼 클릭 시 실행할 콜백 함수
- */
-function showSuccessModal(message, callback = null) {
-    $("#successModalMessage").text(message)
-    const successModal = new bootstrap.Modal(document.getElementById("successModal"))
-
-    // 기존 이벤트 리스너 제거
-    $("#successModalConfirm").off("click")
-
-    // 새로운 이벤트 리스너 추가
-    if (callback) {
-        $("#successModalConfirm").on("click", () => {
-            successModal.hide()
-            callback()
-        })
-    }
-
-    successModal.show()
-}
-
-/**
- * 에러 모달 표시
- * @param {string} message - 표시할 메시지
- * @param {function} callback - 확인 버튼 클릭 시 실행할 콜백 함수
- */
-function showErrorModal(message, callback = null) {
-    $("#errorModalMessage").text(message)
-    const errorModal = new bootstrap.Modal(document.getElementById("errorModal"))
-
-    // 기존 이벤트 리스너 제거
-    $("#errorModalConfirm").off("click")
-
-    // 새로운 이벤트 리스너 추가
-    if (callback) {
-        $("#errorModalConfirm").on("click", () => {
-            errorModal.hide()
-            callback()
-        })
-    }
-
-    errorModal.show()
-}
 
 // =========================== API 함수들 (jQuery AJAX) ===========================
 
@@ -798,9 +729,7 @@ async function handleSignup() {
         const response = await signupAPI(userData)
 
         if (response.success) {
-            showSuccessModal("회원가입이 완료되었습니다!", () => {
-                window.location.href = "/dashboard"
-            })
+            showSuccessModal("회원가입이 완료되었습니다!", "/dashboard", true)
         } else {
             showErrorModal(response.message || "회원가입 중 오류가 발생했습니다.")
         }

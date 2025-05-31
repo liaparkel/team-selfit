@@ -1,4 +1,7 @@
-$(document).ready(function () {
+import {showAlertModal, showSuccessModal, showErrorModal} from './basic-modal.js';
+
+$(function () {
+
     const $emailCheck = $('#emailCheck');
     formState.email.checked = true;
     $emailCheck.addClass('checked');
@@ -7,6 +10,7 @@ $(document).ready(function () {
 
     const $wrapper = $('#email').closest('.input-wrapper');
     $wrapper.addClass('valid');
+    console.log("ddd");
 });
 
 // API 엔드포인트 설정
@@ -26,8 +30,6 @@ const formState = {
     agreeTerms: false
 };
 
-// jQuery 선언
-const $ = window.jQuery;
 
 /**
  * 닉네임 중복 확인 API
@@ -225,7 +227,6 @@ function initFormStateFromThymeleaf() {
     const emailValue = $('#email').val();
     if (emailValue) {
         formState.email.value = emailValue;
-        validateEmail();
     }
 
     // 이름 값이 있으면 폼 상태 업데이트
@@ -515,14 +516,12 @@ async function handleSignup() {
         const response = await signupAPI(userData);
 
         if (response.success) {
-            alert('회원가입이 완료되었습니다!');
-            window.location.href = '/dashboard';
+            showSuccessModal("회원가입이 완료되었습니다!", "/dashboard", true)
         } else {
-            alert(response.message || '회원가입 중 오류가 발생했습니다.');
+            showErrorModal(response.message || "회원가입 중 오류가 발생했습니다.")
         }
     } catch (error) {
-        console.error('회원가입 오류:', error);
-        alert('회원가입 중 오류가 발생했습니다.');
+        showErrorModal("회원가입 중 오류가 발생했습니다.")
     } finally {
         toggleButtonLoading($submitBtn, false);
     }

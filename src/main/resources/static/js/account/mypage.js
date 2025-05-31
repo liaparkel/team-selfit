@@ -1,3 +1,5 @@
+import {showAlertModal, showSuccessModal, showErrorModal} from './basic-modal.js';
+
 $(() => {
     // API 기본 경로 설정
     var board_api_base = '/api/board';
@@ -151,16 +153,14 @@ $(() => {
             dataType: 'json',
             success: function (data) {
                 if (data.success) {
-                    alert("회원탈퇴가 완료되었습니다.");
-                    // 로그인 페이지로 리다이렉트
-                    window.location.href = '/account/login';
+                showSuccessModal("회원탈퇴가 완료되었습니다.", "/account/login", true)
                 } else {
-                    alert("회원탈퇴 처리 중 오류가 발생했습니다.");
+                showErrorModal("회원탈퇴 처리 중 오류가 발생했습니다.");
                 }
             },
             error: function (xhr, status, error) {
                 console.error('회원탈퇴 실패:', error);
-                alert("회원탈퇴 처리 중 오류가 발생했습니다.");
+                showErrorModal("회원탈퇴 처리 중 오류가 발생했습니다.");
             }
         });
     }
