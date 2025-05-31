@@ -34,7 +34,6 @@ async function checkEmailDuplicateAPI(email) {
         email: email,
     }
 
-    console.log("이메일 중복확인 요청:", requestData)
 
     try {
         const response = await axios.post(`${API_BASE_URL}/check-email`, requestData, {
@@ -46,7 +45,6 @@ async function checkEmailDuplicateAPI(email) {
             },
         })
 
-        console.log("이메일 중복확인 응답:", response.data)
         return response.data
     } catch (error) {
         console.error("이메일 중복확인 API 오류:", error)
@@ -64,7 +62,6 @@ async function checkNicknameDuplicateAPI(nickname) {
         nickname: nickname,
     }
 
-    console.log("닉네임 중복확인 요청:", requestData)
 
     try {
         const response = await axios.post(`${API_BASE_URL}/check-nickname`, requestData, {
@@ -76,7 +73,6 @@ async function checkNicknameDuplicateAPI(nickname) {
             },
         })
 
-        console.log("닉네임 중복확인 응답:", response.data)
         return response.data
     } catch (error) {
         console.error("닉네임 중복확인 API 오류:", error)
@@ -115,7 +111,6 @@ async function signupAPI(userData) {
         requestData.goal = userData.exerciseType
     }
 
-    console.log("회원가입 요청:", requestData)
 
     try {
         const response = await axios.post(`${API_BASE_URL}/member`, requestData, {
@@ -127,7 +122,6 @@ async function signupAPI(userData) {
             },
         })
 
-        console.log("회원가입 응답:", response.data)
         return response.data
     } catch (error) {
         console.error("회원가입 API 오류:", error)
@@ -582,18 +576,7 @@ function validateForm() {
 
     $("#submitBtn").prop("disabled", !isValid)
 
-    console.log("폼 검증 상태:", {
-        email: {valid: emailValid},
-        password: passwordValid,
-        passwordConfirm: passwordConfirmValid,
-        name: nameValid,
-        nickname: {valid: nicknameValid},
-        birthDate: birthDateValid,
-        height: heightValid,
-        weight: weightValid,
-        agreeTerms: formState.agreeTerms,
-        isValid: isValid,
-    })
+
 }
 
 /**

@@ -772,5 +772,3 @@ function handleBirthDateKeydown(e) {
     }
   }
 }
-
-console.log("mypage-update.js 로드 완료")

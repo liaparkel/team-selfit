@@ -43,7 +43,6 @@ $(document).ready(function () {
         // Axios 요청
         axios.post('/api/account/login-process', loginData)
             .then(function (response) {
-                console.log('로그인 성공:', response.data);
 
                 // 잠시 후 대시보드로 이동
                 setTimeout(function () {
@@ -52,7 +51,6 @@ $(document).ready(function () {
             })
             .catch(function (error) {
                 console.error('로그인 실패:', error);
-                console.log(error);
                 let errorMessage = '로그인에 실패했습니다.';
 
                 // 서버에서 온 에러 메시지가 있다면 사용
