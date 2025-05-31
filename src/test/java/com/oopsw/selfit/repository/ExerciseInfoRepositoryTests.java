@@ -11,7 +11,7 @@ class ExerciseInfoRepositoryTests {
 	@Autowired
 	private ExerciseInfoRepository exerciseInfoRepository;
 
-	// @Test
+	//@Test
 	// void testRemoveExercise() {
 	// 	// given
 	// 	ExerciseInfo exerciseInfo = ExerciseInfo.builder()
@@ -30,11 +30,6 @@ class ExerciseInfoRepositoryTests {
 	// 	assertFalse(exerciseInfoRepository.existsById(id));
 	//
 	// }
-	//
-	// @Test
-	// void testGetExercisesForDate() {
-	// }
-
 }
 
 
