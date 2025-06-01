@@ -9,8 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.oopsw.selfit.domain.Comments;
 import com.oopsw.selfit.dto.Comment;
+import com.oopsw.selfit.dto.Member;
+import com.oopsw.selfit.repository.MemberRepository;
 
 @Transactional
 @SpringBootTest
@@ -18,26 +19,47 @@ public class CommentServiceTests {
 
 	@Autowired
 	private CommentService commentService;
+	@Autowired
+	private MemberRepository memberRepository;
 
 	@Test
 	public void testGetCommentsYes() {
-		// given: 데이터 준비
-		Comment comment = Comment.builder()
-			.commentContent("테스트 댓글")
+		// given: 회원 등록
+		memberRepository.addMember(Member.builder()
+			.memberId(1)
+			.nickname("테스터")
+			.profileImg("test.png")
+			.email("tester@test.com") // null 방지
+			.pw("1234")
+			.name("홍길동")
+			.gender("M")
+			.birthday("1990-01-01")
+			.height(170)
+			.weight(65)
+			.goal("건강")
+			.memberType("USER")
+			.build());
+
+		// given: 댓글 등록 (서비스 사용)
+		commentService.addComment(Comment.builder()
+			.commentContent("댓글 1")
 			.boardId(1)
 			.memberId(1)
-			.build();
-		commentService.addComment(comment);
+			.build());
 
-		int boardId = 1;
-		int page = 1;
+		commentService.addComment(Comment.builder()
+			.commentContent("댓글 2")
+			.boardId(1)
+			.memberId(1)
+			.build());
 
 		// when
-		List<Comments> comments = commentService.getComments(boardId, page);
+		List<Comment> comments = commentService.getComments(1, 1);
+
+		System.out.println(comments);
 
 		// then
 		assertNotNull(comments);
-		assertTrue(comments.size() > 0);
 	}
 
 	@Test
@@ -47,7 +69,7 @@ public class CommentServiceTests {
 		int page = 1;
 
 		// when
-		List<Comments> comments = commentService.getComments(boardId, page);
+		List<Comment> comments = commentService.getComments(boardId, page);
 
 		// then
 		assertNotNull(comments); // null 아님

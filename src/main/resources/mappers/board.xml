@@ -44,6 +44,8 @@
             resultType="com.oopsw.selfit.dto.Board">
         SELECT B.BOARD_ID           AS boardId,
                B.BOARD_TITLE        AS boardTitle,
+               B.BOARD_CONTENT      AS boardContent,
+               B.BOARD_IMG          AS boardImg,
                M.NICKNAME           AS nickName,
                B.VIEW_COUNT         AS viewCount,
                B.CREATED_DATE       AS createdDate,
@@ -95,7 +97,7 @@
     <insert id="addBoard" parameterType="com.oopsw.selfit.dto.Board">
         INSERT INTO BOARD
         (BOARD_TITLE, BOARD_CONTENT, VIEW_COUNT, CREATED_DATE, BOARD_IMG, CATEGORY_ID, MEMBER_ID)
-        VALUES (#{boardTitle}, #{boardContent}, #{viewCount}, SYSDATE(), #{boardImg}, #{categoryId}, #{memberId})
+        VALUES (#{boardTitle}, #{boardContent}, 0, SYSDATE(), #{boardImg}, #{categoryId}, #{memberId})
     </insert>
 
     <insert id="addBookmark" parameterType="com.oopsw.selfit.dto.Board">
