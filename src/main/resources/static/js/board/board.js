@@ -13,6 +13,59 @@ document.addEventListener('DOMContentLoaded', () => {
         '조회순': 'views',
     };
 
+    // --- 게시글 추가 (Add) – AJAX POST 처리 ----
+    const postForm = document.getElementById('postForm');
+    if (postForm) {
+        postForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // 1) 폼 필드 값 가져오기
+            const titleInput = postForm.querySelector('input[name="postTitle"]');
+            const contentInput = postForm.querySelector('textarea[name="postContents"]');
+            const selectEl = postForm.querySelector('select[name="categoryId"]');
+
+            const payload = {
+                boardTitle: titleInput.value.trim(),
+                boardContent: contentInput.value.trim(),
+                categoryId: parseInt(selectEl.value)
+            };
+
+            // Validation: 제목/내용/카테고리가 비어있으면 요청 중단
+            if (!payload.boardTitle) {
+                alert('제목을 입력해주세요.');
+                return;
+            }
+            if (!payload.boardContent) {
+                alert('내용을 입력해주세요.');
+                return;
+            }
+            if (!payload.categoryId) {
+                alert('카테고리를 선택해주세요.');
+                return;
+            }
+
+            try {
+                // 2) POST 요청
+                const res = await axios.post('/api/board/add', payload, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                // 3) 성공 시 알림 및 리다이렉트(원하는 페이지로 변경 가능)
+                alert('게시글 등록 성공');
+                window.location.href = `/board/list?categoryId=${payload.categoryId}`;
+            } catch (err) {
+                console.error('게시글 등록 실패', err);
+                if (err.response) {
+                    alert('등록 실패: ' + err.response.status);
+                } else {
+                    alert('등록 중 네트워크 오류가 발생했습니다.');
+                }
+            }
+        });
+    }
+
+
     document.querySelectorAll('input[name="sort"]').forEach(radio => {
         radio.addEventListener('click', function () {
             const selectedSort = sortMap[this.value] || 'recent';
