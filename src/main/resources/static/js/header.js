@@ -1,37 +1,86 @@
 // 로그아웃 기능
 function handleLogout() {
     if (confirm('정말 로그아웃 하시겠습니까?')) {
-        const logoutBtn = $('.logout-btn');
-        const originalText = logoutBtn.text();
+        const logoutBtn = document.querySelector('.logout-btn');
+        const originalText = logoutBtn.textContent;
 
-        logoutBtn.text('로그아웃 중...');
-        logoutBtn.prop('disabled', true).addClass('loading');
+        const memberInfo = document.querySelector('.memberInfo');
+        const loginBtn = document.querySelector('.login-btn');
+        logoutBtn.textContent = '로그아웃 중...';
+        logoutBtn.disabled = true;
+        logoutBtn.classList.add('loading');
 
-        $.ajax({
-            url: '/account/logout',
-            type: 'POST',
-            success: function () {
+        axios.post('/account/logout')
+            .then(() => {
+                memberInfo.style.display = 'none';
+                logoutBtn.style.display = 'none';
+                loginBtn.style.display = 'block';
                 alert('로그아웃되었습니다.');
                 window.location.href = '/account/login';
-            },
-            error: function (xhr) {
-                alert('로그아웃 실패: ' + xhr.status);
-                logoutBtn.text(originalText).prop('disabled', false).removeClass('loading');
-            }
-        });
+            })
+            .catch(error => {
+                alert('로그아웃 실패: ' + error.response.status);
+                logoutBtn.textContent = originalText;
+                logoutBtn.disabled = false;
+                logoutBtn.classList.remove('loading');
+            });
     }
 }
 
+// 로그인 페이지로 이동하는 함수
+function handleLogin() {
+    window.location.href = '/account/login';
+}
 
-// 사용자 이름 업데이트 함수
-function updateUsername(newUsername) {
-    const usernameElement = document.querySelector('.username');
-    if (usernameElement) {
-        usernameElement.textContent = newUsername;
+// 사용자 정보 업데이트 함수
+function updateUserInfo(userData) {
+    // 프로필 이미지 업데이트
+    const memberImgElement = document.querySelector('.memberImg img');
+    if (memberImgElement && userData.profileImg) {
+        memberImgElement.src = userData.profileImg;
+        memberImgElement.alt = `${userData.nickname || ''} 프로필 이미지`;
+    }
+
+    // 목표(goal) 업데이트
+    const goalElement = document.querySelector('.goal p');
+    if (goalElement) {
+        goalElement.textContent = userData.goal || '유지';
+    }
+
+    // 닉네임 업데이트
+    const nameElement = document.querySelector('.memberName p');
+    if (nameElement) {
+        const nickname = userData.nickname || '사용자';
+        nameElement.textContent = `하고 싶은 ${nickname}님`;
+    }
+}
+
+// 회원 정보 가져오기
+async function fetchMemberInfo() {
+    const memberInfo = document.querySelector('.memberInfo');
+    const logoutBtn = document.querySelector('.logout-btn');
+    const loginBtn = document.querySelector('.login-btn');
+    try {
+        const response = await fetch('/api/account/member');
+        if (!response.ok) {
+            throw new Error('회원 정보를 가져오는데 실패했습니다.');
+        }
+        const userData = await response.json();
+        updateUserInfo(userData);
+        // 로그인 상태
+        memberInfo.style.display = 'flex';
+        logoutBtn.style.display = 'block';
+        loginBtn.style.display = 'none';
+    } catch (error) {
+        memberInfo.style.display = 'none';
+        logoutBtn.style.display = 'none';
+        loginBtn.style.display = 'block';
+        console.error('회원 정보 조회 오류:', error);
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    fetchMemberInfo();
     // 모든 메뉴 아이템 중 자식이 있는 것들
     document.querySelectorAll('.menu-item.has-children').forEach(item => {
         item.addEventListener('click', () => {
