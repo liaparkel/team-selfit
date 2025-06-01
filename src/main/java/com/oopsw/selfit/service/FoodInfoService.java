@@ -1,10 +1,11 @@
 package com.oopsw.selfit.service;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.oopsw.selfit.domain.FoodInfo;
+import com.oopsw.selfit.domain.FoodInfos;
+import com.oopsw.selfit.dto.Food;
 import com.oopsw.selfit.repository.DashboardRepository;
 import com.oopsw.selfit.repository.FoodInfoRepository;
 
@@ -16,42 +17,47 @@ public class FoodInfoService {
 	private final FoodInfoRepository foodInfoRepository;
 	private final DashboardRepository dashboardRepository;
 
-	// public List<FoodInfo> getRawInfosByNote(int noteId) {
-	// 	return foodInfoRepository.findByFoodNoteId(noteId);
+	public boolean removeFood(int foodInfoId) {
+		if(foodInfoRepository.existsById(foodInfoId)) {
+			foodInfoRepository.deleteById(foodInfoId);
+			return true;
+		}
+		return false;
+	}
+
+	public boolean setIntake(int foodInfoId, int newIntake) {
+		if(foodInfoRepository.existsById(foodInfoId)) {
+			Optional<FoodInfos> foodInfo = foodInfoRepository.findById(foodInfoId);
+			foodInfo.get().setIntake(newIntake);
+			int unitKcal = foodInfo.get().getUnitKcal();
+			foodInfo.get().setIntakeKcal((float)unitKcal/100f*(foodInfo.get().getIntake()));
+			foodInfoRepository.save(foodInfo.get());
+
+			return true;
+		}
+		return false;
+
+	}
+
+	public boolean addFood(Food food) {
+		// 수동 매핑: DTO → Entity
+		FoodInfos entity = FoodInfos.builder()
+			.foodNoteId(food.getFoodNoteId())
+			.foodName(food.getFoodName())
+			.intake(food.getIntake())
+			.unitKcal(food.getUnitKcal())
+			.intakeKcal((float) food.getUnitKcal() / 100f * food.getIntake())
+			.build();
+
+		// 저장
+		return foodInfoRepository.save(entity) != null;
+	}
+	// 	//섭취칼로리 = (float)단위칼로리/100 * 섭취량
+	// 	food.setIntakeKcal(((float)getUnitKcal(food.getFoodId())) / 100 * food.getIntake());
+	// 	if (dashboardRepository.addFood(food) == 0) {
+	// 		return false;
+	// 	}
+	// 	return true;
 	// }
 
-	// public List<Food> getFoodsForNote(int noteId, int memberId, String date) {
-	// 	// 1) raw FK 목록
-	// 	List<FoodInfo> infos = foodInfoRepository.findByFoodNoteId(noteId);
-	// 	if (infos.isEmpty())
-	// 		return List.of();
-	//
-	// 	// 2) distinct foodId 수집
-	// 	List<Integer> foodIds = infos.stream()
-	// 		.map(FoodInfo::getFoodId)
-	// 		.distinct()
-	// 		.toList();
-	//
-	// 	// 3) 배치 조회 (MyBatis IN 쿼리 또는 JPA)
-	// 	List<Food> metas = dashboardRepository.getFoodsByIds(foodIds);
-	// 	Map<Integer, Food> metaMap = metas.stream()
-	// 		.collect(Collectors.toMap(Food::getFoodId, Function.identity()));
-	//
-	// 	// 4) DTO 조립
-	// 	return infos.stream()
-	// 		.map(fi -> {
-	// 			Food m = metaMap.get(fi.getFoodId());
-	// 			float intake = fi.getIntake();
-	// 			double intakeKcal = m.getUnitKcal() * intake / 100.0;
-	// 			return Food.builder()
-	// 				.foodName(m.getFoodName())
-	// 				.foodNoteId(fi.getFoodNoteId())
-	// 				.unitKcal(m.getUnitKcal())
-	// 				.intakeKcal((float)intakeKcal)
-	// 				.intake((int)intake)
-	// 				.build();
-	// 		})
-	// 		.toList();
-	//
-	// }
 }

@@ -8,44 +8,21 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.oopsw.selfit.domain.FoodInfo;
-import com.oopsw.selfit.dto.Food;
+import com.oopsw.selfit.domain.FoodInfos;
 
 @Transactional
 @SpringBootTest
 public class FoodInfoRepositoryTests {
 	@Autowired
 	private FoodInfoRepository foodInfoRepository;
-
-	// @Test
-	// public void testRemoveFood() {
-	// 	// given
-	// 	FoodInfo foodInfo = FoodInfo.builder()
-	// 		.intake(300F)
-	// 		.intakeKcal(1500F)
-	// 		.foodNoteId(1)
-	// 		.foodId(1)
-	// 		.build();
-	// 	FoodInfo saved = foodInfoRepository.save(foodInfo);
-	// 	Integer id = saved.getFoodInfoId();
-	//
-	// 	// when
-	// 	foodInfoRepository.deleteById(id);
-	//
-	// 	// then
-	// 	assertFalse(foodInfoRepository.existsById(id));
-	//
-	// }
-
 	@Test
 	public void removeFood() {
 		// given
 		foodInfoRepository.deleteById(1);
 		// when
-		Optional<FoodInfo> f = foodInfoRepository.findById(1);
+		Optional<FoodInfos> f = foodInfoRepository.findById(1);
 		// then
 		assertFalse(f.isPresent());
 	}
@@ -72,7 +49,7 @@ public class FoodInfoRepositoryTests {
 		// given
 		int foodInfoId = 1;
 
-		FoodInfo food = foodInfoRepository.findById(foodInfoId)
+		FoodInfos food = foodInfoRepository.findById(foodInfoId)
 			.orElseThrow(() -> new IllegalArgumentException("해당 foodInfoId는 존재하지 않음"));
 
 		// when
@@ -90,7 +67,7 @@ public class FoodInfoRepositoryTests {
 
 		// when & then
 		assertThrows(IllegalArgumentException.class, () -> {
-			FoodInfo food = foodInfoRepository.findById(nonExistId)
+			FoodInfos food = foodInfoRepository.findById(nonExistId)
 				.orElseThrow(() -> new IllegalArgumentException("해당 foodInfoId는 존재하지 않음"));
 
 			food.setIntake(100);
@@ -101,14 +78,14 @@ public class FoodInfoRepositoryTests {
 	@Test
 	public void addFood() {
 		//given
-		FoodInfo food = FoodInfo.builder()
+		FoodInfos food = FoodInfos.builder()
 			.foodName("아메리카노")
 			.intake(100)
 			.unitKcal(50)
 			.intakeKcal(100)
 			.foodNoteId(1)
 			.build();
-		FoodInfo saved = foodInfoRepository.save(food);
+		FoodInfos saved = foodInfoRepository.save(food);
 
 		//when
 		int id = saved.getFoodInfoId();
@@ -124,12 +101,12 @@ public class FoodInfoRepositoryTests {
 		int foodNoteId = 1;
 
 		// when
-		List<FoodInfo> foodList = foodInfoRepository.findByFoodNoteId(foodNoteId);
+		List<FoodInfos> foodList = foodInfoRepository.findByFoodNoteId(foodNoteId);
 
 		// then
 		assertNotNull(foodList);
 		assertFalse(foodList.isEmpty());
-		for (FoodInfo food : foodList) {
+		for (FoodInfos food : foodList) {
 			assertEquals(foodNoteId, food.getFoodNoteId()); // 전부 해당 foodNoteId와 매칭되는지
 		}
 		System.out.println(foodList);
@@ -141,7 +118,7 @@ public class FoodInfoRepositoryTests {
 		int nonExistFoodNoteId = 99999;
 
 		// when
-		List<FoodInfo> foodList = foodInfoRepository.findByFoodNoteId(nonExistFoodNoteId);
+		List<FoodInfos> foodList = foodInfoRepository.findByFoodNoteId(nonExistFoodNoteId);
 
 		// then
 		assertNotNull(foodList);
