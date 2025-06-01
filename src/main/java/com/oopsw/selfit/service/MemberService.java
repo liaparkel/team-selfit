@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberService {
 
 	private final List<String> genders = List.of("남자", "여자");
-	private final List<String> goals = List.of("유지", "감량", "중량");
+	private final List<String> goals = List.of("유지", "감량", "증량");
 	private final List<String> memberTypes = List.of("DEFAULT", "GOOGLE");
 
 	private final MemberRepository memberRepository;
