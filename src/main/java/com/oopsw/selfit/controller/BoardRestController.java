@@ -3,6 +3,7 @@ package com.oopsw.selfit.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.oopsw.selfit.auth.AuthenticatedUser;
 import com.oopsw.selfit.dto.Board;
 import com.oopsw.selfit.dto.Comment;
 import com.oopsw.selfit.service.BoardService;
@@ -62,7 +64,9 @@ public class BoardRestController {
 	}
 
 	@PostMapping("/add")
-	public ResponseEntity<String> addBoard(@RequestBody Board board) {
+	public ResponseEntity<String> addBoard(@AuthenticationPrincipal AuthenticatedUser loginUser,
+		@RequestBody Board board) {
+		board.setMemberId(loginUser.getMemberId());
 		log.info("addBoard - board: {}", board);
 		boardService.addBoard(board);
 		return ResponseEntity.ok("게시글 등록 성공");
