@@ -253,7 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
             yaxis: {
                 min: 0,
                 max: 4000,
-                tickAmount: 8,
+                tickAmount: 5,
                 labels: {
                     formatter: (val) => val,
                     style: {
