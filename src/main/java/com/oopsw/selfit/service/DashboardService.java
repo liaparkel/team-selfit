@@ -268,7 +268,11 @@ public class DashboardService {
 	// }
 
 	public String getGoal(int memberId) {
-		return dashboardRepository.getGoal(memberId);
+		String goal = dashboardRepository.getGoal(memberId);
+		if (goal == null) {
+			throw new IllegalArgumentException("존재하지 않는 회원입니다: memberId = " + memberId);
+		}
+		return goal;
 	}
 
 	// public List<Map<String, Object>> getYearExerciseAvgInfo(int memberId, int exerciseYear) {
