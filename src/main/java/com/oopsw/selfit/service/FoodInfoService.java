@@ -16,9 +16,9 @@ public class FoodInfoService {
 	private final FoodInfoRepository foodInfoRepository;
 	private final DashboardRepository dashboardRepository;
 
-	public List<FoodInfo> getRawInfosByNote(int noteId) {
-		return foodInfoRepository.findByFoodNoteId(noteId);
-	}
+	// public List<FoodInfo> getRawInfosByNote(int noteId) {
+	// 	return foodInfoRepository.findByFoodNoteId(noteId);
+	// }
 
 	// public List<Food> getFoodsForNote(int noteId, int memberId, String date) {
 	// 	// 1) raw FK 목록
