@@ -220,8 +220,35 @@
     font-weight: 500;
     margin-bottom: 5px;
 }
+.google-login-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;  /* 좌우 패딩 증가 */
+    min-width: 200px;    /* 최소 너비 설정 */
+    justify-content: center;  /* 내용 중앙 정렬 */
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    background-color: #fff;
+    text-decoration: none;
+    color: #3c4043;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
 
-.g_id_signin > div {
-    width: 260px !important;
-    height: 50px !important;
+.google-login-btn:hover {
+    background-color: #f8f9fa;
+    border-color: #c6c6c6;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.google-icon {
+    width: 18px;
+    height: 18px;
+}
+
+.g_id_signin {
+    display: inline-block;
 }
