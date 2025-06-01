@@ -1,5 +1,7 @@
 package com.oopsw.selfit.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -52,12 +54,24 @@ public class FoodInfoService {
 		// 저장
 		return foodInfoRepository.save(entity) != null;
 	}
-	// 	//섭취칼로리 = (float)단위칼로리/100 * 섭취량
-	// 	food.setIntakeKcal(((float)getUnitKcal(food.getFoodId())) / 100 * food.getIntake());
-	// 	if (dashboardRepository.addFood(food) == 0) {
-	// 		return false;
-	// 	}
-	// 	return true;
-	// }
 
+	public List<Food> getFoodInfoList(Food food) {
+		int foodNoteId = dashboardRepository.getFoodNoteId(food);
+		List<FoodInfos> list = foodInfoRepository.findByFoodNoteId(foodNoteId);
+
+		List<Food> foodList = new ArrayList<>();
+		for (FoodInfos f : list) {
+			Food dto = Food.builder()
+				.foodInfoId(f.getFoodInfoId())
+				.foodNoteId(f.getFoodNoteId())
+				.foodName(f.getFoodName())
+				.intake(f.getIntake()) // entity에서 float → DTO에서 int로
+				.unitKcal(f.getUnitKcal())
+				.intakeKcal(f.getIntakeKcal())
+				.build();
+			foodList.add(dto);
+		}
+
+		return foodList;
+	}
 }

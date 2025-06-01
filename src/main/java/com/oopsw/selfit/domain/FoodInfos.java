@@ -27,7 +27,7 @@ public class FoodInfos {
 	private String foodName;
 
 	@Column(name = "INTAKE", nullable = false)
-	private float intake;
+	private int intake;
 
 	@Column(name = "INTAKE_KCAL", nullable = false)
 	private float intakeKcal;
