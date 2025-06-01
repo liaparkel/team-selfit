@@ -2,6 +2,8 @@ package com.oopsw.selfit.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -92,6 +94,32 @@ public class FoodInfoServiceTests {
 		assertEquals(expectedKcal, saved.getIntakeKcal(), 0.01f); // 오차 허용
 	}
 
+	@Test
+	public void testGetFoodListYes() {
+		// given
+		Food foodDto = Food.builder()
+			.memberId(1)
+			.intakeDate("2025-05-01") // dashboardRepository.getFoods(food) 내부에서 사용되는 정보
+			.build();
+
+
+		// when
+		List<Food> result = foodInfoService.getFoodInfoList(foodDto);
+
+		// then
+		assertNotNull(result);
+		assertEquals(4, result.size());
+
+		Food f1 = result.get(0);
+		assertEquals("현미밥", f1.getFoodName());
+		assertEquals(200, f1.getIntake());
+		assertEquals(155, f1.getUnitKcal());
+
+		Food f2 = result.get(3);
+		assertEquals("김치", f2.getFoodName());
+		assertEquals(50, f2.getIntake());
+		assertEquals(30, f2.getUnitKcal());
+	}
 
 }
 

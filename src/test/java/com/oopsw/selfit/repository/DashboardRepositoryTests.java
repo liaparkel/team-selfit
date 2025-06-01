@@ -273,6 +273,11 @@ public class DashboardRepositoryTests {
 		assertEquals(0, result);
 	}
 
+	@Test
+	void testGetFoodListYes() {
+
+	}
+
 	// @Test
 	// void testAddFoodYes() {
 	// 	// given
