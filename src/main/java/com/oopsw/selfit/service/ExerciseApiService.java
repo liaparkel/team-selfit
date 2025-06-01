@@ -1,6 +1,8 @@
 package com.oopsw.selfit.service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -22,18 +24,25 @@ public class ExerciseApiService {
 		return exerciseApiRepository.fetchExerciseData(pageNo, numOfRows);
 	}
 
-	public Mono<List<ExerciseApi>> getExercisesByName(String exerciseName, int pageNo, int numOfRows) {
-		// 1) 입력값 검증
-		if (exerciseName == null || exerciseName.isBlank()) {
-			return Mono.error(new IllegalArgumentException("exerciseName을 반드시 입력해야 합니다."));
+	public Mono<List<ExerciseApi>> getExercisesByNameLike(String keyword, int pageNo, int numOfRows) {
+		if (keyword == null || keyword.isBlank()) {
+			return Mono.error(new IllegalArgumentException("검색 키워드를 입력해야 합니다."));
 		}
 		if (pageNo < 1 || numOfRows < 1) {
 			return Mono.error(new IllegalArgumentException("pageNo와 numOfRows는 1 이상이어야 합니다."));
 		}
 
-
-		// 2) repository 호출
-		return exerciseApiRepository.fetchExerciseDataByName(exerciseName, pageNo, numOfRows);
+		return exerciseApiRepository.fetchExerciseData(pageNo, numOfRows)
+			.map(list ->
+				// null-safe 필터링
+				(list != null ? list.stream()
+					.filter(item -> {
+						String name = item.getExerciseName();
+						return name != null && name.contains(keyword);
+					})
+					.collect(Collectors.toList())
+					: Collections.emptyList())
+			);
 	}
 }
 

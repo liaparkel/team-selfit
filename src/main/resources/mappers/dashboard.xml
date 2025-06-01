@@ -65,10 +65,11 @@
     <!--        FROM FOOD-->
     <!--        WHERE FOOD_NAME LIKE CONCAT('%', #{partWord}, '%')-->
     <!--    </select>-->
-    <insert id="addFoodList" parameterType="com.oopsw.selfit.dto.Food">
+    <insert id="addFoodList" parameterType="com.oopsw.selfit.dto.Food" useGeneratedKeys="true" keyProperty="foodNoteId">
         INSERT INTO FOOD_NOTE (INTAKE_DATE, MEMBER_ID)
         VALUES (#{intakeDate}, #{memberId})
     </insert>
+
     <delete id="removeFoodList" parameterType="com.oopsw.selfit.dto.Food">
         DELETE
         FROM FOOD_NOTE
@@ -94,10 +95,12 @@
     <!--        FROM EXERCISE-->
     <!--        WHERE EXERCISE_NAME LIKE CONCAT('%', #{partWord}, '%')-->
     <!--    </select>-->
-    <insert id="addExerciseList" parameterType="com.oopsw.selfit.dto.Exercise">
+    <insert id="addExerciseList" parameterType="com.oopsw.selfit.dto.Exercise" useGeneratedKeys="true"
+            keyProperty="exerciseNoteId">
         INSERT INTO EXERCISE_NOTE (EXERCISE_DATE, MEMBER_ID)
         VALUES (#{exerciseDate}, #{memberId})
     </insert>
+
     <delete id="removeExerciseList" parameterType="com.oopsw.selfit.dto.Exercise">
         DELETE
         FROM EXERCISE_NOTE
@@ -166,7 +169,8 @@
     <!--        FROM CHECK_ITEM-->
     <!--        WHERE CHECK_ID = #{checkId}-->
     <!--    </delete>-->
-    <insert id="addChecklist" parameterType="com.oopsw.selfit.dto.Checklist">
+    <insert id="addChecklist" parameterType="com.oopsw.selfit.dto.Checklist" useGeneratedKeys="true"
+            keyProperty="checklistId">
         INSERT INTO CHECKLIST (CHECK_DATE, MEMBER_ID)
         VALUES (#{checkDate}, #{memberId})
     </insert>
