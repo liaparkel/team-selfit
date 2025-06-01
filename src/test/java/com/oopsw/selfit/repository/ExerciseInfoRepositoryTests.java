@@ -1,11 +1,16 @@
 package com.oopsw.selfit.repository;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.oopsw.selfit.domain.ExerciseInfo;
-import com.oopsw.selfit.domain.FoodInfo;
+import com.oopsw.selfit.domain.ExerciseInfos;
 
 @Transactional
 @SpringBootTest
@@ -21,7 +26,7 @@ class ExerciseInfoRepositoryTests {
 		exerciseInfoRepository.deleteById(1);
 
 		// when
-		Optional<ExerciseInfo> e = exerciseInfoRepository.findById(1);
+		Optional<ExerciseInfos> e = exerciseInfoRepository.findById(1);
 
 		// then
 		assertFalse(e.isPresent());
@@ -46,7 +51,7 @@ class ExerciseInfoRepositoryTests {
 		// given
 		int exerciseInfoId = 1;
 
-		ExerciseInfo exercise = exerciseInfoRepository.findById(exerciseInfoId)
+		ExerciseInfos exercise = exerciseInfoRepository.findById(exerciseInfoId)
 			.orElseThrow(() -> new IllegalArgumentException("해당 exerciseInfoId는 존재하지 않음"));
 
 		// when
@@ -62,7 +67,7 @@ class ExerciseInfoRepositoryTests {
 		int nonExistId = 9999;
 
 		assertThrows(IllegalArgumentException.class, () -> {
-			ExerciseInfo exercise = exerciseInfoRepository.findById(nonExistId)
+			ExerciseInfos exercise = exerciseInfoRepository.findById(nonExistId)
 				.orElseThrow(() -> new IllegalArgumentException("해당 exerciseInfoId는 존재하지 않음"));
 
 
@@ -75,14 +80,14 @@ class ExerciseInfoRepositoryTests {
 	public void addExercise() {
 		// given
 
-		ExerciseInfo exerciseInfo = ExerciseInfo.builder()
+		ExerciseInfos exerciseInfo = ExerciseInfos.builder()
 			.exerciseName("런닝머신")
 			.exerciseMin(30)
 			.met(4)
 			.exerciseKcal(300)
 			.exerciseNoteId(1)
 			.build();
-		ExerciseInfo saved = exerciseInfoRepository.save(exerciseInfo);
+		ExerciseInfos saved = exerciseInfoRepository.save(exerciseInfo);
 
 		// when
 		int id = saved.getExerciseInfoId();
@@ -97,12 +102,12 @@ class ExerciseInfoRepositoryTests {
 		int exerciseNoteId = 1;
 
 		// when
-		List<ExerciseInfo> exerciseList = exerciseInfoRepository.findByExerciseNoteId(exerciseNoteId);
+		List<ExerciseInfos> exerciseList = exerciseInfoRepository.findByExerciseNoteId(exerciseNoteId);
 
 		// then
 		assertNotNull(exerciseList);
 		assertFalse(exerciseList.isEmpty());
-		for (ExerciseInfo exercise : exerciseList) {
+		for (ExerciseInfos exercise : exerciseList) {
 			assertEquals(exerciseNoteId, exercise.getExerciseNoteId()); // 전부 해당 exerciseNoteId와 매칭되는지
 		}
 	}
@@ -113,7 +118,7 @@ class ExerciseInfoRepositoryTests {
 		int nonExistExerciseNoteId = 99999;
 
 		// when
-		List<ExerciseInfo> exerciseList = exerciseInfoRepository.findByExerciseNoteId(nonExistExerciseNoteId);
+		List<ExerciseInfos> exerciseList = exerciseInfoRepository.findByExerciseNoteId(nonExistExerciseNoteId);
 
 		// then
 		assertNotNull(exerciseList);
