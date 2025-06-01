@@ -34,6 +34,7 @@ public class SecurityConfig {
 		http
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/board/list").permitAll()
+				.requestMatchers("/board/detail").permitAll()
 				.requestMatchers(HttpMethod.POST, "/api/account/member").permitAll()
 				.requestMatchers("/account/login").permitAll()
 				.requestMatchers("/account/signup").permitAll()
