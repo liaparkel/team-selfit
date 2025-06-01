@@ -45,7 +45,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 			.memberId(memberId)
 			.email(email)
 			.build();
-
 		return new CustomOAuth2User(user, attributes);
 	}
 
