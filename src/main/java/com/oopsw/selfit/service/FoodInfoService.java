@@ -41,7 +41,7 @@ public class FoodInfoService {
 
 	}
 
-	public boolean addFood(Food food) {
+	public boolean addFoodInfo(Food food) {
 		// 수동 매핑: DTO → Entity
 		FoodInfos entity = FoodInfos.builder()
 			.foodNoteId(food.getFoodNoteId())
