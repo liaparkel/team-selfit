@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.oopsw.selfit.domain.FoodInfo;
+import com.oopsw.selfit.domain.FoodInfos;
 
-public interface FoodInfoRepository extends JpaRepository<FoodInfo, Integer> {
-	List<FoodInfo> findByFoodNoteId(int foodNoteId);
+public interface FoodInfoRepository extends JpaRepository<FoodInfos, Integer> {
+	List<FoodInfos> findByFoodNoteId(int foodNoteId);
 }

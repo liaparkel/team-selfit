@@ -94,4 +94,6 @@ public interface DashboardRepository {
 	// List<Exercise> getExercisesByIds(List<Integer> exerciseIds);
 
 	// List<Food> getFoodsByIds(List<Integer> foodIds);
+
+	int getFoodNoteId(Food food);
 }
