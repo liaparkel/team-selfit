@@ -81,7 +81,7 @@ public class FoodInfoServiceTests {
 		float expectedKcal = (float) foodDto.getUnitKcal() / 100f * foodDto.getIntake();
 
 		// when
-		boolean result = foodInfoService.addFood(foodDto);
+		boolean result = foodInfoService.addFoodInfo(foodDto);
 
 		// then
 		assertTrue(result);
