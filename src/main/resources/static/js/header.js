@@ -16,7 +16,7 @@ function handleLogout() {
                 logoutBtn.style.display = 'none';
                 loginBtn.style.display = 'block';
                 alert('로그아웃되었습니다.');
-                window.location.href = '/account/login';
+                window.location.reload();
             })
             .catch(error => {
                 alert('로그아웃 실패: ' + error.response.status);
