@@ -124,9 +124,6 @@ function fetchCategoryList() {
                     location.href = `/board/list?categoryId=${category.categoryId}`;
                 });
                 communityMenu.appendChild(div);
-
-
-
             });
         })
         .catch(err => {
