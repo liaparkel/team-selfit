@@ -6,16 +6,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.oopsw.selfit.domain.CheckItem;
 import com.oopsw.selfit.dto.Checklist;
 import com.oopsw.selfit.dto.Exercise;
 import com.oopsw.selfit.dto.Food;
 import com.oopsw.selfit.dto.Member;
-import com.oopsw.selfit.repository.CheckRepository;
 import com.oopsw.selfit.repository.DashboardRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -24,13 +21,13 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class DashboardService {
 	private final DashboardRepository dashboardRepository;
-	private final CheckRepository checkRepository;
-
-	public void validatePositive(int value, String fieldName) {
-		if (value <= 0) {
-			throw new IllegalArgumentException(fieldName + "은(는) 0보다 커야 합니다.");
-		}
-	}
+	// private final CheckRepository checkRepository;
+	//
+	// public void validatePositive(int value, String fieldName) {
+	// 	if (value <= 0) {
+	// 		throw new IllegalArgumentException(fieldName + "은(는) 0보다 커야 합니다.");
+	// 	}
+	// }
 
 	public void isAlreadyExists(int exists, String type, String date) {
 		if (exists > 0) {
@@ -58,8 +55,10 @@ public class DashboardService {
 				bmr = (int)((10 * member.getWeight()) + (6.25 * member.getHeight()) - (5 * age) + 5);
 				break;
 			case "여자":
-				bmr = (int)((10 * member.getWeight()) + (6.25 * member.getHeight()) + (5 * age) - 161);
+				bmr = (int)((10 * member.getWeight()) + (6.25 * member.getHeight()) - (5 * age) - 161);
 				break;
+			default:
+				throw new IllegalArgumentException("잘못된 성별입니다: " + member.getGender());
 		}
 		return bmr;
 	}
@@ -69,9 +68,7 @@ public class DashboardService {
 		LocalDate today = LocalDate.now();
 
 		// Period로 만 나이 계산
-		Period period = Period.between(birthDate, today);
-
-		return period.getYears();
+		return Period.between(birthDate, today).getYears();
 	}
 
 	public Food getIntakeKcal(Food food) {
@@ -98,20 +95,16 @@ public class DashboardService {
 	// 	return dashboardRepository.getAutoCompleteFood(partWord);
 	// }
 
-	public boolean addFoodList(Food food) {
+	public int addFoodList(Food food) {
 		int exists = dashboardRepository.isChecklist(food.getMemberId(), food.getIntakeDate());
 		isAlreadyExists(exists, "식단 기록", food.getIntakeDate());
-		if (dashboardRepository.addFoodList(food) == 0) {
-			return false;
-		}
-		return true;
+
+		dashboardRepository.addFoodList(food);
+		return food.getFoodNoteId();
 	}
 
 	public boolean removeFoodList(Food food) {
-		if (dashboardRepository.removeFoodList(food) == 0) {
-			return false;
-		}
-		return true;
+		return dashboardRepository.removeFoodList(food) > 0;
 	}
 
 	// public int getUnitKcal(int foodId) {
@@ -146,20 +139,16 @@ public class DashboardService {
 	// 	return dashboardRepository.getAutoCompleteExercise(partWord);
 	// }
 
-	public boolean addExerciseList(Exercise exercise) {
+	public int addExerciseList(Exercise exercise) {
 		int exists = dashboardRepository.isChecklist(exercise.getMemberId(), exercise.getExerciseDate());
 		isAlreadyExists(exists, "운동 기록", exercise.getExerciseDate());
-		if (dashboardRepository.addExerciseList(exercise) == 0) {
-			return false;
-		}
-		return true;
+
+		dashboardRepository.addExerciseList(exercise);
+		return exercise.getExerciseNoteId();
 	}
 
 	public boolean removeExerciseList(Exercise exercise) {
-		if (dashboardRepository.removeExerciseList(exercise) == 0) {
-			return false;
-		}
-		return true;
+		return dashboardRepository.removeExerciseList(exercise) > 0;
 	}
 
 	// public boolean addExercise(Exercise exercise) {
@@ -197,81 +186,86 @@ public class DashboardService {
 	// public boolean setCheckContent(Checklist checklist) {
 	// 	return dashboardRepository.setCheckContent(checklist) > 0;
 	// }
-	public boolean setCheckItem(Checklist checklist) {
-		Optional<CheckItem> checkItem = checkRepository.findById((long)checklist.getCheckId());
 
-		if (checkItem.isEmpty()) {
-			throw new IllegalArgumentException("수정할 체크 항목이 존재하지 않습니다.");
-		}
-		CheckItem item = checkItem.get();
-		item.setCheckContent(checklist.getCheckContent());
-
-		checkRepository.save(item);
-		return true;
-	}
+	// public boolean setCheckItem(Checklist checklist) {
+	// 	Optional<CheckItem> checkItem = checkRepository.findById((long)checklist.getCheckId());
+	//
+	// 	if (checkItem.isEmpty()) {
+	// 		throw new IllegalArgumentException("수정할 체크 항목이 존재하지 않습니다.");
+	// 	}
+	// 	CheckItem item = checkItem.get();
+	// 	item.setCheckContent(checklist.getCheckContent());
+	//
+	// 	checkRepository.save(item);
+	// 	return true;
+	// }
 
 	// public boolean setIsCheck(Checklist checklist) {
 	// 	return dashboardRepository.setIsCheck(checklist) > 0;
 	// }
-	public boolean setIsCheckItem(Checklist checklist) {
-		Optional<CheckItem> checkItem = checkRepository.findById((long)checklist.getCheckId());
-
-		if (checkItem.isEmpty()) {
-			throw new IllegalArgumentException("존재하지 않는 체크 항목입니다.");
-		}
-
-		CheckItem item = checkItem.get();
-		item.setIsCheck(!item.getIsCheck());
-
-		checkRepository.save(item);
-
-		return true;
-	}
+	// public boolean setIsCheckItem(Checklist checklist) {
+	// 	Optional<CheckItem> checkItem = checkRepository.findById((long)checklist.getCheckId());
+	//
+	// 	if (checkItem.isEmpty()) {
+	// 		throw new IllegalArgumentException("존재하지 않는 체크 항목입니다.");
+	// 	}
+	//
+	// 	CheckItem item = checkItem.get();
+	// 	item.setIsCheck(!item.getIsCheck());
+	//
+	// 	checkRepository.save(item);
+	//
+	// 	return true;
+	// }
 
 	// public boolean removeCheckItem(int checkId) {
 	// 	return dashboardRepository.removeCheckItem(checkId) > 0;
 	// }
-	public boolean removeCheckItem(Checklist checklist) {
-		// Optional<T>는 값이 있을 수도 없을 수도 있는 컨테이너 객체
-		// 	T가 null일 수도 있으니, 직접 null 체크하지 말고 Optional로 감싸서 안전하게 써라는 의미
-		Optional<CheckItem> checkItem = checkRepository.findById((long)checklist.getCheckId());
 
-		// Optional에서 제공하는 주요 메서드
-		// isPresent() → 값이 있으면 true
-		// isEmpty() → 값이 없으면 true (Java 11 이상)
-		// orElse(), orElseThrow() → 값이 없을 때 대처 방식
-		if (checkItem.isEmpty()) {
-			throw new IllegalArgumentException("존재하지 않는 체크 항목");
-		}
-		checkRepository.deleteById((long)checklist.getCheckId());
-		return true;
-	}
+	// public boolean removeCheckItem(Checklist checklist) {
+	// 	// Optional<T>는 값이 있을 수도 없을 수도 있는 컨테이너 객체
+	// 	// 	T가 null일 수도 있으니, 직접 null 체크하지 말고 Optional로 감싸서 안전하게 써라는 의미
+	// 	Optional<CheckItem> checkItem = checkRepository.findById((long)checklist.getCheckId());
+	//
+	// 	// Optional에서 제공하는 주요 메서드
+	// 	// isPresent() → 값이 있으면 true
+	// 	// isEmpty() → 값이 없으면 true (Java 11 이상)
+	// 	// orElse(), orElseThrow() → 값이 없을 때 대처 방식
+	// 	if (checkItem.isEmpty()) {
+	// 		throw new IllegalArgumentException("존재하지 않는 체크 항목");
+	// 	}
+	// 	checkRepository.deleteById((long)checklist.getCheckId());
+	// 	return true;
+	// }
 
-	public boolean addChecklist(Checklist checklist) {
+	public int addChecklist(Checklist checklist) {
 		int exists = dashboardRepository.isChecklist(checklist.getMemberId(), checklist.getCheckDate());
 		isAlreadyExists(exists, "체크리스트", checklist.getCheckDate());
-		return dashboardRepository.addChecklist(checklist) > 0;
+
+		dashboardRepository.addChecklist(checklist);
+		return checklist.getChecklistId();
 	}
 
 	// public boolean addCheckItem(Checklist checklist) {
 	// 	return dashboardRepository.addCheckItem(checklist) > 0;
 	// }
-	public boolean addCheckItem(Checklist checklist) {
-		int count = checkRepository.countByChecklistId((long)checklist.getChecklistId());
 
-		if (count >= 5) {
-			// RuntimeException의 하위 클래스 어떤 상태 조건이 충족되지 않았을 때 던지는 예외
-			throw new IllegalStateException("체크리스트 항목은 최대 5개까지만 등록할 수 있습니다.");
-		}
-		CheckItem checkItem = CheckItem.builder()
-			.checkContent(checklist.getCheckContent())
-			.isCheck(false)
-			.checklistId((long)checklist.getChecklistId())
-			.build();
-
-		checkRepository.save(checkItem);
-		return true;
-	}
+	// public boolean addCheckItem(Checklist checklist) {
+	// 	int count = checkRepository.countByChecklistId((long)checklist.getChecklistId());
+	//
+	// 	if (count >= 5) {
+	// 		// RuntimeException의 하위 클래스 어떤 상태 조건이 충족되지 않았을 때 던지는 예외
+	// 		throw new IllegalStateException("체크리스트 항목은 최대 5개까지만 등록할 수 있습니다.");
+	// 	}
+	// 	CheckItem checkItem = CheckItem.builder()
+	// 		.checkContent(checklist.getCheckContent())
+	// 		.isCheck(false)
+	// 		.checklistId((long)checklist.getChecklistId())
+	// 		.build();
+	//
+	// 	checkRepository.save(checkItem);
+	// 	return true;
+	// }
 
 	public String getGoal(int memberId) {
 		return dashboardRepository.getGoal(memberId);
