@@ -102,7 +102,38 @@ function showErrorModal(message, redirectPath = null, triggerOnClose = false) {
     modal.show();
 }
 
-export { showAlertModal, showSuccessModal, showErrorModal };
+/**
+ * 확인 모달 표시
+ * @param {string} message
+ * @param {function} onConfirm
+ */
+function showConfirmModal(message, onConfirm) {
+    $("#confirmModalMessage").text(message);
+    const $modal = $("#confirmModal");
+    const modal = new bootstrap.Modal($modal[0]);
+
+    // 이전 이벤트 제거
+    $("#confirmModalConfirm").off("click");
+    $("#confirmModalCancel").off("click");
+
+    // 확인 버튼 눌렀을 때
+    $("#confirmModalConfirm").on("click", () => {
+        modal.hide();
+        if (typeof onConfirm === 'function') {
+            onConfirm();
+        }
+    });
+
+    // 취소 버튼은 단순 모달 닫기만
+    $("#confirmModalCancel").on("click", () => {
+        modal.hide();
+    });
+
+    modal.show();
+}
+
+
+export { showAlertModal, showSuccessModal, showErrorModal, showConfirmModal };
 
 // 모달 HTML 동적 삽입
 (function insertModals() {
@@ -165,6 +196,28 @@ export { showAlertModal, showSuccessModal, showErrorModal };
             </div>
             <div class="modal-footer border-0 justify-content-center">
                 <button class="btn btn-danger px-4" data-bs-dismiss="modal" id="errorModalConfirm" type="button">확인</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 확인 모달 -->
+<div aria-hidden="true" aria-labelledby="confirmModalLabel" class="modal fade" id="confirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="confirmModalLabel">확인</h5>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <div class="mb-3">
+                    <i class="bi bi-question-circle-fill text-warning" style="font-size: 3rem;"></i>
+                </div>
+                <p class="mb-0 fs-6" id="confirmModalMessage"></p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center">
+                <button class="btn btn-secondary px-4" id="confirmModalCancel" type="button">취소</button>
+                <button class="btn btn-primary px-4" id="confirmModalConfirm" type="button">확인</button>
             </div>
         </div>
     </div>

@@ -27,8 +27,11 @@ public class UIController {
 		String name = (String)session.getAttribute("name");
 		model.addAttribute("email", email);
 		model.addAttribute("name", name);
-		System.out.println("회원가입페이지로 이동: " + email);
-		return "account/signup-oauth";
+		if (email == null) {
+			return "/account/login";
+		}
+
+		return "/account/signup-oauth";
 	}
 
 	@GetMapping("/account/mypage")

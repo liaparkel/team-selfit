@@ -117,6 +117,15 @@ public class MemberRestController {
 		return ResponseEntity.ok(Map.of("success", memberService.checkPw(loginUser.getMemberId(), pw)));
 	}
 
+	@GetMapping("/member/check-login")
+	public ResponseEntity<Map<String, Boolean>> checkLoginStatus(@AuthenticationPrincipal AuthenticatedUser loginUser) {
+		boolean result = false;
+		if (loginUser != null) {
+			result = true;
+		}
+		return ResponseEntity.ok(Map.of("result", result));
+	}
+
 	@GetMapping("/member/bookmarks/{offset}")
 	public ResponseEntity<List<Bookmark>> getBookmarks(@AuthenticationPrincipal AuthenticatedUser loginUser,
 		@PathVariable int offset) {
