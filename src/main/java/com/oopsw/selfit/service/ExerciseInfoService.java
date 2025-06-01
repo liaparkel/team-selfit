@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.oopsw.selfit.domain.ExerciseInfo;
+import com.oopsw.selfit.domain.ExerciseInfos;
 import com.oopsw.selfit.repository.DashboardRepository;
 import com.oopsw.selfit.repository.ExerciseInfoRepository;
 
@@ -16,7 +16,7 @@ public class ExerciseInfoService {
 	private final ExerciseInfoRepository exerciseInfoRepository;
 	private final DashboardRepository dashboardRepository;
 
-	public List<ExerciseInfo> getRawInfosByNote(int noteId) {
+	public List<ExerciseInfos> getRawInfosByNote(int noteId) {
 		return exerciseInfoRepository.findByExerciseNoteId(noteId);
 	}
 

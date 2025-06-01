@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FoodInfo {
+public class FoodInfos {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "FOOD_INFO_ID")
@@ -27,7 +27,7 @@ public class FoodInfo {
 	private String foodName;
 
 	@Column(name = "INTAKE", nullable = false)
-	private float intake;
+	private int intake;
 
 	@Column(name = "INTAKE_KCAL", nullable = false)
 	private float intakeKcal;

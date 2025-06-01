@@ -308,6 +308,11 @@
                  INNER JOIN MEMBER M ON EN.MEMBER_ID = M.MEMBER_ID
         WHERE EN.EXERCISE_NOTE_ID = #{exerciseNoteId}
     </select>
+    <select id="getFoodNoteId" parameterType="com.oopsw.selfit.dto.Food" resultType="Integer">
+        SELECT FOOD_NOTE_ID AS foodNoteId
+        FROM FOOD_NOTE
+        WHERE INTAKE_DATE=#{intakeDate} AND MEMBER_ID=#{memberId}
+    </select>
     <!--    <select id="getExercisesByIds" parameterType="list" resultType="com.oopsw.selfit.dto.Exercise">-->
     <!--        SELECT-->
     <!--        EXERCISE_ID AS exerciseId,-->
