@@ -18,9 +18,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+
 		LoginInfo loginInfo = memberRepository.getLoginInfo(email);
-		User user = User.builder()
-			.memberId(loginInfo.getMemberId())
+		if (loginInfo == null) {
+			throw new UsernameNotFoundException("아이디 및 비밀번호가 일치하지 않습니다.");
+		}
+		User user = User.builder().memberId(loginInfo.getMemberId())
 			.email(email)
 			.pw(loginInfo.getPw())
 			.build();

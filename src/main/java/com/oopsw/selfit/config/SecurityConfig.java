@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 
 import com.google.gson.Gson;
 import com.oopsw.selfit.auth.CustomOAuth2FailureHandler;
@@ -34,11 +36,12 @@ public class SecurityConfig {
 		http
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/board/list").permitAll()
-				.requestMatchers("/board/detail").permitAll()
+				.requestMatchers("/board/detail/**").permitAll()
 				.requestMatchers(HttpMethod.POST, "/api/account/member").permitAll()
 				.requestMatchers("/account/login").permitAll()
 				.requestMatchers("/account/signup").permitAll()
-				.requestMatchers("account/signup-oauth").permitAll()
+				.requestMatchers("/account/signup-oauth").permitAll()
+				.requestMatchers("/api/account/member/check-login").permitAll()
 				.requestMatchers("/board/**").hasRole("USER")
 				.requestMatchers("/dashboard/**").hasRole("USER")
 				.requestMatchers("/account/**").hasRole("USER")
@@ -62,7 +65,7 @@ public class SecurityConfig {
 			.oauth2Login(oauth2 -> oauth2
 				.userInfoEndpoint(userInfo -> userInfo
 					.userService(customOAuth2UserService))
-				.defaultSuccessUrl("/dashboard")
+				.successHandler(oAuth2SuccessHandler())
 				.failureHandler(customOAuth2FailureHandler)
 			);
 
@@ -104,6 +107,25 @@ public class SecurityConfig {
 			error.put("message", "아이디 또는 비밀번호가 올바르지 않습니다.");
 			error.put("status", 401);
 			gson.toJson(error, response.getWriter());
+		};
+	}
+
+	// OAuth2 로그인용 성공 핸들러 추가
+	@Bean
+	public AuthenticationSuccessHandler oAuth2SuccessHandler() {
+		return (request, response, authentication) -> {
+			SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
+
+			if (savedRequest != null) {
+				String targetUrl = savedRequest.getRedirectUrl();
+				if (!targetUrl.contains("/api/")) {
+					response.sendRedirect(targetUrl);
+					return;
+				}
+			}
+
+			// 저장된 요청이 없거나 API 요청인 경우 대시보드로
+			response.sendRedirect("/dashboard");
 		};
 	}
 }
