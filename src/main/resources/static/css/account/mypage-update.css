@@ -1,325 +1,514 @@
 @import url("../global.css");
 
 .sideBar {
-  float: left;
+    float: left;
 }
 
 .maincontent {
-  width: 80%;
-  float: right;
-  padding: 20px;
-  overflow-y: auto;
+    width: 80%;
+    float: right;
+    padding: 20px;
+    overflow-y: auto;
 }
 
 .content-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
 }
 
 .page-title {
-  font-size: 28px;
-  font-weight: 600;
-  color: #333;
+    font-size: 28px;
+    font-weight: 600;
+    color: #333;
 }
 
 /* 업데이트 폼 래퍼 */
 .update-form-wrapper {
-  background: white;
-  border-radius: 12px;
-  padding: 40px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* 프로필 섹션 */
 .profile-section {
-  text-align: center;
+    text-align: center;
 }
 
 .profile-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
 }
 
 .profile-upload-area {
-  display: inline-block;
-  position: relative;
-  cursor: pointer;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
 }
 
 .profile-image-container {
-  position: relative;
-  display: inline-block;
+    position: relative;
+    display: inline-block;
 }
 
 .profile-icon {
-  font-size: 120px;
-  color: var(--bg2);
+    font-size: 120px;
+    color: var(--bg2);
 }
 
 .camera-overlay {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  width: 30px;
-  height: 30px;
-  background-color: var(--bg3);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 14px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    background-color: var(--bg3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
 }
 
 /* 폼 컨테이너 */
 .form-container {
-  margin-top: 30px;
+    margin-top: 30px;
 }
 
 /* 폼 라벨 */
 .form-label {
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
 }
 
 /* 입력 필드 */
 .form-control {
-  border-radius: 8px;
-  border: 1px solid var(--bg2);
-  padding: 12px 16px;
-  font-size: 14px;
-  transition: border-color 0.3s;
+    border-radius: 8px;
+    border: 1px solid var(--bg2);
+    padding: 12px 16px;
+    font-size: 14px;
+    transition: border-color 0.3s;
 }
 
 .form-control:focus {
-  border-color: var(--color-3);
-  box-shadow: 0 0 0 0.2rem rgba(51, 193, 129, 0.25);
+    border-color: var(--color-3);
+    box-shadow: 0 0 0 0.2rem rgba(51, 193, 129, 0.25);
 }
 
 #password,
 #passwordConfirm {
-  width: 484.8px; /* 원하는 너비로 수정하세요 */
+    width: 484.8px; /* 원하는 너비로 수정하세요 */
 }
 
 /* 컴팩트 입력 필드 스타일 */
 .compact-inputs {
-  align-items: flex-start;
-  margin-top: 3px;
+    align-items: flex-start;
+    margin-top: 3px;
 }
 
 .compact-input-group {
-  flex: 1;
-  position: relative;
+    flex: 1;
+    position: relative;
 }
 
 .compact-input {
-  width: 100%;
-  height: 47px;
-  font-size: 13px;
-  padding: 8px 12px;
-  text-align: center;
+    width: 100%;
+    height: 47px;
+    font-size: 13px;
+    padding: 8px 12px;
+    text-align: center;
 }
 
 /* 컴팩트 라벨 스타일 추가 */
 .compact-label {
-  font-size: 14px;
-  margin-bottom: 6px;
-  display: block;
+    font-size: 14px;
+    margin-bottom: 6px;
+    display: block;
 }
 
 /* 기존 input-label 스타일 제거 */
 .input-label {
-  display: none;
+    display: none;
 }
 
 /* 입력 래퍼 (체크 아이콘 포함) */
 .input-wrapper {
-  position: relative;
+    position: relative;
 }
 
 .input-wrapper .form-control {
-  padding-right: 2.5rem;
+    padding-right: 2.5rem;
 }
 
 .check-icon {
-  position: absolute;
-  right: 0.75rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--color-3);
-  font-size: 1.2rem;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-3);
+    font-size: 1.2rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 /* 검증 성공 시 스타일 */
 .input-wrapper.valid .form-control {
-  border-color: var(--color-3);
-  background-color: rgba(51, 193, 129, 0.1);
+    border-color: var(--color-3);
+    background-color: rgba(51, 193, 129, 0.1);
 }
 
 .input-wrapper.valid .check-icon {
-  opacity: 1;
+    opacity: 1;
 }
 
 /* 중복확인 버튼 */
 .btn-duplicate {
-  background-color: var(--color-3);
-  color: white;
-  border: 1px solid var(--color-3);
-  border-radius: 8px;
-  font-size: 14px;
-  padding: 12px 20px;
-  white-space: nowrap;
-  min-width: 100px;
-  transition: background-color 0.3s;
+    background-color: var(--color-3);
+    color: white;
+    border: 1px solid var(--color-3);
+    border-radius: 8px;
+    font-size: 14px;
+    padding: 12px 20px;
+    white-space: nowrap;
+    min-width: 100px;
+    transition: background-color 0.3s;
 }
 
 .btn-duplicate:hover:not(:disabled) {
-  background-color: var(--color-3-10);
-  border-color: var(--color-3-10);
-  color: white;
+    background-color: var(--color-3-10);
+    border-color: var(--color-3-10);
+    color: white;
 }
 
 .btn-duplicate.checked {
-  background-color: var(--color-4);
-  border-color: var(--color-4);
+    background-color: var(--color-4);
+    border-color: var(--color-4);
 }
 
 .btn-duplicate:disabled {
-  background-color: #ccc;
-  border-color: #ccc;
-  cursor: not-allowed;
+    background-color: #ccc;
+    border-color: #ccc;
+    cursor: not-allowed;
 }
 
 .btn-group {
-  display: flex;
-  justify-content: flex-start;
-  width: 20%;
+    display: flex;
+    justify-content: flex-start;
+    width: 20%;
 }
 
 .btn-group .btn {
-  min-width: 60px;
-  padding: 0.5rem 1rem;
-  font-size: 14px;
+    min-width: 60px;
+    padding: 0.5rem 1rem;
+    font-size: 14px;
 }
+
 /* 성별 버튼 */
 .gender-btn {
-  border-radius: 0;
-  font-size: 14px;
-  padding: 12px;
+    border-radius: 0;
+    font-size: 14px;
+    padding: 12px;
 }
 
 .gender-btn:first-child {
-  border-radius: 8px 0 0 8px;
+    border-radius: 8px 0 0 8px;
 }
 
 .gender-btn:last-child {
-  border-radius: 0 8px 8px 0;
+    border-radius: 0 8px 8px 0;
 }
 
 .gender-btn.active {
-  background-color: var(--color-3);
-  border-color: var(--color-3);
-  color: white;
+    background-color: var(--color-3);
+    border-color: var(--color-3);
+    color: white;
 }
 
 .gender-btn:hover:not(.active) {
-  background-color: var(--color-3-20);
-  border-color: var(--color-3);
-  color: var(--color-3);
+    background-color: var(--color-3-20);
+    border-color: var(--color-3);
+    color: var(--color-3);
 }
 
 /* 운동 목적 버튼 */
 .exercise-btn {
-  border-radius: 0;
-  font-size: 14px;
-  padding: 12px;
+    border-radius: 0;
+    font-size: 14px;
+    padding: 12px;
 }
 
 .exercise-btn:first-child {
-  border-radius: 8px 0 0 8px;
+    border-radius: 8px 0 0 8px;
 }
 
 .exercise-btn:nth-child(2) {
-  border-radius: 0;
+    border-radius: 0;
 }
 
 .exercise-btn:last-child {
-  border-radius: 0 8px 8px 0;
+    border-radius: 0 8px 8px 0;
 }
 
 .exercise-btn.active {
-  background-color: var(--color-3);
-  border-color: var(--color-3);
-  color: white;
+    background-color: var(--color-3);
+    border-color: var(--color-3);
+    color: white;
 }
 
 .exercise-btn:hover:not(.active) {
-  background-color: var(--color-3-20);
-  border-color: var(--color-3);
-  color: var(--color-3);
+    background-color: var(--color-3-20);
+    border-color: var(--color-3);
+    color: var(--color-3);
 }
 
 /* 기본 버튼 스타일 */
 .btn-primary {
-  background-color: var(--color-3);
-  border-color: var(--color-3);
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 500;
-  padding: 12px 24px;
+    background-color: var(--color-3);
+    border-color: var(--color-3);
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 12px 24px;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: var(--color-3-10);
-  border-color: var(--color-3-10);
+    background-color: var(--color-3-10);
+    border-color: var(--color-3-10);
 }
 
 .btn-primary:disabled {
-  background-color: #ccc;
-  border-color: #ccc;
-  cursor: not-allowed;
+    background-color: #ccc;
+    border-color: #ccc;
+    cursor: not-allowed;
 }
 
 .btn-secondary {
-  background-color: var(--bg2);
-  border-color: var(--bg2);
-  color: #333;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 500;
-  padding: 12px 24px;
+    background-color: var(--bg2);
+    border-color: var(--bg2);
+    color: #333;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 12px 24px;
 }
 
 .btn-secondary:hover {
-  background-color: var(--bg3);
-  border-color: var(--bg3);
-  color: white;
+    background-color: var(--bg3);
+    border-color: var(--bg3);
+    color: white;
 }
 
 /* 에러 메시지 */
 .invalid-feedback {
-  display: block;
-  color: var(--danger);
-  font-size: 12px;
-  margin-top: 5px;
-  min-height: 16px;
+    display: block;
+    color: var(--danger);
+    font-size: 12px;
+    margin-top: 5px;
+    min-height: 16px;
 }
 
 /* 로딩 상태 */
 .btn-loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* 숫자만 입력 필드 */
 .number-only {
-  /* 기본 스타일 유지 */
+    /* 기본 스타일 유지 */
+}
+
+#profileImg {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%; /* 원형 프로필 */
+    object-fit: cover; /* 비율 유지하며 꽉 채움 */
+    border: 2px solid #ddd; /* 테두리 */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* 약간의 그림자 */
+    display: block;
+    margin: 0 auto;
+}
+
+/* Profile Image Modal Styles */
+.upload-area {
+    border: 2px dashed #ddd;
+    border-radius: 12px;
+    padding: 40px 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    background-color: #fafafa;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-area.drag-over {
+    border-color: var(--color-3);
+    background-color: rgba(51, 193, 129, 0.1);
+}
+
+.upload-content {
+    max-width: 300px;
+}
+
+.upload-icon {
+    font-size: 48px;
+    color: #ccc;
+    margin-bottom: 16px;
+}
+
+.upload-area h4 {
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 18px;
+}
+
+.upload-area p {
+    color: #666;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+/* Crop Area Styles */
+.crop-area {
+    text-align: center;
+}
+
+.crop-container {
+    margin-bottom: 20px;
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+    max-height: 400px;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+#cropImage {
+    max-width: 100%;
+    max-height: 400px;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.crop-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+}
+
+.crop-circle {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border: 3px solid white;
+    border-radius: 50%;
+    background-color: transparent;
+    cursor: move;
+    pointer-events: all;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+}
+
+.crop-circle::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border: 2px dashed rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+}
+
+.crop-handle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border: 2px solid var(--color-3);
+    border-radius: 50%;
+    cursor: move;
+}
+
+/* Preview Styles */
+.crop-preview {
+    margin: 20px 0;
+}
+
+.crop-preview h6 {
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: 600;
+}
+
+.preview-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    margin: 0 auto;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.crop-instructions {
+    background-color: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+.crop-instructions p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
+
+/* Modal Adjustments */
+.modal-lg {
+    max-width: 600px;
+}
+
+/* Button Loading State */
+.btn-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .crop-circle {
+        width: 150px;
+        height: 150px;
+    }
+
+    .modal-lg {
+        max-width: 90%;
+    }
+
+    .upload-area {
+        padding: 30px 15px;
+    }
 }
