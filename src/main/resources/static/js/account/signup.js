@@ -1,4 +1,4 @@
-import {showAlertModal, showSuccessModal, showErrorModal} from './basic-modal.js';
+import {showAlertModal, showErrorModal, showSuccessModal} from './basic-modal.js';
 
 // API 엔드포인트 설정
 const API_BASE_URL = "/api/account"
@@ -378,7 +378,7 @@ function validateName() {
     const name = $("#name").val().trim()
 
     formState.name.value = name
-    formState.name.valid = name.length >= 2
+    formState.name.valid = (name.length >= 2 && name.length <= 5);
 
     const $wrapper = $("#name").closest(".input-wrapper")
 
@@ -387,7 +387,7 @@ function validateName() {
         clearError($("#name"))
     } else if (!formState.name.valid) {
         $wrapper.removeClass("valid")
-        showError($("#name"), "이름은 2자 이상 입력해주세요.")
+        showError($("#name"), "이름은 2자 이상 5자 이하로 입력해주세요.")
     } else {
         $wrapper.addClass("valid")
         clearError($("#name"))
@@ -400,7 +400,7 @@ function validateNickname() {
     const nickname = $("#nickname").val().trim()
 
     formState.nickname.value = nickname
-    formState.nickname.valid = nickname.length >= 2
+    formState.nickname.valid = (nickname.length >= 2 && nickname.length <= 20)
 
     // 값이 변경되면 중복확인 초기화
     if (formState.nickname.checked) {
@@ -413,7 +413,7 @@ function validateNickname() {
     if (nickname === "") {
         clearError($("#nickname"))
     } else if (!formState.nickname.valid) {
-        showError($("#nickname"), "닉네임은 2자 이상 입력해주세요.")
+        showError($("#nickname"), "닉네임은 2자 이상 20자 이하로 입력해주세요.")
     } else {
         clearError($("#nickname"))
     }
