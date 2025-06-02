@@ -1,4 +1,4 @@
-package com.oopsw.selfit.auth;
+package com.oopsw.selfit.auth.service;
 
 import java.util.Map;
 
@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
+import com.oopsw.selfit.auth.user.CustomOAuth2User;
+import com.oopsw.selfit.auth.user.User;
 import com.oopsw.selfit.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
