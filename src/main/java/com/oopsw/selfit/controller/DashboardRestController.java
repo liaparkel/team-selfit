@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.oopsw.selfit.dto.Checklist;
 import com.oopsw.selfit.dto.Exercise;
+import com.oopsw.selfit.dto.ExerciseApi;
 import com.oopsw.selfit.dto.Food;
 import com.oopsw.selfit.dto.FoodApi;
 import com.oopsw.selfit.dto.Member;
 import com.oopsw.selfit.service.CheckService;
 import com.oopsw.selfit.service.DashboardService;
+import com.oopsw.selfit.service.ExerciseApiService;
 import com.oopsw.selfit.service.FoodApiService;
 import com.oopsw.selfit.service.ExerciseInfoService;
 import com.oopsw.selfit.service.FoodInfoService;
@@ -33,7 +35,9 @@ public class DashboardRestController {
 	private final DashboardService dashboardService;
 	private final FoodInfoService foodInfoService;
 	private final CheckService checkService;
+	private final ExerciseInfoService exerciseInfoService;
 	private final FoodApiService foodApiService;
+	private final ExerciseApiService exerciseApiService;
 
 	@PostMapping("/food/openSearch")
 	public Mono<List<FoodApi>> openFoodSearch(@RequestBody Map<String, Object> payload) {
@@ -42,7 +46,15 @@ public class DashboardRestController {
 		int numOfRows= ((Number) payload.get("numOfRows")).intValue();
 		return foodApiService.getFoodByNameLike(keyword, pageNo, numOfRows);
 	}
-	private final ExerciseInfoService exerciseInfoService;
+
+	@PostMapping("/exercise/openSearch")
+	public Mono<List<ExerciseApi>> openExerciseSearch(@RequestBody Map<String, Object> payload) {
+		String keyword = (String) payload.get("keyword");
+		int pageNo   = ((Number) payload.get("pageNo")).intValue();
+		int numOfRows= ((Number) payload.get("numOfRows")).intValue();
+		return exerciseApiService.getExercisesByNameLike(keyword, pageNo, numOfRows);
+	}
+
 
 	@PostMapping("/bmr")
 	public ResponseEntity<Map<String, Integer>> getBmr(@RequestBody Member member) {

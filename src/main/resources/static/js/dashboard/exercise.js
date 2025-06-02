@@ -28,7 +28,7 @@
                     : (window.exerciseKcalList = generateMockData());
 
                 const data = allData.filter(item => new Date(item.date).getFullYear() === year);
-                const seriesData = data.map(item => ({ x: new Date(item.date + 'T00:00:00'), y: item.kcal }));
+                const seriesData = data.map(item => ({x: new Date(item.date + 'T00:00:00'), y: item.kcal}));
 
                 renderChart(seriesData, year);
             });
@@ -45,7 +45,7 @@
 
         const defaultYear = new Date().getFullYear();
         const filteredData = data.filter(item => new Date(item.date).getFullYear() === defaultYear);
-        const seriesData = filteredData.map(item => ({ x: new Date(item.date + 'T00:00:00'), y: item.kcal }));
+        const seriesData = filteredData.map(item => ({x: new Date(item.date + 'T00:00:00'), y: item.kcal}));
 
         renderChart(seriesData, defaultYear);
     });
@@ -66,7 +66,7 @@
                 type: 'line',
                 height: 350,
                 background: '#f9f9f9',
-                zoom: { enabled: true, type: 'x', autoScaleYaxis: true },
+                zoom: {enabled: true, type: 'x', autoScaleYaxis: true},
                 toolbar: {
                     show: true,
                     tools: {
@@ -80,25 +80,25 @@
                     }
                 }
             },
-            series: [{ name: '운동 칼로리', data: seriesData }],
+            series: [{name: '운동 칼로리', data: seriesData}],
             xaxis: {
                 type: 'datetime',
                 min: xMin,
                 max: xMax,
-                labels: { format: 'MM-dd', style: { fontSize: '12px', colors: '#444' } },
+                labels: {format: 'MM-dd', style: {fontSize: '12px', colors: '#444'}},
                 tickPlacement: 'on'
             },
             yaxis: {
                 max: yAxisMax,
-                title: { text: 'kcal', style: { fontSize: '14px', color: '#999' } },
-                labels: { style: { fontSize: '12px', colors: '#666' } }
+                title: {text: 'kcal', style: {fontSize: '14px', color: '#999'}},
+                labels: {style: {fontSize: '12px', colors: '#666'}}
             },
-            tooltip: { x: { format: 'yyyy-MM-dd' } },
-            stroke: { width: 3, curve: 'smooth', colors: ['#33C181'] },
-            fill: { type: 'solid', colors: ['#33C181'] },
-            markers: { size: 0, hover: { size: 6 } },
-            grid: { borderColor: '#eee', strokeDashArray: 4 },
-            title: { text: '운동 그래프', align: 'left', style: { fontSize: '18px', color: '#666' } }
+            tooltip: {x: {format: 'yyyy-MM-dd'}},
+            stroke: {width: 3, curve: 'smooth', colors: ['#33C181']},
+            fill: {type: 'solid', colors: ['#33C181']},
+            markers: {size: 0, hover: {size: 6}},
+            grid: {borderColor: '#eee', strokeDashArray: 4},
+            title: {text: '운동 그래프', align: 'left', style: {fontSize: '18px', color: '#666'}}
         };
 
         const chart = new ApexCharts(document.querySelector("#exercise-chart"), options);
@@ -122,7 +122,7 @@
             }, 100);
         });
 
-        chart.addEventListener("zoomed", function (ctx, { xaxis }) {
+        chart.addEventListener("zoomed", function (ctx, {xaxis}) {
             const min = Math.max(xaxis.min, xMin);
             const max = Math.min(xaxis.max, xMax);
             if (min !== xaxis.min || max !== xaxis.max) chart.zoomX(min, max);
@@ -141,7 +141,7 @@
             while (cursor <= dec31) {
                 if (year === currentYear && cursor > today) break;
                 const dateStr = cursor.toISOString().split('T')[0];
-                arr.push({ date: dateStr, kcal: Math.floor(Math.random() * 800) + 200 });
+                arr.push({date: dateStr, kcal: Math.floor(Math.random() * 800) + 200});
                 cursor.setDate(cursor.getDate() + 1);
             }
         }
@@ -152,12 +152,12 @@
 // ===== 달력, 패널, 자동완성, 리스트 =====
 
 const exerciseData = [
-    { name: "러닝 운동", amountStr: "30분", calPerUnit: 300 },
-    { name: "자전거 타기", amountStr: "30분", calPerUnit: 250 },
-    { name: "수영", amountStr: "30분", calPerUnit: 350 },
-    { name: "줄넘기 운동", amountStr: "30분", calPerUnit: 280 },
-    { name: "요가", amountStr: "30분", calPerUnit: 180 },
-    { name: "근력 운동", amountStr: "30분", calPerUnit: 220 }
+    {name: "러닝 운동", amountStr: "30분", calPerUnit: 300},
+    {name: "자전거 타기", amountStr: "30분", calPerUnit: 250},
+    {name: "수영", amountStr: "30분", calPerUnit: 350},
+    {name: "줄넘기 운동", amountStr: "30분", calPerUnit: 280},
+    {name: "요가", amountStr: "30분", calPerUnit: 180},
+    {name: "근력 운동", amountStr: "30분", calPerUnit: 220}
 ];
 
 let selectedDate = null;
@@ -179,7 +179,7 @@ function renderKcalEvents(calendar) {
         const list = exerciseMap[date];
         const totalKcal = list.reduce((sum, item) => sum + item.cal, 0);
         if (totalKcal > 0) {
-            events.push({ title: `총 ${totalKcal} kcal`, start: date, allDay: true });
+            events.push({title: `총 ${totalKcal} kcal`, start: date, allDay: true});
         }
     }
     calendar.removeAllEvents();
@@ -195,8 +195,8 @@ document.addEventListener('DOMContentLoaded', function () {
         initialView: 'dayGridMonth',
         locale: 'ko',
         height: 650,
-        headerToolbar: { left: 'prev,next today', center: 'title', right: '' },
-        buttonText: { today: '오늘' },
+        headerToolbar: {left: 'prev,next today', center: 'title', right: ''},
+        buttonText: {today: '오늘'},
         dateClick: function (info) {
             selectedDate = info.dateStr;
             document.getElementById('panel-date').innerText = selectedDate.replace(/-/g, '.');
@@ -220,28 +220,55 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // ===== 자동완성(Autocomplete) 기능 =====
-nameInput.addEventListener('input', function () {
+nameInput.addEventListener('input', async function () {
     const keyword = nameInput.value.trim();
-    if (!keyword) return listEl.classList.add('d-none');
+    if (!keyword) {
+        listEl.classList.add('d-none');
+        return;
+    }
 
-    const filtered = exerciseData.filter(e => e.name.includes(keyword));
-    if (filtered.length === 0) return listEl.classList.add('d-none');
+    try {
+        const res = await axios.post('/api/dashboard/exercise/openSearch', {
+            keyword: keyword,
+            pageNo: 1,
+            numOfRows: 20
+        });
+        const items = res.data; // 실제 JSON 구조 확인 필수!
 
-    // 자동완성 리스트 항목을 "운동명 / 분량 / kcal" 형태로 생성 (버튼 없음)
-    listEl.innerHTML = filtered.map(e => `
-      <li class="autocomplete-item"
-          data-name="${e.name}"
-          data-amount="${e.amountStr}"
-          data-cal="${e.calPerUnit}">
-        <div class="item-info">
-          <div class="info-name">${e.name}</div>
-          <div class="info-detail">${e.amountStr} / ${e.calPerUnit}kcal</div>
-        </div>
-      </li>
-    `).join('');
+        if (!items || items.length === 0) {
+            listEl.classList.add('d-none');
+            return;
+        }
 
-    listEl.classList.remove('d-none');
+        // 실제 JSON에 맞춰서 e["운동명"], e["단위체중당에너지소비량"]을 꺼낸다
+        listEl.innerHTML = items.map(e => {
+            // 예시: e["단위체중당에너지소비량"] 은 met
+            const name = e["운동명"];       // 혹은 e["운동명"]
+            const met  = e["단위체중당에너지소비량"];               // 혹은 e["단위체중당에너지소비량"]
+
+            // 화면에서 “분”을 입력할 input(예: amountInput) 없이 단순 자동완성이면,
+            // 일단 시간 정보를 알려 주거나(“30분” → 30) 사용자가 선택 후 별도로 입력을 받아야 한다.
+            // 예시에서는 아직 duration 필드가 없으므로, detail 문자열은 met 정보만 보여 줌:
+            return `
+        <li class="autocomplete-item"
+            data-name="${name}"
+            data-met="${met}">
+          <div class="item-info">
+            <div class="info-name">${name}</div>
+            <div class="info-detail">
+              분당 ${met} kcal
+            </div>
+          </div>
+        </li>`;
+        }).join('');
+
+        listEl.classList.remove('d-none');
+    } catch (err) {
+        console.error("운동 자동완성 OpenSearch 호출 실패:", err);
+        listEl.classList.add('d-none');
+    }
 });
+
 
 // 자동완성 항목 클릭 처리 (운동명 클릭 시만 input에 값 채우기)
 listEl.addEventListener('click', function (e) {
@@ -309,10 +336,10 @@ document.getElementById('add-exercise-btn').addEventListener('click', function (
     const cal = Math.round((calPerUnit / baseAmount) * amount);
 
     if (editIndex !== null) {
-        exerciseList[editIndex] = { name, amount: `${amount}${unit}`, cal };
+        exerciseList[editIndex] = {name, amount: `${amount}${unit}`, cal};
         editIndex = null;
     } else {
-        exerciseList.push({ name, amount: `${amount}${unit}`, cal });
+        exerciseList.push({name, amount: `${amount}${unit}`, cal});
     }
 
     exerciseMap[selectedDate] = exerciseList;
