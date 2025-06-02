@@ -246,6 +246,10 @@ public class DashboardService {
 		return checklist.getChecklistId();
 	}
 
+	public boolean removeChecklist(Checklist checklist) {
+		return dashboardRepository.removeChecklist(checklist) > 0;
+	}
+
 	// public boolean addCheckItem(Checklist checklist) {
 	// 	return dashboardRepository.addCheckItem(checklist) > 0;
 	// }

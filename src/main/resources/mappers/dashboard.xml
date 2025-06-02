@@ -146,6 +146,7 @@
     <select id="getCheckList" parameterType="com.oopsw.selfit.dto.Checklist"
             resultType="com.oopsw.selfit.dto.Checklist">
         SELECT CI.CHECK_ID      AS checkId,
+               CI.CHECKLIST_ID  AS checklistId,
                CI.CHECK_CONTENT AS checkContent,
                CI.IS_CHECK      AS isCheck
         FROM CHECKLIST CL
@@ -310,12 +311,14 @@
     <select id="getFoodNoteId" parameterType="com.oopsw.selfit.dto.Food" resultType="Integer">
         SELECT FOOD_NOTE_ID AS foodNoteId
         FROM FOOD_NOTE
-        WHERE INTAKE_DATE=#{intakeDate} AND MEMBER_ID=#{memberId}
+        WHERE INTAKE_DATE = #{intakeDate}
+          AND MEMBER_ID = #{memberId}
     </select>
     <select id="getExerciseNoteId" parameterType="com.oopsw.selfit.dto.Exercise" resultType="Integer">
         SELECT Exercise_NOTE_ID AS exerciseNoteId
         FROM EXERCISE_NOTE
-        WHERE EXERCISE_DATE=#{exerciseDate} AND MEMBER_ID=#{memberId}
+        WHERE EXERCISE_DATE = #{exerciseDate}
+          AND MEMBER_ID = #{memberId}
     </select>
 
     <!--    <select id="getExercisesByIds" parameterType="list" resultType="com.oopsw.selfit.dto.Exercise">-->
@@ -340,6 +343,14 @@
     <!--            #{id}-->
     <!--        </foreach>-->
     <!--    </select>-->
+    <delete id="removeChecklist" parameterType="int">
+        DELETE
+        FROM CHECKLIST
+        WHERE CHECKLIST_ID = #{checklistId}
+          AND NOT EXISTS (SELECT 1
+                          FROM check_items
+                          WHERE checklist_id = #{checklistId})
+    </delete>
 
 
 </mapper>

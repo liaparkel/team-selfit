@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.oopsw.selfit.domain.CheckItem;
 import com.oopsw.selfit.dto.Checklist;
 import com.oopsw.selfit.dto.Exercise;
 import com.oopsw.selfit.dto.Food;
@@ -129,9 +130,14 @@ public class DashboardRestController {
 		return ResponseEntity.ok(Map.of("checklistId", dashboardService.addChecklist(checklist)));
 	}
 
+	@DeleteMapping("/checklist")
+	public ResponseEntity<Map<String, Boolean>> removeChecklist(@RequestBody Checklist checklist) {
+		return ResponseEntity.ok(Map.of("success", dashboardService.removeChecklist(checklist)));
+	}
+
 	@PostMapping("/checklist/item")
-	public ResponseEntity<Map<String, Boolean>> addCheckItem(@RequestBody Checklist checklist) {
-		return ResponseEntity.ok(Map.of("success", checkService.addCheckItem(checklist)));
+	public ResponseEntity<CheckItem> addCheckItem(@RequestBody Checklist checklist) {
+		return ResponseEntity.ok(checkService.addCheckItem(checklist));
 	}
 
 	@DeleteMapping("/food")
