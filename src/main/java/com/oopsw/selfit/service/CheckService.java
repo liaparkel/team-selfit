@@ -16,7 +16,7 @@ public class CheckService {
 
 	private final CheckRepository checkRepository;
 
-	public CheckItem addCheckItem(Checklist checklist) {
+	public boolean addCheckItem(Checklist checklist) {
 		int count = checkRepository.countByChecklistId((long)checklist.getChecklistId());
 
 		if (count >= 5) {
@@ -29,7 +29,8 @@ public class CheckService {
 			.checklistId((long)checklist.getChecklistId())
 			.build();
 
-		return checkRepository.save(checkItem);
+		checkRepository.save(checkItem);
+		return true;
 	}
 
 	public boolean removeCheckItem(Checklist checklist) {

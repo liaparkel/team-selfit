@@ -43,7 +43,6 @@ async function loadMonthlyChecklist(year, month) {
                 })
                 .catch(() => checklistData[date] = [])
         );
-
     }
     await Promise.all(promises);
 }
@@ -179,7 +178,6 @@ async function onAddOrEdit() {
     renderChecklistList();
     calendar.refetchEvents();
 }
-
 
 // 삭제 확정 핸들러
 async function onDeleteConfirmed() {
