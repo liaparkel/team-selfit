@@ -1,5 +1,5 @@
 // 로그인한 회원 ID (테스트용 고정)
-const memberId = 1;
+// const memberId = 1;
 
 let calendar;
 let currentSelectedDate = null;
