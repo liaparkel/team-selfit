@@ -13,6 +13,21 @@ document.addEventListener('DOMContentLoaded', () => {
         '조회순': 'views',
     };
 
+    // --- 검색창 요소 가져오기 ───────────────────────────────────────
+    const searchInput = document.querySelector('.searchTotal');
+    if (searchInput) {
+        // Enter 키 눌렀을 때 검색어를 currentKeyword에 반영하고 1페이지 다시 로드
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                currentKeyword = searchInput.value.trim();
+                currentPage = 1;
+                fetchAndRender(currentPage);
+                searchInput.value = '';
+            }
+        });
+    }
+
     // --- 게시글 추가 (Add) – AJAX POST 처리 ----
     const postForm = document.getElementById('postForm');
     if (postForm) {
@@ -101,8 +116,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderPage(boards) {
         const list = document.querySelector('.board-list');
+        const noResults = document.querySelector('.no-results-message');
+        const pagination = document.querySelector('.board-pagination');
         list.innerHTML = '';
 
+        // 2) 검색 결과가 없으면 빈 메시지 표시하고 리턴
+        if (!Array.isArray(boards) || boards.length === 0) {
+            noResults.style.display = 'flex';
+            // 필요하다면 페이징도 숨김
+            // pagination.style.display = 'none';
+            return;
+        }
+
+        // 3) 결과가 있을 때는 빈 메시지 숨기기
+        noResults.style.display = 'none';
+
+        // 4) 실제 게시글 아이템을 렌더링
         boards.forEach(board => {
             const item = document.createElement('div');
             item.className = 'board-list';
