@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+>
 <head>
     <meta charset="UTF-8">
     <title>상세 게시글</title>
@@ -9,9 +11,7 @@
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
     />
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="/css/board/boardDetail.css">
-    <script src="/js/board/boardMockData.js"></script>
     <script src="/js/board/boardDetail.js"></script>
 </head>
 <body>
@@ -23,9 +23,9 @@
             <div class="board-header">
                 <div class="manage-board">
                     <div class="board-category"></div>
-                    <div>
-                        <button type="button" class="btn">수정</button>
-                        <button type="button" class="btn">삭제</button>
+                    <div class="owner-buttons" style="display: none;">
+                        <button type="button" class="btn" id="editBtn">수정</button>
+                        <button type="button" class="btn" id="deleteBtn">삭제</button>
                     </div>
                 </div>
             </div>
@@ -49,7 +49,7 @@
             <div class="board-info"></div>
             <div class="board-content">
                 <div class="board-image">
-                    <img src="" alt="캠핑장 사진">
+                    <img src="">
                 </div>
 
                 <div class="board-body"></div>
