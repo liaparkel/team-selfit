@@ -1,4 +1,6 @@
 import {showAlertModal, showErrorModal, showSuccessModal} from './basic-modal.js';
+import {getDownloadURL, ref, uploadBytes} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-storage.js";
+import {storage} from "../board/firebaseConfig.js";
 
 // API 엔드포인트 설정
 const API_BASE_URL = "/api/account"
@@ -14,6 +16,7 @@ const originalData = {
     weight: null,
     exerciseType: null,
     memberType: "DEFAULT",
+    profileImg: null,
 }
 
 const formState = {
@@ -28,16 +31,24 @@ const formState = {
     weight: {value: null, valid: true},
     exerciseType: null,
     memberType: "DEFAULT",
+    profileImg: null,
 }
 
 // jQuery 선언
 const $ = window.jQuery
 
+// Profile Image Upload State
+let profileImageUpload = {
+    selectedFile: null,
+    cropPosition: {x: 0, y: 0},
+    isDragging: false,
+    dragStart: {x: 0, y: 0},
+    CROP_SIZE: 200,
+    initialized: false
+};
+
 // =========================== API 함수들 ===========================
 
-/**
- * 회원 정보 조회 API
- */
 async function getMemberInfoAPI() {
     try {
         const response = await axios.get("/api/account/member", {
@@ -57,9 +68,6 @@ async function getMemberInfoAPI() {
     }
 }
 
-/**
- * 닉네임 중복 확인 API
- */
 async function checkNicknameDuplicateAPI(nickname) {
     const requestData = {
         nickname: nickname,
@@ -85,9 +93,6 @@ async function checkNicknameDuplicateAPI(nickname) {
     }
 }
 
-/**
- * 회원정보 수정 API
- */
 async function updateMemberAPI(userData) {
     try {
         const response = await axios.put("/api/account/member", userData, {
@@ -126,9 +131,6 @@ function toggleButtonLoading($button, loading) {
     }
 }
 
-/**
- * 에러 메시지 표시
- */
 function showError($element, message) {
     let $feedback
 
@@ -152,9 +154,6 @@ function showError($element, message) {
     $element.addClass("is-invalid")
 }
 
-/**
- * 에러 메시지 제거
- */
 function clearError($element) {
     let $feedback
 
@@ -170,23 +169,14 @@ function clearError($element) {
     }
 }
 
-/**
- * 필드가 원본 데이터에서 변경되었는지 확인
- */
 function isFieldChanged(fieldName, currentValue) {
     return originalData[fieldName] !== currentValue
 }
 
-/**
- * 필드에 입력이 진행 중인지 확인 (빈 값이 아니고 내용이 있는 경우)
- */
 function isFieldBeingEdited(value) {
     return value !== null && value !== undefined && value.toString().trim() !== ""
 }
 
-/**
- * 모든 에러 상태 초기화
- */
 function clearAllErrors() {
     $(".is-invalid").removeClass("is-invalid")
     $(".invalid-feedback").text("")
@@ -197,11 +187,9 @@ function clearAllErrors() {
 $(document).ready(() => {
     initEventListeners()
     loadMemberData()
+    initProfileImageUpload()
 })
 
-/**
- * 회원 데이터 로드 및 폼 초기화
- */
 async function loadMemberData() {
     try {
         const memberData = await getMemberInfoAPI()
@@ -217,6 +205,7 @@ async function loadMemberData() {
             originalData.weight = memberData.weight || null
             originalData.exerciseType = memberData.goal || null
             originalData.memberType = memberData.memberType || "DEFAULT"
+            originalData.profileImg = memberData.profileImg || null
 
             // 폼 상태 업데이트
             formState.email.value = originalData.email
@@ -228,6 +217,7 @@ async function loadMemberData() {
             formState.weight.value = originalData.weight
             formState.exerciseType = originalData.exerciseType
             formState.memberType = originalData.memberType
+            formState.profileImg = originalData.profileImg
 
             // 폼 필드에 데이터 설정
             $("#email").val(originalData.email)
@@ -236,6 +226,11 @@ async function loadMemberData() {
             $("#birthDate").val(originalData.birthDate)
             $("#height").val(originalData.height)
             $("#weight").val(originalData.weight)
+
+            // 프로필 이미지 설정
+            if (originalData.profileImg) {
+                $("#profileImg").attr('src', originalData.profileImg)
+            }
 
             // 이메일 필드 비활성화 및 중복확인 버튼 숨기기
             $("#email").prop("disabled", true)
@@ -265,18 +260,12 @@ async function loadMemberData() {
     }
 }
 
-/**
- * 비밀번호 수정 섹션 숨기기
- */
 function hidePasswordSection() {
     $(".password-section").hide()
     formState.password.valid = true
     formState.passwordConfirm.valid = true
 }
 
-/**
- * 닉네임 중복확인 완료 상태 설정
- */
 function setNicknameDuplicateCheckComplete() {
     formState.nickname.checked = true
     $("#nicknameCheck").addClass("checked").find(".btn-text").text("확인완료")
@@ -284,6 +273,23 @@ function setNicknameDuplicateCheckComplete() {
 }
 
 function initEventListeners() {
+    // 기존 이벤트 리스너들 제거 (중복 방지)
+    $("#password").off("input")
+    $("#passwordConfirm").off("input")
+    $("#name").off("input")
+    $("#nickname").off("input")
+    $("#birthDate").off("input keydown")
+    $("#height").off("input")
+    $("#weight").off("input")
+    $("#nicknameCheck").off("click")
+    $(".gender-btn").off("click")
+    $(".exercise-btn").off("click")
+    $(".number-only").off("input")
+    $(".profile-upload-area").off("click")
+    $("#profileImage").off("change")
+    $("#cancelBtn").off("click")
+    $("#saveBtn").off("click")
+
     // 입력 필드 검증 - 변경된 필드만 검증
     $("#password").on("input", validatePassword)
     $("#passwordConfirm").on("input", validatePasswordConfirm)
@@ -293,12 +299,10 @@ function initEventListeners() {
     // 선택적 필드 검증 - 입력 중인 경우만 검증
     $("#birthDate").on("input", () => {
         formatBirthDate()
-        // 원본과 다른 경우에만 검증
         const currentValue = $("#birthDate").val().trim()
         if (isFieldChanged("birthDate", currentValue)) {
             validateBirthDate()
         } else {
-            // 원본과 같으면 에러 제거
             clearError($("#birthDate"))
             formState.birthDate.valid = true
         }
@@ -334,11 +338,18 @@ function initEventListeners() {
         $(this).val(value)
     })
 
-    // 프로필 이미지 업로드
-    $(".profile-upload-area").on("click", () => {
-        $("#profileImage").click()
+    // 프로필 이미지 업로드 - 모달 열기로 변경
+    $(".profile-upload-area").on("click", (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        if ($('#profileImageModal').length > 0) {
+            $('#profileImageModal').modal('show')
+        } else {
+            console.error('Profile image modal not found')
+        }
     })
 
+    // 기존 파일 입력 핸들러 (백업용)
     $("#profileImage").on("change", handleProfileImageChange)
 
     // 버튼 이벤트
@@ -346,12 +357,11 @@ function initEventListeners() {
     $("#saveBtn").on("click", handleSave)
 }
 
-// =========================== 검증 함수들 - 스마트 검증 적용 ===========================
+// =========================== 검증 함수들 ===========================
 
 function validatePassword() {
     const password = $("#password").val()
 
-    // 비밀번호가 입력 중인 경우에만 검증
     if (!isFieldBeingEdited(password)) {
         formState.password.valid = true
         clearError($("#password"))
@@ -374,7 +384,6 @@ function validatePassword() {
 
     formState.password.value = password
 
-    // 비밀번호 확인도 다시 검증
     if ($("#passwordConfirm").val()) {
         validatePasswordConfirm()
     }
@@ -386,7 +395,6 @@ function validatePasswordConfirm() {
 
     formState.passwordConfirm.value = passwordConfirm
 
-    // 둘 다 비어있으면 유효
     if (!isFieldBeingEdited(password) && !isFieldBeingEdited(passwordConfirm)) {
         formState.passwordConfirm.valid = true
         clearError($("#passwordConfirm"))
@@ -394,7 +402,6 @@ function validatePasswordConfirm() {
         return
     }
 
-    // 비밀번호 확인이 입력 중인 경우에만 검증
     if (!isFieldBeingEdited(passwordConfirm)) {
         formState.passwordConfirm.valid = true
         clearError($("#passwordConfirm"))
@@ -420,7 +427,6 @@ function validatePasswordConfirm() {
 function validateName() {
     const name = $("#name").val().trim()
 
-    // 원본 데이터에서 변경된 경우에만 검증
     if (!isFieldChanged("name", name)) {
         formState.name.valid = true
         clearError($("#name"))
@@ -444,13 +450,11 @@ function validateName() {
 function validateNickname() {
     const nickname = $("#nickname").val().trim()
 
-    // 원본 데이터와 같으면 중복확인 완료 처리
     if (!isFieldChanged("nickname", nickname)) {
         formState.nickname.valid = true
         formState.nickname.checked = true
         clearError($("#nickname"))
 
-        // 중복확인 버튼도 완료 상태로 설정
         const $nicknameCheck = $("#nicknameCheck")
         $nicknameCheck.addClass("checked").find(".btn-text").text("확인완료")
         $nicknameCheck.prop("disabled", true)
@@ -463,7 +467,6 @@ function validateNickname() {
     formState.nickname.value = nickname;
     formState.nickname.valid = (nickname.length >= 2 && nickname.length <= 20);
 
-    // 값이 변경되면 중복확인 초기화
     if (formState.nickname.checked) {
         formState.nickname.checked = false
         const $wrapper = $("#nickname").closest(".input-wrapper")
@@ -485,14 +488,12 @@ function validateBirthDate() {
 
     const birthDate = $("#birthDate").val().trim()
 
-    // 원본 데이터와 같으면 항상 유효 (검증 안함)
     if (!isFieldChanged("birthDate", birthDate)) {
         formState.birthDate.valid = true
         clearError($("#birthDate"))
         return
     }
 
-    // 빈 값이면 유효 (선택적 필드)
     if (!isFieldBeingEdited(birthDate)) {
         formState.birthDate.valid = true
         clearError($("#birthDate"))
@@ -535,7 +536,6 @@ function validateHeight() {
 
     const height = $("#height").val().trim()
 
-    // 입력 중인 경우에만 검증
     if (!isFieldBeingEdited(height)) {
         formState.height.valid = true
         clearError($("#height"))
@@ -561,7 +561,6 @@ function validateWeight() {
 
     const weight = $("#weight").val().trim()
 
-    // 입력 중인 경우에만 검증
     if (!isFieldBeingEdited(weight)) {
         formState.weight.valid = true
         clearError($("#weight"))
@@ -629,10 +628,8 @@ function handleCancel() {
 }
 
 async function handleSave() {
-    // 저장 전 모든 에러 상태 초기화
     clearAllErrors()
 
-    // 현재 입력된 값들
     const currentName = $("#name").val().trim()
     const currentNickname = $("#nickname").val().trim()
     const currentBirthDate = $("#birthDate").val().trim()
@@ -640,16 +637,13 @@ async function handleSave() {
     const currentWeight = $("#weight").val().trim()
     const currentPassword = $("#password").val()
 
-    // 변경된 필드나 입력 중인 필드만 검증
     let hasValidationErrors = false
 
-    // 이름 검증 (변경된 경우만)
     if (isFieldChanged("name", currentName)) {
         validateName()
         if (!formState.name.valid) hasValidationErrors = true
     }
 
-    // 닉네임 검증 (변경된 경우만)
     if (isFieldChanged("nickname", currentNickname)) {
         if (!formState.nickname.valid || !formState.nickname.checked) {
             hasValidationErrors = true
@@ -660,7 +654,6 @@ async function handleSave() {
         }
     }
 
-    // 비밀번호 검증 (입력된 경우만)
     if (isFieldBeingEdited(currentPassword)) {
         validatePassword()
         validatePasswordConfirm()
@@ -669,19 +662,16 @@ async function handleSave() {
         }
     }
 
-    // 생년월일 검증 (변경된 경우에만)
     if (isFieldChanged("birthDate", currentBirthDate)) {
         validateBirthDate()
         if (!formState.birthDate.valid) hasValidationErrors = true
     }
 
-    // 키 검증 (입력된 경우만)
     if (isFieldBeingEdited(currentHeight)) {
         validateHeight()
         if (!formState.height.valid) hasValidationErrors = true
     }
 
-    // 몸무게 검증 (입력된 경우만)
     if (isFieldBeingEdited(currentWeight)) {
         validateWeight()
         if (!formState.weight.valid) hasValidationErrors = true
@@ -697,26 +687,24 @@ async function handleSave() {
 
     try {
         const userData = {
-            email: originalData.email, // 이메일은 항상 원본 (수정 불가)
+            email: originalData.email,
             name: isFieldChanged("name", currentName) ? currentName : originalData.name,
             nickname: isFieldChanged("nickname", currentNickname) ? currentNickname : originalData.nickname,
-            gender: formState.gender, // 성별은 현재 선택된 값
+            gender: formState.gender,
             birthday: isFieldChanged("birthDate", currentBirthDate)
                 ? (currentBirthDate === "" ? null : currentBirthDate)
                 : originalData.birthDate,
             height: isFieldChanged("height", currentHeight) ? currentHeight : originalData.height,
             weight: isFieldChanged("weight", currentWeight) ? currentWeight : originalData.weight,
-            goal: formState.exerciseType, // 운동 목적은 현재 선택된 값
+            goal: formState.exerciseType,
+            profileImg: formState.profileImg,
         }
-        console.log(currentBirthDate);
-        console.log(originalData.birthDate)
-        // 비밀번호는 입력되고 검증된 경우에만 포함
+
         if (isFieldBeingEdited(currentPassword) && formState.password.valid && formState.passwordConfirm.valid) {
             userData.pw = currentPassword
         }
 
         console.log("전송할 데이터:", userData)
-        console.log("원본 데이터:", originalData)
 
         const response = await updateMemberAPI(userData)
 
@@ -769,6 +757,298 @@ function handleBirthDateKeydown(e) {
             setTimeout(() => {
                 $input[0].setSelectionRange(cursorPos - 2, cursorPos - 2)
             }, 0)
+        }
+    }
+}
+
+// =========================== 프로필 이미지 업로드 ===========================
+
+function initProfileImageUpload() {
+    // 이미 초기화되었으면 중복 실행 방지
+    if (profileImageUpload.initialized) {
+        return;
+    }
+
+    // Modal elements
+    const $modal = $('#profileImageModal');
+    const $uploadArea = $('#uploadArea');
+    const $cropArea = $('#cropArea');
+    const $imageFileInput = $('#imageFileInput');
+    const $cropImage = $('#cropImage');
+    const $cropCircle = $('#cropCircle');
+    const $previewCircle = $('#previewCircle');
+    const $saveBtn = $('#saveImageBtn');
+    const $resetBtn = $('#resetImageBtn');
+
+    // 모달이 존재하지 않으면 초기화하지 않음
+    if ($modal.length === 0) {
+        console.warn('Profile image modal not found in DOM');
+        return;
+    }
+
+    // 이벤트 리스너 등록 (기존 이벤트 제거 후)
+    $imageFileInput.off('change').on('change', handleFileSelect);
+    $('#selectFileBtn').off('click').on('click', () => $imageFileInput.click());
+    $resetBtn.off('click').on('click', resetUpload);
+    $saveBtn.off('click').on('click', saveImage);
+
+    // Drag and drop 이벤트
+    $uploadArea.off('dragenter dragover dragleave drop');
+    $uploadArea.on('dragenter dragover', (e) => {
+        e.preventDefault();
+        $uploadArea.addClass('drag-over');
+    });
+
+    $uploadArea.on('dragleave', (e) => {
+        e.preventDefault();
+        $uploadArea.removeClass('drag-over');
+    });
+
+    $uploadArea.on('drop', (e) => {
+        e.preventDefault();
+        $uploadArea.removeClass('drag-over');
+        const files = e.originalEvent.dataTransfer.files;
+        if (files.length > 0) {
+            handleFileSelect({target: {files: files}});
+        }
+    });
+
+    // Crop circle 드래그 이벤트
+    $cropCircle.off('mousedown touchstart');
+    $cropCircle.on('mousedown', startDrag);
+    $cropCircle.on('touchstart', startDragTouch);
+
+    // Document 레벨 이벤트 (중복 방지)
+    $(document).off('mousemove.profileCrop touchmove.profileCrop mouseup.profileCrop touchend.profileCrop');
+    $(document).on('mousemove.profileCrop', drag);
+    $(document).on('touchmove.profileCrop', dragTouch);
+    $(document).on('mouseup.profileCrop touchend.profileCrop', stopDrag);
+
+    // Modal 이벤트
+    $modal.off('hidden.bs.modal').on('hidden.bs.modal', resetUpload);
+
+    profileImageUpload.initialized = true;
+
+    function handleFileSelect(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            alert('이미지 파일만 업로드 가능합니다.');
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            alert('파일 크기는 5MB 이하여야 합니다.');
+            return;
+        }
+
+        profileImageUpload.selectedFile = file;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            $cropImage.attr('src', e.target.result);
+            $cropImage.off('load').on('load', () => {
+                setupCropArea();
+                showCropArea();
+            });
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function setupCropArea() {
+        const imageRect = $cropImage[0].getBoundingClientRect();
+
+        profileImageUpload.cropPosition = {
+            x: Math.max(0, (imageRect.width - profileImageUpload.CROP_SIZE) / 2),
+            y: Math.max(0, (imageRect.height - profileImageUpload.CROP_SIZE) / 2)
+        };
+
+        updateCropCircle();
+        updatePreview();
+    }
+
+    function showCropArea() {
+        $uploadArea.hide();
+        $cropArea.show();
+        $resetBtn.show();
+        $saveBtn.show();
+    }
+
+    function resetUpload() {
+        profileImageUpload.selectedFile = null;
+        profileImageUpload.cropPosition = {x: 0, y: 0};
+        $cropArea.hide();
+        $uploadArea.show();
+        $resetBtn.hide();
+        $saveBtn.hide();
+        $imageFileInput.val('');
+    }
+
+    function startDrag(e) {
+        e.preventDefault();
+        profileImageUpload.isDragging = true;
+
+        const rect = $('#imageContainer')[0].getBoundingClientRect();
+        profileImageUpload.dragStart = {
+            x: e.clientX - rect.left - profileImageUpload.cropPosition.x,
+            y: e.clientY - rect.top - profileImageUpload.cropPosition.y
+        };
+
+        $cropCircle.addClass('dragging');
+    }
+
+    function startDragTouch(e) {
+        e.preventDefault();
+        const touch = e.originalEvent.touches[0];
+        profileImageUpload.isDragging = true;
+
+        const rect = $('#imageContainer')[0].getBoundingClientRect();
+        profileImageUpload.dragStart = {
+            x: touch.clientX - rect.left - profileImageUpload.cropPosition.x,
+            y: touch.clientY - rect.top - profileImageUpload.cropPosition.y
+        };
+
+        $cropCircle.addClass('dragging');
+    }
+
+    function drag(e) {
+        if (!profileImageUpload.isDragging) return;
+        e.preventDefault();
+
+        const rect = $('#imageContainer')[0].getBoundingClientRect();
+        const imageRect = $cropImage[0].getBoundingClientRect();
+
+        const newX = e.clientX - rect.left - profileImageUpload.dragStart.x;
+        const newY = e.clientY - rect.top - profileImageUpload.dragStart.y;
+
+        const maxX = imageRect.width - profileImageUpload.CROP_SIZE;
+        const maxY = imageRect.height - profileImageUpload.CROP_SIZE;
+
+        profileImageUpload.cropPosition = {
+            x: Math.max(0, Math.min(newX, maxX)),
+            y: Math.max(0, Math.min(newY, maxY))
+        };
+
+        updateCropCircle();
+        updatePreview();
+    }
+
+    function dragTouch(e) {
+        if (!profileImageUpload.isDragging) return;
+        e.preventDefault();
+
+        const touch = e.originalEvent.touches[0];
+        const rect = $('#imageContainer')[0].getBoundingClientRect();
+        const imageRect = $cropImage[0].getBoundingClientRect();
+
+        const newX = touch.clientX - rect.left - profileImageUpload.dragStart.x;
+        const newY = touch.clientY - rect.top - profileImageUpload.dragStart.y;
+
+        const maxX = imageRect.width - profileImageUpload.CROP_SIZE;
+        const maxY = imageRect.height - profileImageUpload.CROP_SIZE;
+
+        profileImageUpload.cropPosition = {
+            x: Math.max(0, Math.min(newX, maxX)),
+            y: Math.max(0, Math.min(newY, maxY))
+        };
+
+        updateCropCircle();
+        updatePreview();
+    }
+
+    function stopDrag() {
+        profileImageUpload.isDragging = false;
+        $cropCircle.removeClass('dragging');
+    }
+
+    function updateCropCircle() {
+        $cropCircle.css({
+            left: profileImageUpload.cropPosition.x + 'px',
+            top: profileImageUpload.cropPosition.y + 'px'
+        });
+    }
+
+    function updatePreview() {
+        const img = $cropImage[0];
+        const bgSize = `${(img.offsetWidth / profileImageUpload.CROP_SIZE) * 80}px ${(img.offsetHeight / profileImageUpload.CROP_SIZE) * 80}px`;
+        const bgPosition = `-${(profileImageUpload.cropPosition.x / profileImageUpload.CROP_SIZE) * 80}px -${(profileImageUpload.cropPosition.y / profileImageUpload.CROP_SIZE) * 80}px`;
+
+        $previewCircle.css({
+            'background-image': `url(${img.src})`,
+            'background-size': bgSize,
+            'background-position': bgPosition
+        });
+    }
+
+    function generateCroppedImage() {
+        return new Promise((resolve) => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = $cropImage[0];
+
+            canvas.width = profileImageUpload.CROP_SIZE;
+            canvas.height = profileImageUpload.CROP_SIZE;
+
+            const scaleX = img.naturalWidth / img.offsetWidth;
+            const scaleY = img.naturalHeight / img.offsetHeight;
+
+            ctx.beginPath();
+            ctx.arc(profileImageUpload.CROP_SIZE / 2, profileImageUpload.CROP_SIZE / 2, profileImageUpload.CROP_SIZE / 2, 0, Math.PI * 2);
+            ctx.clip();
+
+            ctx.drawImage(
+                img,
+                profileImageUpload.cropPosition.x * scaleX,
+                profileImageUpload.cropPosition.y * scaleY,
+                profileImageUpload.CROP_SIZE * scaleX,
+                profileImageUpload.CROP_SIZE * scaleY,
+                0,
+                0,
+                profileImageUpload.CROP_SIZE,
+                profileImageUpload.CROP_SIZE
+            );
+
+            canvas.toBlob((blob) => {
+                resolve(blob);
+            }, 'image/jpeg', 0.9);
+        });
+    }
+
+    async function uploadToFirebase(blob) {
+        if (!storage) {
+            throw new Error('Firebase not initialized');
+        }
+
+        const fileName = `profile-images/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.jpg`;
+        const storageRef = ref(storage, fileName);
+        const snapshot = await uploadBytes(storageRef, blob);
+
+        return await getDownloadURL(snapshot.ref);
+    }
+
+    async function saveImage() {
+        if (!profileImageUpload.selectedFile) return;
+
+        toggleButtonLoading($saveBtn, true);
+
+        try {
+            const croppedBlob = await generateCroppedImage();
+            const downloadURL = await uploadToFirebase(croppedBlob);
+
+            $('#profileImg').attr('src', downloadURL);
+            formState.profileImg = downloadURL;
+
+            $modal.modal('hide');
+            resetUpload();
+
+            console.log('Profile image updated:', downloadURL);
+
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            alert('이미지 업로드 중 오류가 발생했습니다.');
+        } finally {
+            toggleButtonLoading($saveBtn, false);
         }
     }
 }
