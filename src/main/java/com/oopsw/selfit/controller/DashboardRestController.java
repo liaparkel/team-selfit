@@ -110,7 +110,8 @@ public class DashboardRestController {
 	@PostMapping("/exercise/list")
 	public ResponseEntity<Map<String, Integer>> addExerciseList(@RequestBody Exercise exercise, @AuthenticationPrincipal AuthenticatedUser loginUser) {
 		exercise.setMemberId(loginUser.getMemberId());
-		return ResponseEntity.ok(Map.of("exerciseNoteId", dashboardService.addExerciseList(exercise)));
+		int noteId = dashboardService.addExerciseList(exercise);
+		return ResponseEntity.ok(Map.of("exerciseNoteId", noteId));
 	}
 
 	@DeleteMapping("/exercise/list")
