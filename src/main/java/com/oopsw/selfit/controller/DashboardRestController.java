@@ -5,20 +5,26 @@ import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.oopsw.selfit.auth.AuthenticatedUser;
 import com.oopsw.selfit.dto.Checklist;
 import com.oopsw.selfit.dto.Food;
+import com.oopsw.selfit.dto.FoodApi;
 import com.oopsw.selfit.service.CheckService;
 import com.oopsw.selfit.service.DashboardService;
+import com.oopsw.selfit.service.FoodApiService;
 import com.oopsw.selfit.service.FoodInfoService;
 import com.oopsw.selfit.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/dashboard")
@@ -28,6 +34,15 @@ public class DashboardRestController {
 	private final MemberService memberService;
 	private final FoodInfoService foodInfoService;
 	private final CheckService checkService;
+	private final FoodApiService foodApiService;
+
+	@PostMapping("/food/openSearch")
+	public Mono<List<FoodApi>> openFoodSearch(@RequestBody Map<String, Object> payload) {
+		String keyword = (String) payload.get("keyword");
+		int pageNo   = ((Number) payload.get("pageNo")).intValue();
+		int numOfRows= ((Number) payload.get("numOfRows")).intValue();
+		return foodApiService.getFoodByNameLike(keyword, pageNo, numOfRows);
+	}
 
 	@PostMapping("/checklist/items")
 	public List<Checklist> getCheckList(@RequestBody Checklist checklist) {
