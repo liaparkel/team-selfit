@@ -870,11 +870,10 @@ public class DashboardServiceTests {
 		// given
 		int memberId = 99999;
 
-		// when
-		String result = dashboardService.getGoal(memberId);
-
-		// then
-		assertNull(result);
+		// when + then
+		assertThrows(IllegalArgumentException.class, () -> {
+			dashboardService.getGoal(memberId);
+		});
 	}
 
 	@Test

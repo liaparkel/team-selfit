@@ -87,7 +87,7 @@ public interface DashboardRepository {
 
 	// int getUnitKcal(int foodId);
 
-	// int getMet(int exerciseId);
+	int getMet(int exerciseId);
 
 	int getWeight(int exerciseNoteId);
 
@@ -96,4 +96,6 @@ public interface DashboardRepository {
 	// List<Food> getFoodsByIds(List<Integer> foodIds);
 
 	int getFoodNoteId(Food food);
+
+	int getExerciseNoteId(Exercise exercise);
 }

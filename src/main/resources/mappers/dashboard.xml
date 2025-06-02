@@ -304,7 +304,6 @@
     <select id="getWeight" parameterType="int" resultType="int">
         SELECT M.WEIGHT
         FROM EXERCISE_NOTE EN
-                 INNER JOIN exercise_infos EI ON EI.exercise_note_id = EN.EXERCISE_NOTE_ID
                  INNER JOIN MEMBER M ON EN.MEMBER_ID = M.MEMBER_ID
         WHERE EN.EXERCISE_NOTE_ID = #{exerciseNoteId}
     </select>
@@ -313,6 +312,12 @@
         FROM FOOD_NOTE
         WHERE INTAKE_DATE=#{intakeDate} AND MEMBER_ID=#{memberId}
     </select>
+    <select id="getExerciseNoteId" parameterType="com.oopsw.selfit.dto.Exercise" resultType="Integer">
+        SELECT Exercise_NOTE_ID AS exerciseNoteId
+        FROM EXERCISE_NOTE
+        WHERE EXERCISE_DATE=#{exerciseDate} AND MEMBER_ID=#{memberId}
+    </select>
+
     <!--    <select id="getExercisesByIds" parameterType="list" resultType="com.oopsw.selfit.dto.Exercise">-->
     <!--        SELECT-->
     <!--        EXERCISE_ID AS exerciseId,-->
@@ -335,4 +340,6 @@
     <!--            #{id}-->
     <!--        </foreach>-->
     <!--    </select>-->
+
+
 </mapper>
