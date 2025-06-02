@@ -35,105 +35,105 @@ public class DashboardRestController {
 	private final ExerciseInfoService exerciseInfoService;
 
 	@PostMapping("/bmr")
-	public int getBmr(@RequestBody Member member) {
-		return dashboardService.getBmr(member.getMemberId());
+	public ResponseEntity<Integer> getBmr(@RequestBody Member member) {
+		return ResponseEntity.ok(dashboardService.getBmr(member.getMemberId()));
 	}
 
 	@PostMapping("/food/kcal")
-	public Food getIntakeKcal(@RequestBody Food food) {
-		return dashboardService.getIntakeKcal(food);
+	public ResponseEntity<Food> getIntakeKcal(@RequestBody Food food) {
+		return ResponseEntity.ok(dashboardService.getIntakeKcal(food));
 	}
 
 	@PostMapping("/exercise/kcal")
-	public Exercise getExerciseKcal(@RequestBody Exercise exercise) {
-		return dashboardService.getExerciseKcal(exercise);
+	public ResponseEntity<Exercise> getExerciseKcal(@RequestBody Exercise exercise) {
+		return ResponseEntity.ok(dashboardService.getExerciseKcal(exercise));
 	}
 
 	@PostMapping("/food/kcal/year")
-	public List<Food> getYearIntakeKcal(@RequestBody Map<String, Object> param) {
+	public ResponseEntity<List<Food>> getYearIntakeKcal(@RequestBody Map<String, Object> param) {
 		HashMap<String, Object> map = new HashMap<>();
 		map.put("memberId", ((Number)param.get("memberId")).intValue());
 		map.put("intakeYear", ((Number)param.get("intakeYear")).intValue());
 
-		return dashboardService.getYearIntakeKcal(map);
+		return ResponseEntity.ok(dashboardService.getYearIntakeKcal(map));
 	}
 
 	@PostMapping("/exercise/kcal/year")
-	public List<Exercise> getYearExerciseKcal(@RequestBody Map<String, Object> param) {
+	public ResponseEntity<List<Exercise>> getYearExerciseKcal(@RequestBody Map<String, Object> param) {
 		HashMap<String, Object> map = new HashMap<>();
 		map.put("memberId", ((Number)param.get("memberId")).intValue());
 		map.put("exerciseYear", ((Number)param.get("exerciseYear")).intValue());
 
-		return dashboardService.getYearExerciseKcal(map);
+		return ResponseEntity.ok(dashboardService.getYearExerciseKcal(map));
 	}
 
 	@PostMapping("/food/list")
-	public int addFoodList(@RequestBody Food food) {
-		return dashboardService.addFoodList(food);
+	public ResponseEntity<Integer> addFoodList(@RequestBody Food food) {
+		return ResponseEntity.ok(dashboardService.addFoodList(food));
 	}
 
 	@DeleteMapping("/food/list")
-	public boolean removeFoodList(@RequestBody Food food) {
-		return dashboardService.removeFoodList(food);
+	public ResponseEntity<Boolean> removeFoodList(@RequestBody Food food) {
+		return ResponseEntity.ok(dashboardService.removeFoodList(food));
 	}
 
 	@PostMapping("/exercise/list")
-	public int addExerciseList(@RequestBody Exercise exercise) {
-		return dashboardService.addExerciseList(exercise);
+	public ResponseEntity<Integer> addExerciseList(@RequestBody Exercise exercise) {
+		return ResponseEntity.ok(dashboardService.addExerciseList(exercise));
 	}
 
 	@DeleteMapping("/exercise/list")
-	public boolean removeExerciseList(@RequestBody Exercise exercise) {
-		return dashboardService.removeExerciseList(exercise);
+	public ResponseEntity<Boolean> removeExerciseList(@RequestBody Exercise exercise) {
+		return ResponseEntity.ok(dashboardService.removeExerciseList(exercise));
 	}
 
 	@PostMapping("/goal")
-	public String getGoal(@RequestBody Member member) {
-		return dashboardService.getGoal(member.getMemberId());
+	public ResponseEntity<String> getGoal(@RequestBody Member member) {
+		return ResponseEntity.ok(dashboardService.getGoal(member.getMemberId()));
 	}
 
 	@PostMapping("/food/kcal/avg/year")
-	public List<Map<String, Object>> getYearIntakeAvgAll(@RequestBody Map<String, Integer> param) {
+	public ResponseEntity<List<Map<String, Object>>> getYearIntakeAvgAll(@RequestBody Map<String, Integer> param) {
 		int memberId = param.get("memberId");
 		int intakeYear = param.get("intakeYear");
-		return dashboardService.getYearIntakeAvgAll(memberId, intakeYear);
+		return ResponseEntity.ok(dashboardService.getYearIntakeAvgAll(memberId, intakeYear));
 	}
 
 	@PostMapping("/exercise/kcal/avg/year")
-	public List<Map<String, Object>> getYearExerciseAvgAll(@RequestBody Map<String, Integer> param) {
+	public ResponseEntity<List<Map<String, Object>>> getYearExerciseAvgAll(@RequestBody Map<String, Integer> param) {
 		int memberId = param.get("memberId");
 		int exerciseYear = param.get("exerciseYear");
-		return dashboardService.getYearExerciseAvgAll(memberId, exerciseYear);
+		return ResponseEntity.ok(dashboardService.getYearExerciseAvgAll(memberId, exerciseYear));
 	}
 
 	@PostMapping("/checklist/items")
-	public List<Checklist> getCheckList(@RequestBody Checklist checklist) {
-		return dashboardService.getCheckList(checklist);
+	public ResponseEntity<List<Checklist>> getCheckList(@RequestBody Checklist checklist) {
+		return ResponseEntity.ok(dashboardService.getCheckList(checklist));
 	}
 
 	@PutMapping("/checklist/item")
-	public boolean setCheckItem(@RequestBody Checklist checklist) {
-		return checkService.setCheckItem(checklist);
+	public ResponseEntity<Boolean> setCheckItem(@RequestBody Checklist checklist) {
+		return ResponseEntity.ok(checkService.setCheckItem(checklist));
 	}
 
 	@PutMapping("/checklist/item/check")
-	public boolean setIsCheckItem(@RequestBody Checklist checklist) {
-		return checkService.setIsCheckItem(checklist);
+	public ResponseEntity<Boolean> setIsCheckItem(@RequestBody Checklist checklist) {
+		return ResponseEntity.ok(checkService.setIsCheckItem(checklist));
 	}
 
 	@DeleteMapping("/checklist/item")
-	public boolean removeCheckItem(@RequestBody Checklist checklist) {
-		return checkService.removeCheckItem(checklist);
+	public ResponseEntity<Boolean> removeCheckItem(@RequestBody Checklist checklist) {
+		return ResponseEntity.ok(checkService.removeCheckItem(checklist));
 	}
 
 	@PostMapping("/checklist")
-	public int addChecklist(@RequestBody Checklist checklist) {
-		return dashboardService.addChecklist(checklist);
+	public ResponseEntity<Integer> addChecklist(@RequestBody Checklist checklist) {
+		return ResponseEntity.ok(dashboardService.addChecklist(checklist));
 	}
 
 	@PostMapping("/checklist/item")
-	public boolean addCheckItem(@RequestBody Checklist checklist) {
-		return checkService.addCheckItem(checklist);
+	public ResponseEntity<Boolean> addCheckItem(@RequestBody Checklist checklist) {
+		return ResponseEntity.ok(checkService.addCheckItem(checklist));
 	}
 
 	@DeleteMapping("/food")
@@ -161,12 +161,12 @@ public class DashboardRestController {
 	}
 
 	@PostMapping("/foods")
-	public List<Food> getFoodInfos(@RequestBody Map<String, Object> foods) {
-		Food food=Food.builder()
+	public ResponseEntity<List<Food>> getFoodInfos(@RequestBody Map<String, Object> foods) {
+		Food food = Food.builder()
 			.intakeDate((String)foods.get("intakeDate"))
 			.memberId((int)foods.get("memberId"))
 			.build();
-		return foodInfoService.getFoodInfoList(food);
+		return ResponseEntity.ok(foodInfoService.getFoodInfoList(food));
 	}
 
 	@DeleteMapping("/exercise")
@@ -183,23 +183,23 @@ public class DashboardRestController {
 
 	@PostMapping("/exercise")
 	public ResponseEntity<String> addExerciseInfo(@RequestBody Map<String, Object> exerciseInfo) {
-		Exercise e=Exercise.builder()
+		Exercise e = Exercise.builder()
 			.exerciseNoteId((int)exerciseInfo.get("exerciseNoteId"))
 			.exerciseMin((int)exerciseInfo.get("exerciseMin"))
 			.exerciseName((String)exerciseInfo.get("exerciseName"))
-			.met(((Number) exerciseInfo.get("met")).floatValue())
+			.met(((Number)exerciseInfo.get("met")).floatValue())
 			.build();
 		exerciseInfoService.addExerciseInfo(e);
 		return ResponseEntity.ok().body("OK");
 	}
 
 	@PostMapping("/exercises")
-	public List<Exercise> getExerciseInfos(@RequestBody Map<String, Object> exercises) {
+	public ResponseEntity<List<Exercise>> getExerciseInfos(@RequestBody Map<String, Object> exercises) {
 		Exercise exercise = Exercise.builder()
 			.exerciseDate((String)exercises.get("exerciseDate"))
 			.memberId((int)exercises.get("memberId"))
 			.build();
-		return exerciseInfoService.getExerciseInfoList(exercise);
+		return ResponseEntity.ok(exerciseInfoService.getExerciseInfoList(exercise));
 	}
 
 }
