@@ -16,24 +16,41 @@ import lombok.RequiredArgsConstructor;
 public class BoardService {
 	private final BoardRepository boardRepository;
 
+	private void validateBoardRequiredFields(Board board) {
+		if (board.getBoardTitle() == null || board.getBoardTitle().isBlank()) {
+			throw new IllegalArgumentException("제목은 필수입니다.");
+		}
+		if (board.getBoardContent() == null || board.getBoardContent().isBlank()) {
+			throw new IllegalArgumentException("내용은 필수입니다.");
+		}
+		if (board.getCategoryId() <= 0) {
+			throw new IllegalArgumentException("카테고리를 선택해주세요.");
+		}
+	}
+
 	public List<Board> getCategory() {
 		return boardRepository.getCategory();
 	}
 
 	public Board getBoard(Board board) {
+		boardRepository.setViewCount(board.getBoardId());
 		return boardRepository.getBoard(board);
 	}
 
 	public List<Board> getBoards(int categoryId, String keyword, String sortOrder, int page) {
 		int pageSize = 10;
 		int offset = (page - 1) * pageSize;
+
 		Map<String, Object> map = new HashMap<>();
 		map.put("categoryId", categoryId);
 		map.put("searchKeyword", keyword == null ? "" : keyword);
 		map.put("sortOrder", sortOrder == null ? "recent" : sortOrder);
 		map.put("limit", pageSize);
 		map.put("offset", offset);
-		return boardRepository.getBoards(map);
+
+		List<Board> boards = boardRepository.getBoards(map);
+
+		return boards;
 	}
 
 	public Board getBoardUpdate(Board board) {
@@ -41,17 +58,7 @@ public class BoardService {
 	}
 
 	public boolean addBoard(Board board) {
-		System.out.println(board);
-		// 1. 유효성 검증
-		if (board.getBoardTitle() == null || board.getBoardTitle().isBlank()) {
-			throw new IllegalArgumentException("제목은 필수입니다.");
-		}
-		if (board.getBoardContent() == null || board.getBoardContent().isBlank()) {
-			throw new IllegalArgumentException("내용은 필수입니다.");
-		}
-		if (board.getCategoryId() == 0) {
-			throw new IllegalArgumentException("카테고리를 선택해주세요.");
-		}
+		validateBoardRequiredFields(board);
 
 		// 2. 저장
 		int result = boardRepository.addBoard(board);
@@ -74,10 +81,35 @@ public class BoardService {
 	}
 
 	public boolean setBoard(Board board) {
-		return boardRepository.setBoard(board) > 0;
+		// 1) 공통 유효성 검증 호출
+		validateBoardRequiredFields(board);
+
+		// 2) 기존 게시글 조회
+		Board existing = boardRepository.getBoard(
+			Board.builder().boardId(board.getBoardId()).build()
+		);
+		if (existing == null) {
+			throw new IllegalStateException("존재하지 않는 게시글입니다.");
+		}
+		// 작성자 권한 확인
+		if (existing.getMemberId() != board.getMemberId()) {
+			throw new IllegalStateException("수정 권한이 없습니다.");
+		}
+
+		// 3) 실제 UPDATE 수행
+		int rowsAffected = boardRepository.setBoard(board);
+		if (rowsAffected <= 0) {
+			throw new IllegalStateException("게시글 수정에 실패했습니다.");
+		}
+		return true;
 	}
 
 	public boolean removeBoard(Board board) {
-		return boardRepository.removeBoard(board) > 0;
+		int rowsAffected = boardRepository.removeBoard(board);
+		if (rowsAffected <= 0) {
+			// 실제로 삭제가 되지 않았을 경우(권한 없음, 존재하지 않는 글 등)
+			throw new IllegalStateException("게시글 삭제에 실패했습니다.");
+		}
+		return true;
 	}
 }

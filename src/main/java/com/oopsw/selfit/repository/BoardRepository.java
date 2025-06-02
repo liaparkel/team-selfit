@@ -31,4 +31,6 @@ public interface BoardRepository {
 	int setBoard(Board board);
 
 	int removeBoard(Board board);
+
+	int setViewCount(int boardId);
 }

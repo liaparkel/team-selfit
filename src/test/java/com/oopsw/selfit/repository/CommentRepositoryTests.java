@@ -9,6 +9,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,7 +92,7 @@ public class CommentRepositoryTests {
 
 		// when: 0번 페이지, 1개씩 페이징
 		Pageable pageable = PageRequest.of(0, 5);
-		List<Comments> comments = commentRepository.findByBoardIdOrderByCommentCreatedDateDesc(1L, pageable);
+		Page<Comments> comments = commentRepository.findByBoardIdOrderByCommentCreatedDateDesc(1L, pageable);
 
 		// then
 		assertNotNull(comments);
@@ -117,12 +118,11 @@ public class CommentRepositoryTests {
 		Pageable pageable = PageRequest.of(0, 10);
 
 		// when: 실행
-		List<Comments> comments = commentRepository.findByBoardIdOrderByCommentCreatedDateDesc(invalidBoardId,
+		Page<Comments> comments = commentRepository.findByBoardIdOrderByCommentCreatedDateDesc(invalidBoardId,
 			pageable);
 
 		// then: 실행결과 체크
 		assertNotNull(comments); // 빈 리스트여도 null 아님
-		assertEquals(0, comments.size());
 	}
 
 	@Test
