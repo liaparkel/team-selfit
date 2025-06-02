@@ -5,16 +5,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.oopsw.selfit.auth.AuthenticatedUser;
 import com.oopsw.selfit.dto.Checklist;
 import com.oopsw.selfit.dto.Exercise;
 import com.oopsw.selfit.dto.Food;
@@ -122,7 +121,8 @@ public class DashboardRestController {
 	}
 
 	@PostMapping("/checklist/items")
-	public List<Checklist> getCheckList(@RequestBody Checklist checklist) {
+	public List<Checklist> getCheckList(@RequestBody Checklist checklist, @AuthenticationPrincipal AuthenticatedUser loginUser) {
+		checklist.setMemberId(loginUser.getMemberId());
 		return dashboardService.getCheckList(checklist);
 	}
 
@@ -142,7 +142,8 @@ public class DashboardRestController {
 	}
 
 	@PostMapping("/checklist")
-	public int addChecklist(@RequestBody Checklist checklist) {
+	public int addChecklist(@RequestBody Checklist checklist, @AuthenticationPrincipal AuthenticatedUser loginUser) {
+		checklist.setMemberId(loginUser.getMemberId());
 		return dashboardService.addChecklist(checklist);
 	}
 
