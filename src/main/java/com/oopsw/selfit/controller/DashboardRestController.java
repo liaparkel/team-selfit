@@ -20,7 +20,6 @@ import com.oopsw.selfit.service.CheckService;
 import com.oopsw.selfit.service.DashboardService;
 import com.oopsw.selfit.service.ExerciseInfoService;
 import com.oopsw.selfit.service.FoodInfoService;
-import com.oopsw.selfit.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,14 +28,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DashboardRestController {
 	private final DashboardService dashboardService;
-	private final MemberService memberService;
 	private final FoodInfoService foodInfoService;
 	private final CheckService checkService;
 	private final ExerciseInfoService exerciseInfoService;
 
 	@PostMapping("/bmr")
-	public ResponseEntity<Integer> getBmr(@RequestBody Member member) {
-		return ResponseEntity.ok(dashboardService.getBmr(member.getMemberId()));
+	public ResponseEntity<Map<String, Integer>> getBmr(@RequestBody Member member) {
+		return ResponseEntity.ok(Map.of("bmr", dashboardService.getBmr(member.getMemberId())));
 	}
 
 	@PostMapping("/food/kcal")
@@ -68,28 +66,28 @@ public class DashboardRestController {
 	}
 
 	@PostMapping("/food/list")
-	public ResponseEntity<Integer> addFoodList(@RequestBody Food food) {
-		return ResponseEntity.ok(dashboardService.addFoodList(food));
+	public ResponseEntity<Map<String, Integer>> addFoodList(@RequestBody Food food) {
+		return ResponseEntity.ok(Map.of("foodNoteId", dashboardService.addFoodList(food)));
 	}
 
 	@DeleteMapping("/food/list")
-	public ResponseEntity<Boolean> removeFoodList(@RequestBody Food food) {
-		return ResponseEntity.ok(dashboardService.removeFoodList(food));
+	public ResponseEntity<Map<String, Boolean>> removeFoodList(@RequestBody Food food) {
+		return ResponseEntity.ok(Map.of("success", dashboardService.removeFoodList(food)));
 	}
 
 	@PostMapping("/exercise/list")
-	public ResponseEntity<Integer> addExerciseList(@RequestBody Exercise exercise) {
-		return ResponseEntity.ok(dashboardService.addExerciseList(exercise));
+	public ResponseEntity<Map<String, Integer>> addExerciseList(@RequestBody Exercise exercise) {
+		return ResponseEntity.ok(Map.of("exerciseNoteId", dashboardService.addExerciseList(exercise)));
 	}
 
 	@DeleteMapping("/exercise/list")
-	public ResponseEntity<Boolean> removeExerciseList(@RequestBody Exercise exercise) {
-		return ResponseEntity.ok(dashboardService.removeExerciseList(exercise));
+	public ResponseEntity<Map<String, Boolean>> removeExerciseList(@RequestBody Exercise exercise) {
+		return ResponseEntity.ok(Map.of("success", dashboardService.removeExerciseList(exercise)));
 	}
 
 	@PostMapping("/goal")
-	public ResponseEntity<String> getGoal(@RequestBody Member member) {
-		return ResponseEntity.ok(dashboardService.getGoal(member.getMemberId()));
+	public ResponseEntity<Map<String, String>> getGoal(@RequestBody Member member) {
+		return ResponseEntity.ok(Map.of("goal", dashboardService.getGoal(member.getMemberId())));
 	}
 
 	@PostMapping("/food/kcal/avg/year")
@@ -112,52 +110,50 @@ public class DashboardRestController {
 	}
 
 	@PutMapping("/checklist/item")
-	public ResponseEntity<Boolean> setCheckItem(@RequestBody Checklist checklist) {
-		return ResponseEntity.ok(checkService.setCheckItem(checklist));
+	public ResponseEntity<Map<String, Boolean>> setCheckItem(@RequestBody Checklist checklist) {
+		return ResponseEntity.ok(Map.of("success", checkService.setCheckItem(checklist)));
 	}
 
 	@PutMapping("/checklist/item/check")
-	public ResponseEntity<Boolean> setIsCheckItem(@RequestBody Checklist checklist) {
-		return ResponseEntity.ok(checkService.setIsCheckItem(checklist));
+	public ResponseEntity<Map<String, Boolean>> setIsCheckItem(@RequestBody Checklist checklist) {
+		return ResponseEntity.ok(Map.of("success", checkService.setIsCheckItem(checklist)));
 	}
 
 	@DeleteMapping("/checklist/item")
-	public ResponseEntity<Boolean> removeCheckItem(@RequestBody Checklist checklist) {
-		return ResponseEntity.ok(checkService.removeCheckItem(checklist));
+	public ResponseEntity<Map<String, Boolean>> removeCheckItem(@RequestBody Checklist checklist) {
+		return ResponseEntity.ok(Map.of("success", checkService.removeCheckItem(checklist)));
 	}
 
 	@PostMapping("/checklist")
-	public ResponseEntity<Integer> addChecklist(@RequestBody Checklist checklist) {
-		return ResponseEntity.ok(dashboardService.addChecklist(checklist));
+	public ResponseEntity<Map<String, Integer>> addChecklist(@RequestBody Checklist checklist) {
+		return ResponseEntity.ok(Map.of("checklistId", dashboardService.addChecklist(checklist)));
 	}
 
 	@PostMapping("/checklist/item")
-	public ResponseEntity<Boolean> addCheckItem(@RequestBody Checklist checklist) {
-		return ResponseEntity.ok(checkService.addCheckItem(checklist));
+	public ResponseEntity<Map<String, Boolean>> addCheckItem(@RequestBody Checklist checklist) {
+		return ResponseEntity.ok(Map.of("success", checkService.addCheckItem(checklist)));
 	}
 
 	@DeleteMapping("/food")
-	public ResponseEntity<String> removeFoodInfo(@RequestBody Map<String, Integer> foodInfoId) {
-		foodInfoService.removeFood(foodInfoId.get("foodInfoId"));
-		return ResponseEntity.ok().body("OK");
+	public ResponseEntity<Map<String, Boolean>> removeFoodInfo(@RequestBody Map<String, Integer> foodInfoId) {
+		return ResponseEntity.ok(Map.of("success", foodInfoService.removeFood(foodInfoId.get("foodInfoId"))));
 	}
 
 	@PutMapping("/food")
-	public ResponseEntity<String> setIntake(@RequestBody Map<String, Integer> food) {
-		foodInfoService.setIntake(food.get("foodInfoId"), food.get("newIntake"));
-		return ResponseEntity.ok().body("OK");
+	public ResponseEntity<Map<String, Boolean>> setIntake(@RequestBody Map<String, Integer> food) {
+		return ResponseEntity.ok(
+			Map.of("success", foodInfoService.setIntake(food.get("foodInfoId"), food.get("newIntake"))));
 	}
 
 	@PostMapping("/food")
-	public ResponseEntity<String> addFoodInfo(@RequestBody Map<String, Object> food) {
+	public ResponseEntity<Map<String, Boolean>> addFoodInfo(@RequestBody Map<String, Object> food) {
 		Food f = Food.builder()
 			.foodNoteId((int)food.get("foodNoteId"))
 			.foodName((String)food.get("foodName"))
 			.intake((int)food.get("intake"))
 			.unitKcal(((Number)food.get("unitKcal")).intValue())
 			.build();
-		foodInfoService.addFoodInfo(f);
-		return ResponseEntity.ok().body("OK");
+		return ResponseEntity.ok(Map.of("success", foodInfoService.addFoodInfo(f)));
 	}
 
 	@PostMapping("/foods")
@@ -170,27 +166,26 @@ public class DashboardRestController {
 	}
 
 	@DeleteMapping("/exercise")
-	public ResponseEntity<String> removeExerciseInfo(@RequestBody Map<String, Integer> exerciseInfoId) {
-		exerciseInfoService.removeExercise(exerciseInfoId.get("exerciseInfoId"));
-		return ResponseEntity.ok().body("OK");
+	public ResponseEntity<Map<String, Boolean>> removeExerciseInfo(@RequestBody Map<String, Integer> exerciseInfoId) {
+		return ResponseEntity.ok(
+			Map.of("success", exerciseInfoService.removeExercise(exerciseInfoId.get("exerciseInfoId"))));
 	}
 
 	@PutMapping("/exercise")
-	public ResponseEntity<String> setExerciseMin(@RequestBody Map<String, Integer> exerciseInfo) {
-		exerciseInfoService.setExerciseMin(exerciseInfo.get("exerciseInfoId"), exerciseInfo.get("newMin"));
-		return ResponseEntity.ok().body("OK");
+	public ResponseEntity<Map<String, Boolean>> setExerciseMin(@RequestBody Map<String, Integer> exerciseInfo) {
+		return ResponseEntity.ok(Map.of("success",
+			exerciseInfoService.setExerciseMin(exerciseInfo.get("exerciseInfoId"), exerciseInfo.get("newMin"))));
 	}
 
 	@PostMapping("/exercise")
-	public ResponseEntity<String> addExerciseInfo(@RequestBody Map<String, Object> exerciseInfo) {
+	public ResponseEntity<Map<String, Boolean>> addExerciseInfo(@RequestBody Map<String, Object> exerciseInfo) {
 		Exercise e = Exercise.builder()
 			.exerciseNoteId((int)exerciseInfo.get("exerciseNoteId"))
 			.exerciseMin((int)exerciseInfo.get("exerciseMin"))
 			.exerciseName((String)exerciseInfo.get("exerciseName"))
 			.met(((Number)exerciseInfo.get("met")).floatValue())
 			.build();
-		exerciseInfoService.addExerciseInfo(e);
-		return ResponseEntity.ok().body("OK");
+		return ResponseEntity.ok(Map.of("success", exerciseInfoService.addExerciseInfo(e)));
 	}
 
 	@PostMapping("/exercises")
