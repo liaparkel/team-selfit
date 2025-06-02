@@ -1,5 +1,6 @@
 package com.oopsw.selfit.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.oopsw.selfit.dto.Checklist;
 import com.oopsw.selfit.dto.Exercise;
 import com.oopsw.selfit.dto.Food;
+import com.oopsw.selfit.dto.Member;
 import com.oopsw.selfit.service.CheckService;
 import com.oopsw.selfit.service.DashboardService;
 import com.oopsw.selfit.service.ExerciseInfoService;
@@ -31,6 +33,78 @@ public class DashboardRestController {
 	private final FoodInfoService foodInfoService;
 	private final CheckService checkService;
 	private final ExerciseInfoService exerciseInfoService;
+
+	@PostMapping("/bmr")
+	public int getBmr(@RequestBody Member member) {
+		return dashboardService.getBmr(member.getMemberId());
+	}
+
+	@PostMapping("/food/kcal")
+	public Food getIntakeKcal(@RequestBody Food food) {
+		return dashboardService.getIntakeKcal(food);
+	}
+
+	@PostMapping("/exercise/kcal")
+	public Exercise getExerciseKcal(@RequestBody Exercise exercise) {
+		return dashboardService.getExerciseKcal(exercise);
+	}
+
+	@PostMapping("/food/kcal/year")
+	public List<Food> getYearIntakeKcal(@RequestBody Map<String, Object> param) {
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("memberId", ((Number)param.get("memberId")).intValue());
+		map.put("intakeYear", ((Number)param.get("intakeYear")).intValue());
+
+		return dashboardService.getYearIntakeKcal(map);
+	}
+
+	@PostMapping("/exercise/kcal/year")
+	public List<Exercise> getYearExerciseKcal(@RequestBody Map<String, Object> param) {
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("memberId", ((Number)param.get("memberId")).intValue());
+		map.put("exerciseYear", ((Number)param.get("exerciseYear")).intValue());
+
+		return dashboardService.getYearExerciseKcal(map);
+	}
+
+	@PostMapping("/food/list")
+	public int addFoodList(@RequestBody Food food) {
+		return dashboardService.addFoodList(food);
+	}
+
+	@DeleteMapping("/food/list")
+	public boolean removeFoodList(@RequestBody Food food) {
+		return dashboardService.removeFoodList(food);
+	}
+
+	@PostMapping("/exercise/list")
+	public int addExerciseList(@RequestBody Exercise exercise) {
+		return dashboardService.addExerciseList(exercise);
+	}
+
+	@DeleteMapping("/exercise/list")
+	public boolean removeExerciseList(@RequestBody Exercise exercise) {
+		return dashboardService.removeExerciseList(exercise);
+	}
+
+	@PostMapping("/goal")
+	public String getGoal(@RequestBody Member member) {
+		return dashboardService.getGoal(member.getMemberId());
+	}
+
+	@PostMapping("/food/kcal/avg/year")
+	public List<Map<String, Object>> getYearIntakeAvgAll(@RequestBody Map<String, Integer> param) {
+		int memberId = param.get("memberId");
+		int intakeYear = param.get("intakeYear");
+		return dashboardService.getYearIntakeAvgAll(memberId, intakeYear);
+	}
+
+	@PostMapping("/exercise/kcal/avg/year")
+	public List<Map<String, Object>> getYearExerciseAvgAll(@RequestBody Map<String, Integer> param) {
+		int memberId = param.get("memberId");
+		int exerciseYear = param.get("exerciseYear");
+		return dashboardService.getYearExerciseAvgAll(memberId, exerciseYear);
+	}
 
 	@PostMapping("/checklist/items")
 	public List<Checklist> getCheckList(@RequestBody Checklist checklist) {
@@ -61,6 +135,7 @@ public class DashboardRestController {
 	public boolean addCheckItem(@RequestBody Checklist checklist) {
 		return checkService.addCheckItem(checklist);
 	}
+
 	@DeleteMapping("/food")
 	public ResponseEntity<String> removeFoodInfo(@RequestBody Map<String, Integer> foodInfoId) {
 		foodInfoService.removeFood(foodInfoId.get("foodInfoId"));
@@ -79,7 +154,7 @@ public class DashboardRestController {
 			.foodNoteId((int)food.get("foodNoteId"))
 			.foodName((String)food.get("foodName"))
 			.intake((int)food.get("intake"))
-			.unitKcal(((Number) food.get("unitKcal")).intValue())
+			.unitKcal(((Number)food.get("unitKcal")).intValue())
 			.build();
 		foodInfoService.addFoodInfo(f);
 		return ResponseEntity.ok().body("OK");

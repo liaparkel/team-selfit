@@ -108,47 +108,24 @@ async function onAddOrEdit() {
         editIndex = null;
         document.getElementById('add-check-btn').innerText = '등록';
     } else {
-        let cid;  // 실제 checklistId
-
-        // 1) 이미 생성된 체크리스트가 있는지 확인
+        // 신규 모드: 먼저 해당 날짜의 체크리스트가 있는지 확인
+        let cid;
         const itemsRes = await axios.post('/api/dashboard/checklist/items', {
             memberId,
             checkDate: currentSelectedDate
         });
         if (itemsRes.data.length > 0) {
-            // 기존 checklistId 사용
+            // 이미 있으면 기존 checklistId 사용
             cid = itemsRes.data[0].checklistId;
         } else {
-            // 2) 없으면 체크리스트 생성 (boolean 반환)
+            // 없으면 체크리스트 생성
             const createRes = await axios.post('/api/dashboard/checklist', {
                 memberId,
                 checkDate: currentSelectedDate
             });
-            if (!createRes.data) {
-                console.error('체크리스트 생성 실패');
-                return;
-            }
-
-            // 3) 생성 직후 다시 조회하여 실제 checklistId를 얻는다
-            const newItemsRes = await axios.post('/api/dashboard/checklist/items', {
-                memberId,
-                checkDate: currentSelectedDate
-            });
-            if (newItemsRes.data.length === 0) {
-                console.error('생성 후 체크리스트 항목 조회 실패');
-                return;
-            }
-            cid = newItemsRes.data[0].checklistId;
-            // 그리고 목록도 새로 갱신
-            checklistList = newItemsRes.data.map(i => ({
-                checkId: i.checkId,
-                checklistId: i.checklistId,
-                text: i.checkContent,
-                completed: i.isCheck === 1
-            }));
+            cid = createRes.data;
         }
-
-        // 4) 체크 항목 추가
+        // 체크 항목 추가
         const itemRes = await axios.post('/api/dashboard/checklist/item', {
             checklistId: cid,
             checkContent: text
@@ -169,6 +146,7 @@ async function onAddOrEdit() {
     // 달력 이벤트 다시 불러오기
     calendar.refetchEvents();
 }
+
 
 // 삭제 확정 핸들러
 async function onDeleteConfirmed() {
