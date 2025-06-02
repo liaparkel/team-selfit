@@ -6,7 +6,7 @@
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 // 로그인된 회원 ID (예시: 테스트용 고정)
-const memberId = 1;
+
 
 let calendar;
 let selectedDate = null;
@@ -23,6 +23,12 @@ const foodNoteIdByDate = {}; // ex: { "2025-05-20": 42, ... }
 // =======================================
 // 1) ApexCharts를 이용한 “식단 그래프” 초기화
 // =======================================
+// Axios 기본 설정
+axios.defaults.headers.common['Content-Type'] = 'application/json';
+axios.defaults.withCredentials = true;
+
+const memberId = window.memberId;
+
 (function () {
     function setupYearDropdown() {
         const currentYear = new Date().getFullYear();
@@ -31,57 +37,59 @@ const foodNoteIdByDate = {}; // ex: { "2025-05-20": 42, ... }
         const menu = document.getElementById('yearDropdownMenu');
 
         dropdownBtn.innerText = `${currentYear}년`;
+
         let html = '';
         for (let y = currentYear; y >= startYear; y--) {
-            html += `<li>
-                 <a class="dropdown-item year-option" data-year="${y}" href="#">${y}년</a>
-               </li>`;
+            html += `<li><a class="dropdown-item year-option" data-year="${y}" href="#">${y}년</a></li>`;
         }
         menu.innerHTML = html;
 
         document.querySelectorAll('.year-option').forEach(item => {
             item.addEventListener('click', function (e) {
                 e.preventDefault();
-                const year = parseInt(this.dataset.year);
+                const year = parseInt(this.dataset.year, 10);
                 dropdownBtn.innerText = `${year}년`;
 
-                // 서버에서 해당 연도 전체 '섭취 칼로리' 목록을 가져오기
-                axios.post('/api/dashboard/foods', {
-                    memberId: memberId,
-                    intakeDate: `${year}`  // 백엔드가 “연도만 들어오면 해당 연도 전체 데이터” 를 처리하도록 약속
-                })
-                    .then(res => {
-                        const data = res.data; // [{ date: "2025-05-01", intakeKcal: 2500 }, ...]
-                        const seriesData = data
-                            .filter(item => new Date(item.date).getFullYear() === year)
-                            .map(item => ({ x: new Date(item.date + 'T00:00:00'), y: item.intakeKcal }));
+                fetchYearlyIntake(year)
+                    .then(seriesData => {
                         renderChart(seriesData, year);
                     })
                     .catch(err => {
-                        console.error("연도별 식단 그래프 데이터 조회 실패:", err);
+                        console.error("연도별 섭취 데이터 호출 실패:", err);
+                        renderChart([], year);
                     });
             });
         });
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const defaultYear = new Date().getFullYear();
-        setupYearDropdown();
-
-        // 페이지 로드 시, 기본 연도(올해)의 데이터로 그래프 그리기
-        axios.post('/api/dashboard/foods', {
-            memberId: memberId,
-            intakeDate: `${defaultYear}`
+    function fetchYearlyIntake(year) {
+        return axios.post('/api/dashboard/food/kcal/year', {
+            intakeYear: year
         })
             .then(res => {
-                const data = res.data;
-                const seriesData = data
-                    .filter(item => new Date(item.date).getFullYear() === defaultYear)
-                    .map(item => ({ x: new Date(item.date + 'T00:00:00'), y: item.intakeKcal }));
+                const rawList = res.data || [];
+                return rawList.map(item => {
+                    const date = new Date(item.intakeDate + 'T00:00:00');
+                    date.setDate(date.getDate() + 1); // 날짜 밀림 보정
+                    return {
+                        x: date,
+                        y: item.intakeSum
+                    };
+                });
+            });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        setupYearDropdown();
+
+        const defaultYear = new Date().getFullYear();
+        fetchYearlyIntake(defaultYear)
+            .then(seriesData => {
                 renderChart(seriesData, defaultYear);
             })
             .catch(err => {
-                console.error("초기 식단 그래프 데이터 조회 실패:", err);
+                console.error("초기 섭취 데이터 호출 실패:", err);
+                renderChart([], defaultYear);
             });
     });
 
@@ -90,8 +98,9 @@ const foodNoteIdByDate = {}; // ex: { "2025-05-20": 42, ... }
         const jan1 = new Date(selectedYear, 0, 1).getTime();
         const dec31 = new Date(selectedYear, 11, 31).getTime();
         const todayTime = today.getTime();
+
         const xMin = jan1;
-        const xMax = (selectedYear === today.getFullYear()) ? todayTime : dec31;
+        const xMax = (selectedYear === today.getFullYear() ? todayTime : dec31);
 
         const yMax = Math.max(...seriesData.map(d => d.y), 0);
         const yAxisMax = yMax <= 4000 ? 4000 : Math.ceil(yMax / 500) * 500;
@@ -105,8 +114,13 @@ const foodNoteIdByDate = {}; // ex: { "2025-05-20": 42, ... }
                 toolbar: {
                     show: true,
                     tools: {
-                        download: false, selection: true, zoom: true,
-                        zoomin: true, zoomout: true, pan: true, reset: true
+                        download: false,
+                        selection: true,
+                        zoom: true,
+                        zoomin: true,
+                        zoomout: true,
+                        pan: true,
+                        reset: true
                     }
                 }
             },
@@ -128,10 +142,15 @@ const foodNoteIdByDate = {}; // ex: { "2025-05-20": 42, ... }
             fill: { type: 'solid', colors: ['#33C181'] },
             markers: { size: 0, hover: { size: 6 } },
             grid: { borderColor: '#eee', strokeDashArray: 4 },
-            title: { text: '식단 그래프', align: 'left', style: { fontSize: '18px', color: '#666' } }
+            title: { text: '운동 그래프', align: 'left', style: { fontSize: '18px', color: '#666' } }
         };
 
+        if (window.foodChartInstance) {
+            window.foodChartInstance.destroy();
+        }
         const chart = new ApexCharts(document.querySelector(".chart-container"), options);
+        window.foodChartInstance = chart;
+
         chart.render().then(() => {
             const recent7 = new Date();
             recent7.setDate(today.getDate() - 6);
@@ -141,11 +160,13 @@ const foodNoteIdByDate = {}; // ex: { "2025-05-20": 42, ... }
             } else {
                 chart.zoomX(xMin, xMax);
             }
+
             setTimeout(() => {
                 const homeBtn = document.querySelector(".apexcharts-reset-icon");
                 if (homeBtn) {
-                    homeBtn.addEventListener("click", e => {
-                        e.preventDefault(); e.stopPropagation();
+                    homeBtn.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         if (selectedYear === today.getFullYear()) {
                             chart.zoomX(recent7Time, xMax);
                         } else {
@@ -156,7 +177,7 @@ const foodNoteIdByDate = {}; // ex: { "2025-05-20": 42, ... }
             }, 100);
         });
 
-        chart.addEventListener("zoomed", (ctx, { xaxis }) => {
+        chart.addEventListener("zoomed", function (_ctx, { xaxis }) {
             const min = Math.max(xaxis.min, xMin);
             const max = Math.min(xaxis.max, xMax);
             if (min !== xaxis.min || max !== xaxis.max) {
