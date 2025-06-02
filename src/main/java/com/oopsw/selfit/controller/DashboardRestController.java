@@ -18,6 +18,7 @@ import com.oopsw.selfit.dto.Food;
 import com.oopsw.selfit.dto.Member;
 import com.oopsw.selfit.service.CheckService;
 import com.oopsw.selfit.service.DashboardService;
+import com.oopsw.selfit.service.ExerciseInfoService;
 import com.oopsw.selfit.service.FoodInfoService;
 import com.oopsw.selfit.service.MemberService;
 
@@ -31,6 +32,7 @@ public class DashboardRestController {
 	private final MemberService memberService;
 	private final FoodInfoService foodInfoService;
 	private final CheckService checkService;
+	private final ExerciseInfoService exerciseInfoService;
 
 	@PostMapping("/bmr")
 	public int getBmr(@RequestBody Member member) {
@@ -160,10 +162,44 @@ public class DashboardRestController {
 
 	@PostMapping("/foods")
 	public List<Food> getFoodInfos(@RequestBody Map<String, Object> foods) {
-		Food food = Food.builder()
+		Food food=Food.builder()
 			.intakeDate((String)foods.get("intakeDate"))
 			.memberId((int)foods.get("memberId"))
 			.build();
 		return foodInfoService.getFoodInfoList(food);
 	}
+
+	@DeleteMapping("/exercise")
+	public ResponseEntity<String> removeExerciseInfo(@RequestBody Map<String, Integer> exerciseInfoId) {
+		exerciseInfoService.removeExercise(exerciseInfoId.get("exerciseInfoId"));
+		return ResponseEntity.ok().body("OK");
+	}
+
+	@PutMapping("/exercise")
+	public ResponseEntity<String> setExerciseMin(@RequestBody Map<String, Integer> exerciseInfo) {
+		exerciseInfoService.setExerciseMin(exerciseInfo.get("exerciseInfoId"), exerciseInfo.get("newMin"));
+		return ResponseEntity.ok().body("OK");
+	}
+
+	@PostMapping("/exercise")
+	public ResponseEntity<String> addExerciseInfo(@RequestBody Map<String, Object> exerciseInfo) {
+		Exercise e=Exercise.builder()
+			.exerciseNoteId((int)exerciseInfo.get("exerciseNoteId"))
+			.exerciseMin((int)exerciseInfo.get("exerciseMin"))
+			.exerciseName((String)exerciseInfo.get("exerciseName"))
+			.met(((Number) exerciseInfo.get("met")).floatValue())
+			.build();
+		exerciseInfoService.addExerciseInfo(e);
+		return ResponseEntity.ok().body("OK");
+	}
+
+	@PostMapping("/exercises")
+	public List<Exercise> getExerciseInfos(@RequestBody Map<String, Object> exercises) {
+		Exercise exercise = Exercise.builder()
+			.exerciseDate((String)exercises.get("exerciseDate"))
+			.memberId((int)exercises.get("memberId"))
+			.build();
+		return exerciseInfoService.getExerciseInfoList(exercise);
+	}
+
 }

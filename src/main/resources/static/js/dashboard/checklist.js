@@ -31,8 +31,6 @@ async function loadMonthlyChecklist(year, month) {
     await Promise.all(promises);
 }
 
-s
-
 // FullCalendar 이벤트 데이터 생성 (최대 3개 아이템)
 function buildCalendarEvents() {
     return Object.entries(checklistData)

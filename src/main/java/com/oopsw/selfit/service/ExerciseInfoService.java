@@ -1,10 +1,13 @@
 package com.oopsw.selfit.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.oopsw.selfit.domain.ExerciseInfos;
+import com.oopsw.selfit.dto.Exercise;
 import com.oopsw.selfit.repository.DashboardRepository;
 import com.oopsw.selfit.repository.ExerciseInfoRepository;
 
@@ -16,43 +19,71 @@ public class ExerciseInfoService {
 	private final ExerciseInfoRepository exerciseInfoRepository;
 	private final DashboardRepository dashboardRepository;
 
-	public List<ExerciseInfos> getRawInfosByNote(int noteId) {
-		return exerciseInfoRepository.findByExerciseNoteId(noteId);
+	public boolean removeExercise(int exerciseInfoId) {
+		if (exerciseInfoRepository.existsById(exerciseInfoId)) {
+			exerciseInfoRepository.deleteById(exerciseInfoId);
+			return true;
+		}
+		return false;
 	}
 
-	// public List<Exercise> getExercisesForDate(int noteId, int memberId, String date) {
-	// 	// 1) STEP 1: raw info
-	// 	List<ExerciseInfo> rawInfos = exerciseInfoRepository.findByExerciseNoteId(noteId);
-	// 	if (rawInfos.isEmpty()) {
-	// 		return List.of();
-	// 	}
-	//
-	// 	// 2) STEP 2-1: distinct exerciseId 목록
-	// 	List<Integer> exerciseIds = rawInfos.stream()
-	// 		.map(ExerciseInfo::getExerciseId)
-	// 		.distinct()
-	// 		.toList();
-	//
-	// 	// 2) STEP 2-2: 한 번에 운동 메타 조회
-	// 	List<Exercise> metas = dashboardRepository.getExercisesByIds(exerciseIds);
-	// 	Map<Integer, Exercise> metaMap = metas.stream()
-	// 		.collect(Collectors.toMap(Exercise::getExerciseId, Function.identity()));
-	//
-	// 	// 2) STEP 2-3: DTO 조합
-	// 	return rawInfos.stream()
-	// 		.map(ei -> {
-	// 			Exercise m = metaMap.get(ei.getExerciseId());
-	// 			return Exercise.builder()
-	// 				.memberId(memberId)
-	// 				.exerciseDate(date)
-	// 				.exerciseName(m.getExerciseName())
-	// 				.exerciseMin(ei.getExerciseMin())
-	// 				.exerciseKcal((int)ei.getExerciseKcal())
-	// 				.met(m.getMet())
-	// 				.build();
-	// 		})
-	// 		.toList();
-	// }
+	public boolean addExerciseInfo(Exercise exercise) {
+		// 소모 칼로리 계산
+		float kcal = dashboardRepository.getWeight(exercise.getExerciseNoteId()) *
+			exercise.getMet() *
+			exercise.getExerciseMin() / 60f;
+
+		// DTO → Entity 수동 변환
+		ExerciseInfos entity = ExerciseInfos.builder()
+			.exerciseNoteId(exercise.getExerciseNoteId())
+			.exerciseMin(exercise.getExerciseMin())
+			.exerciseKcal(kcal)
+			.exerciseName(exercise.getExerciseName())
+			.build();
+
+		// JPA 저장
+		exerciseInfoRepository.save(entity);
+		return true;
+	}
+
+	public boolean setExerciseMin(int exerciseInfoId, int newMin) {
+		Optional<ExerciseInfos> exerciseInfos = exerciseInfoRepository.findById(exerciseInfoId);
+		if (exerciseInfos.isEmpty()) {
+			return false; // 존재하지 않음
+		}
+
+		ExerciseInfos exercise = exerciseInfos.get();
+
+		exercise.setExerciseMin(newMin);
+
+		float weight = dashboardRepository.getWeight(exercise.getExerciseNoteId()); // member weight
+		float met = exercise.getMet();
+		float kcal = weight * met * newMin / 60f;
+
+		exercise.setExerciseKcal(kcal);
+		exerciseInfoRepository.save(exercise);
+		return true;
+	}
+
+	public List<Exercise> getExerciseInfoList(Exercise exercise) {
+		int exerciseInfoId = dashboardRepository.getExerciseNoteId(exercise);
+		List<ExerciseInfos> list = exerciseInfoRepository.findByExerciseNoteId(exerciseInfoId);
+
+		List<Exercise> exerciseList = new ArrayList<>();
+		for (ExerciseInfos exerciseInfos : list) {
+			Exercise dto = Exercise.builder()
+				.exerciseInfoId(exerciseInfos.getExerciseInfoId())
+				.exerciseNoteId(exerciseInfos.getExerciseNoteId())
+				.exerciseName(exerciseInfos.getExerciseName())
+				.exerciseMin(exerciseInfos.getExerciseMin())
+				.exerciseKcal((int)exerciseInfos.getExerciseKcal())
+				.build();
+			exerciseList.add(dto);
+		}
+		return exerciseList;
+	}
+
+
 }
 
 
