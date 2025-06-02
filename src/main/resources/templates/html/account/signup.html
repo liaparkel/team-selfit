@@ -8,8 +8,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/css/account/signup.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="/js/account/signup.js"></script>
+    <script type="module" src="/js/account/signup.js"></script>
 </head>
 <body>
 <!-- 메인 컨테이너 -->
@@ -157,7 +158,7 @@
                                         감량
                                     </button>
                                     <button type="button" class="btn btn-outline-secondary exercise-btn" data-type="중량">
-                                        중량
+                                        증량
                                     </button>
                                     <button type="button" class="btn btn-outline-secondary exercise-btn" data-type="유지">
                                         유지
@@ -193,5 +194,28 @@
         </div>
     </div>
 </div>
+
+<!-- 알림 모달 -->
+<div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="alertModalLabel">알림</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <div id="alertModalIcon" class="mb-3">
+                    <i class="bi bi-info-circle-fill text-primary" style="font-size: 3rem;"></i>
+                </div>
+                <p id="alertModalMessage" class="mb-0 fs-6"></p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center">
+                <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal" id="alertModalConfirm">확인
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

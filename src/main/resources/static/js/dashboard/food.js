@@ -275,26 +275,41 @@ const amountInput = document.getElementById('food-amount');
 const unitEl = document.getElementById('food-unit');
 const listEl = document.getElementById('autocomplete-list');
 
+// 1) 음식명 입력 시 자동완성 드롭다운에 “음식명 / 분량 / kcal” 정보만 표시
 nameInput.addEventListener('input', function () {
     const keyword = nameInput.value.trim();
-    if (!keyword) return listEl.classList.add('d-none');
+    if (!keyword) {
+        listEl.classList.add('d-none');
+        return;
+    }
 
+    // foodData에서 키워드를 포함하는 음식 필터링
     const filtered = foodData.filter(f => f.name.includes(keyword));
-    if (filtered.length === 0) return listEl.classList.add('d-none');
+    if (filtered.length === 0) {
+        listEl.classList.add('d-none');
+        return;
+    }
 
+    // li를 “음식명 + 분량 + kcal” 형태로 생성
     listEl.innerHTML = filtered.map(f => `
-        <li class="list-group-item" data-name="${f.name}" data-amount="${f.amountStr}" data-cal="${f.calPerUnit}">
-            ${f.name}
-        </li>`).join('');
+      <li class="autocomplete-item"
+          data-name="${f.name}"
+          data-amount="${f.amountStr}"
+          data-cal="${f.calPerUnit}">
+        <div class="item-info">
+          <div class="info-name">${f.name}</div>
+          <div class="info-detail">${f.amountStr} / ${f.calPerUnit}kcal</div>
+        </div>
+      </li>
+    `).join('');
+
     listEl.classList.remove('d-none');
 });
 
-
-// 자동완성 키보드 네비게이션
+// 2) 자동완성 키보드 네비게이션 (위 ◀, 아래 ▶, Enter 처리)
 let selectedIdx = -1;
-
 nameInput.addEventListener('keydown', function (e) {
-    const items = listEl.querySelectorAll('li');
+    const items = listEl.querySelectorAll('.autocomplete-item');
     if (items.length === 0) return;
 
     if (e.key === 'ArrowDown') {
@@ -310,38 +325,39 @@ nameInput.addEventListener('keydown', function (e) {
         if (selectedIdx >= 0 && selectedIdx < items.length) {
             items[selectedIdx].click();
         } else {
-            items[0].click(); // 아무것도 선택 안 했으면 첫 번째 항목 자동 선택
+            items[0].click();
         }
     }
 });
 
 function updateAutocompleteSelection(items) {
     items.forEach((item, idx) => {
-        if (idx === selectedIdx) {
-            item.classList.add('active');
-        } else {
-            item.classList.remove('active');
-        }
+        item.classList.toggle('active', idx === selectedIdx);
     });
 }
 
-
+// 3) 자동완성 항목 클릭 시 → input에 음식명/분량/칼로리 정보 채우고 드롭다운 닫기
 listEl.addEventListener('click', function (e) {
-    if (e.target.tagName !== 'LI') return;
+    const clickedLi = e.target.closest('.autocomplete-item');
+    if (!clickedLi) return;
 
-    const name = e.target.dataset.name;
-    const amountStr = e.target.dataset.amount;
-    const calPerUnit = parseInt(e.target.dataset.cal);
+    const name = clickedLi.dataset.name;
+    const amountStr = clickedLi.dataset.amount;
+    const calPerUnit = parseInt(clickedLi.dataset.cal);
 
-    const amount = parseInt(amountStr.replace(/[^0-9]/g, ''));
-    const unit = amountStr.replace(/[0-9]/g, '');
+    // amountStr 예: "200g" → 숫자만 잘라서 amountInput에 설정
+    const amountVal = parseInt(amountStr.replace(/[^0-9]/g, '')) || 0;
+    // 단위(ex: "g" 또는 "ml")를 unitEl에 설정
+    const unitText = amountStr.replace(/[0-9]/g, '');
 
     nameInput.value = name;
-    amountInput.value = amount;
-    unitEl.innerText = unit;
+    amountInput.value = amountVal;
+    unitEl.innerText = unitText;
     nameInput.dataset.calPerUnit = calPerUnit;
 
+    // 드롭다운 닫기
     listEl.classList.add('d-none');
+    selectedIdx = -1;
 });
 
 // 등록 버튼 클릭 시 음식 리스트에 항목 추가

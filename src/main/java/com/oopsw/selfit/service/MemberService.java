@@ -1,5 +1,8 @@
 package com.oopsw.selfit.service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,6 +19,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Service
 public class MemberService {
+
+	private final List<String> genders = List.of("남자", "여자");
+	private final List<String> goals = List.of("유지", "감량", "증량");
+	private final List<String> memberTypes = List.of("DEFAULT", "GOOGLE");
 
 	private final MemberRepository memberRepository;
 	private final BoardRepository boardRepository;
@@ -48,6 +55,10 @@ public class MemberService {
 		}
 		member.setPw(encoder.encode(member.getPw()));
 
+		if (!validateMember(member)) {
+			throw new IllegalArgumentException("잘못된 회원가입 요청입니다.");
+		}
+
 		return memberRepository.addMember(member) > 0;
 	}
 
@@ -74,6 +85,60 @@ public class MemberService {
 		int randomNumber = (int)(Math.random() * 100000); // 0 ~ 99999
 
 		return currentTime + "_" + randomNumber;
+	}
+
+	private boolean validateMember(Member member) {
+
+		if (memberRepository.checkExistEmail(member.getEmail()) != null) {
+			return false;
+		}
+
+		if (member.getPw() == null) {
+			return false;
+		}
+
+		if (member.getName() == null) {
+			return false;
+		}
+
+		if (memberRepository.checkExistNickname(member.getNickname()) != null) {
+			return false;
+		}
+
+		if (member.getGender() != null && !genders.contains(member.getGender())) {
+			return false;
+		}
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+		if (member.getBirthday() != null) {
+			try {
+				LocalDate.parse(member.getBirthday(), formatter);
+			} catch (DateTimeParseException e) {
+				return false;
+			}
+		}
+
+		if (member.getHeight() < 0 || member.getHeight() > 250) {
+			return false;
+		}
+
+		if (member.getWeight() < 0 || member.getWeight() > 300) {
+			return false;
+		}
+
+		if (member.getGoal() != null && !goals.contains(member.getGoal())) {
+			return false;
+		}
+
+		if (member.getJoinDate() != null) {
+			return false;
+		}
+
+		if (member.getMemberType() == null || !memberTypes.contains(member.getMemberType())) {
+			return false;
+		}
+
+		return true;
 	}
 
 }

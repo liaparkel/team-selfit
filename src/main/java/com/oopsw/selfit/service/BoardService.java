@@ -41,7 +41,24 @@ public class BoardService {
 	}
 
 	public boolean addBoard(Board board) {
-		return boardRepository.addBoard(board) > 0;
+		System.out.println(board);
+		// 1. 유효성 검증
+		if (board.getBoardTitle() == null || board.getBoardTitle().isBlank()) {
+			throw new IllegalArgumentException("제목은 필수입니다.");
+		}
+		if (board.getBoardContent() == null || board.getBoardContent().isBlank()) {
+			throw new IllegalArgumentException("내용은 필수입니다.");
+		}
+		if (board.getCategoryId() == 0) {
+			throw new IllegalArgumentException("카테고리를 선택해주세요.");
+		}
+
+		// 2. 저장
+		int result = boardRepository.addBoard(board);
+		if (result <= 0) {
+			throw new IllegalStateException("게시글 등록에 실패했습니다.");
+		}
+		return true;
 	}
 
 	public boolean toggleBookmark(Board board) {

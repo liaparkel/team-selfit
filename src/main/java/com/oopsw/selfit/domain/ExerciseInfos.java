@@ -17,11 +17,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ExerciseInfo {
+public class ExerciseInfos {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "EXERCISE_INFO_ID")
 	private int exerciseInfoId;
+
+	@Column(name = "EXERCISE_NAME", nullable = false)
+	private String exerciseName;
 
 	@Column(name = "EXERCISE_MIN", nullable = false)
 	private int exerciseMin;
@@ -29,8 +32,8 @@ public class ExerciseInfo {
 	@Column(name = "EXERCISE_KCAL", nullable = false)
 	private float exerciseKcal;
 
-	@Column(name = "EXERCISE_ID", nullable = false)
-	private int exerciseId;
+	@Column(name = "MET", nullable = false)
+	private float met;
 
 	@Column(name = "EXERCISE_NOTE_ID", nullable = false)
 	private int exerciseNoteId;

@@ -1,4 +1,4 @@
-@import url('../entry-global.css');
+@import url("../entry-global.css");
 
 /* 콘텐츠 래퍼 */
 .content-wrapper {
@@ -225,4 +225,39 @@
 /* 숫자만 입력 필드 */
 .number-only {
     /* 기본 스타일 유지 */
+}
+
+/* 모달 스타일 커스터마이징 */
+.modal-content {
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    padding: 1.5rem 1.5rem 0.5rem;
+}
+
+.modal-title {
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.modal-body {
+    padding: 1rem 1.5rem;
+}
+
+.modal-footer {
+    padding: 0.5rem 1.5rem 1.5rem;
+}
+
+.btn-close {
+    background-size: 1.2em;
+}
+
+/* 모달 버튼 스타일 */
+.modal .btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.5rem 1.5rem;
 }

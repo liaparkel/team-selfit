@@ -46,18 +46,14 @@ public class MemberRestController {
 
 	@GetMapping("/member")
 	public ResponseEntity<Member> getMember(@AuthenticationPrincipal AuthenticatedUser loginUser) {
-		System.out.println(loginUser.getMemberId());
 		return ResponseEntity.ok(memberService.getMember(loginUser.getMemberId()));
 	}
 
 	@PostMapping("/member")
 	public ResponseEntity<Map<String, Boolean>> addMember(@RequestBody Member member, HttpServletRequest request) {
 
-		if (!memberService.addMember(member)) {
-			throw new RuntimeException("알수없는 오류");
-		}
-
-		Authentication authentication = null;
+		memberService.addMember(member);
+		Authentication authentication;
 
 		if (member.getMemberType().equals("DEFAULT")) {
 			UserDetails userDetails = customUserDetailsService.loadUserByUsername(member.getEmail());
@@ -85,8 +81,6 @@ public class MemberRestController {
 
 	@PutMapping("/member")
 	public ResponseEntity<Map<String, Boolean>> setMember(@AuthenticationPrincipal AuthenticatedUser loginUser, @RequestBody Member member) {
-		System.out.println(member);
-		System.out.println(member.getPw());
 		member.setMemberId(loginUser.getMemberId());
 		return ResponseEntity.ok(Map.of("success", memberService.setMember(member)));
 	}
@@ -117,11 +111,19 @@ public class MemberRestController {
 	@PostMapping("/member/check-pw")
 	public ResponseEntity<Map<String, Boolean>> checkPw(@AuthenticationPrincipal AuthenticatedUser loginUser,
 		@RequestBody String jsonData) {
-		System.out.println(loginUser.getMemberId());
 		String pw = gson.fromJson(jsonData, JsonObject.class)
 			.get("pw")
 			.getAsString();
 		return ResponseEntity.ok(Map.of("success", memberService.checkPw(loginUser.getMemberId(), pw)));
+	}
+
+	@GetMapping("/member/check-login")
+	public ResponseEntity<Map<String, Boolean>> checkLoginStatus(@AuthenticationPrincipal AuthenticatedUser loginUser) {
+		boolean result = false;
+		if (loginUser != null) {
+			result = true;
+		}
+		return ResponseEntity.ok(Map.of("result", result));
 	}
 
 	@GetMapping("/member/bookmarks/{offset}")

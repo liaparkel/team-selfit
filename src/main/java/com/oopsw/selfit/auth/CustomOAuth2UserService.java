@@ -31,7 +31,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 	public CustomOAuth2User convertToCustomOAuth2User(Map<String, Object> attributes) {
 		String email = (String)attributes.get("email");
 
-		System.out.println("oauth서비스이동:" + "email: " + email);
 		if (!memberService.isEmailExists(email)) {
 			RequestContextHolder.currentRequestAttributes()
 				.setAttribute("email", attributes.get("email"), RequestAttributes.SCOPE_SESSION);
@@ -46,7 +45,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 			.memberId(memberId)
 			.email(email)
 			.build();
-
 		return new CustomOAuth2User(user, attributes);
 	}
 

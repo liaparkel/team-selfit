@@ -4,8 +4,8 @@
 .main-content {
     display: flex;
     flex: 1;
-    height: 100%;
-    overflow: hidden;
+    height: 100vh; /* 전체 화면 높이로 설정 */
+
 }
 
 /* ========== 콘텐츠 영역 ========== */
@@ -13,10 +13,10 @@
     flex: 1;
     padding: 2rem;
     background-color: #ffffff;
-    overflow-y: auto;
     min-width: 0;
     display: flex;
     flex-direction: column;
+
 }
 
 /* ========== 콘텐츠 헤더 ========== */
@@ -59,14 +59,11 @@
     box-shadow: 0 4px 8px rgba(34, 223, 205, 0.3);
 }
 
-.checklist-toggle-btn span {
-    font-size: 1rem;
-}
 
 /* ========== 상단 영역 (간격 증가) ========== */
 .top-section {
     flex-shrink: 0;
-    margin-bottom: 5rem; /* 2rem에서 3.5rem으로 증가 */
+    margin-bottom: 5rem; /* 2rem에서 5rem으로 증가 */
 }
 
 /* ========== 하단 영역 ========== */
@@ -82,7 +79,7 @@
     gap: 1.5rem;
     transition: grid-template-columns 0.3s ease;
     height: 400px;
-    position: relative; /* 위치 안정성 */
+    position: relative;
 }
 
 /* 체크리스트가 열렸을 때 3-column */
@@ -155,7 +152,8 @@
 .checklist-content {
     flex: 1;
     padding: 1.5rem;
-    overflow-y: auto;
+    overflow-y: auto; /* 고정 높이 설정 */
+    max-height: 300px; /* 고정 높이 설정 */
 }
 
 .checklist-item {
@@ -268,18 +266,18 @@
     padding: 0.5rem 1.5rem 1.5rem; /* 상단 패딩 줄임 */
 }
 
-/* ========== Circular Progress Chart (애플워치 스타일) ========== */
+/* ========== Circular Progress Chart ========== */
 .circular-progress {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1rem;
     padding: 0.5rem;
-    min-height: 320px;
+    min-height: 280px;
+    flex-wrap: wrap;
     position: relative;
     transition: all 0.3s ease;
 }
 
-/* 체크리스트가 열렸을 때 세로 배치 */
 .grid.checklist-open .circular-progress {
     flex-direction: column;
     text-align: center;
@@ -287,58 +285,30 @@
     min-height: auto;
 }
 
-/* 차트 전용 영역 - 애플워치 스타일 */
 .chart-area {
-    flex-shrink: 0;
-    width: 380px;
-    height: 380px;
+    flex-shrink: 1;
     transition: all 0.3s ease;
     position: relative;
     border-radius: 50%;
     overflow: hidden;
 }
 
-/* 애플워치 스타일 효과 */
-.chart-area.apple-watch-style {
-    background: radial-gradient(
-            circle at center,
-            rgba(255, 255, 255, 0.1) 0%,
-            rgba(255, 255, 255, 0.05) 45%,
-            transparent 46%
-    );
-    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.1), 0 0 30px rgba(34, 197, 129, 0.2), 0 0 50px rgba(17, 198, 207, 0.1);
-    animation: appleWatchGlow 3s ease-in-out infinite;
-}
-
-@keyframes appleWatchGlow {
-    0%,
-    100% {
-        box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.1), 0 0 30px rgba(34, 197, 129, 0.2), 0 0 50px rgba(17, 198, 207, 0.1);
-    }
-    50% {
-        box-shadow: inset 0 0 25px rgba(255, 255, 255, 0.15), 0 0 40px rgba(34, 197, 129, 0.3), 0 0 60px rgba(17, 198, 207, 0.2);
-    }
-}
-
-/* 체크리스트가 열렸을 때 차트 크기 조정 */
 .grid.checklist-open .chart-area {
-    width: 240px;
-    height: 240px;
+
 }
 
 .progress-info {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1rem;
     flex: 1;
-    min-width: 180px;
+    min-width: 140px;
     opacity: 1;
     visibility: visible;
-    padding-left: 1rem;
+    padding-left: 0.5rem;
     transition: all 0.3s ease;
 }
 
-/* 체크리스트가 열렸을 때 텍스트 정보 조정 */
 .grid.checklist-open .progress-info {
     padding-left: 0;
     min-width: auto;
@@ -349,7 +319,7 @@
 .progress-item {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.75rem;
     justify-content: flex-start;
     white-space: nowrap;
     opacity: 1;
@@ -357,15 +327,14 @@
     transition: none;
 }
 
-/* 체크리스트가 열렸을 때 progress-item 조정 */
 .grid.checklist-open .progress-item {
     justify-content: center;
     gap: 0.75rem;
 }
 
 .progress-dot {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     flex-shrink: 0;
     position: relative;
@@ -382,54 +351,27 @@
     box-shadow: 0 0 10px rgba(17, 198, 207, 0.4);
 }
 
-/* 애플워치 스타일 dot 효과 */
-.apple-watch-style ~ .progress-info .dot-intake {
-    background: linear-gradient(135deg, #33c181 0%, #22c55e 50%, #16a34a 100%);
-    box-shadow: 0 0 15px rgba(51, 193, 129, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.2);
-    animation: dotShimmer 2s ease-in-out infinite;
-}
-
-.apple-watch-style ~ .progress-info .dot-exercise {
-    background: linear-gradient(135deg, #11c6cf 0%, #06b6d4 50%, #0891b2 100%);
-    box-shadow: 0 0 15px rgba(17, 198, 207, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.2);
-    animation: dotShimmer 2s ease-in-out infinite 0.5s;
-}
-
-@keyframes dotShimmer {
-    0%,
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: scale(1.1);
-        opacity: 0.9;
-    }
-}
-
 .progress-item span {
     color: #6b7280;
     font-weight: 500;
     font-size: 1rem;
-    min-width: 50px;
+    min-width: 45px;
     flex-shrink: 0;
 }
 
-/* 체크리스트가 열렸을 때 텍스트 크기 조정 */
 .grid.checklist-open .progress-item span {
-    font-size: 0.875rem;
-    min-width: 40px;
+    font-size: 0.8rem;
+    min-width: 35px;
 }
 
 .progress-item strong {
     font-weight: 700;
-    font-size: 1.125rem;
+    font-size: 1rem;
     color: #111827;
     margin-left: 0.75rem;
     flex-shrink: 0;
 }
 
-/* 체크리스트가 열렸을 때 strong 텍스트 크기 조정 */
 .grid.checklist-open .progress-item strong {
     font-size: 1rem;
     margin-left: 0.5rem;
@@ -468,36 +410,6 @@
     padding: 0 1.5rem;
 }
 
-.chart-legend {
-    display: flex;
-    gap: 2rem;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    color: #6b7280;
-}
-
-.legend-line {
-    width: 20px;
-    height: 2px;
-    background: var(--color-2);
-    border-radius: 1px;
-}
-
-.legend-dashed {
-    background: repeating-linear-gradient(
-            to right,
-            var(--color-2) 0px,
-            var(--color-2) 4px,
-            transparent 4px,
-            transparent 8px
-    );
-}
-
 /* ========== Chart Selectors ========== */
 .chart-selectors {
     display: flex;
@@ -528,159 +440,4 @@
     outline: none;
     border-color: var(--color-2);
     box-shadow: 0 0 0 3px rgba(34, 223, 205, 0.1);
-}
-
-/* ========== Chart Container ========== */
-.chart-container {
-    width: 100%;
-    height: 240px;
-    overflow: hidden;
-    padding: 0 1rem;
-}
-
-.chart-container svg {
-    width: 100%;
-    height: 100%;
-}
-
-/* ========== 기존 레이아웃 조정 ========== */
-#section1 {
-    display: flex !important;
-}
-
-.sideBar {
-    flex-shrink: 0;
-}
-
-/* ========== 반응형 디자인 ========== */
-@media (max-width: 1400px) {
-    .grid.checklist-open {
-        grid-template-columns: 1fr 260px 320px;
-    }
-
-    .chart-area {
-        width: 240px;
-        height: 240px;
-    }
-
-    .circular-progress {
-        min-height: 240px;
-    }
-
-    .grid.checklist-open .chart-area {
-        width: 180px;
-        height: 180px;
-    }
-}
-
-@media (max-width: 1200px) {
-    .grid {
-        grid-template-columns: 1fr 280px 0fr;
-    }
-
-    .grid.checklist-open {
-        grid-template-columns: 1fr 0fr 350px;
-    }
-
-    .chart-area {
-        width: 220px;
-        height: 220px;
-    }
-
-    .circular-progress {
-        min-height: 220px;
-    }
-
-    .grid.checklist-open .chart-area {
-        width: 160px;
-        height: 160px;
-    }
-}
-
-@media (max-width: 768px) {
-    .top-section {
-        margin-bottom: 2rem;
-    }
-
-    .grid {
-        grid-template-columns: 1fr 0fr;
-        grid-template-rows: auto auto auto;
-        height: auto;
-    }
-
-    .grid.checklist-open {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto;
-    }
-
-    .checklist-panel {
-        grid-row: 3;
-        height: 300px;
-    }
-
-    .content-header {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: flex-start;
-    }
-
-    .checklist-toggle-btn {
-        align-self: flex-end;
-    }
-
-    .circular-progress {
-        flex-direction: column;
-        text-align: center;
-        gap: 1rem;
-    }
-
-    .chart-area {
-        width: 200px;
-        height: 200px;
-    }
-
-    .chart-selectors {
-        flex-direction: column;
-        gap: 0.5rem;
-        align-items: stretch;
-    }
-
-    .compare-selector,
-    .year-selector {
-        min-width: auto;
-        width: 100%;
-    }
-}
-
-@media (max-width: 480px) {
-    .content {
-        padding: 1rem;
-    }
-
-    .page-title {
-        font-size: 1.5rem;
-    }
-
-    .checklist-panel {
-        height: 250px;
-    }
-
-    .chart-area {
-        width: 180px;
-        height: 180px;
-    }
-
-    .circular-progress {
-        min-height: 180px;
-    }
-}
-
-.text-xs {
-    font-size: 12px;
-    font-family: "Noto Sans KR", sans-serif;
-}
-
-.text-sm {
-    font-size: 14px;
-    font-family: "Noto Sans KR", sans-serif;
 }

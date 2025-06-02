@@ -1,16 +1,18 @@
+import {showAlertModal, showSuccessModal, showErrorModal} from './basic-modal.js';
+
 // API 엔드포인트 설정
 const API_BASE_URL = "/api/account"
 
 // 폼 상태 관리 - 원본 데이터와 현재 데이터 분리
 const originalData = {
-  email: "",
-  name: "",
-  nickname: "",
-  gender: "",
-  birthDate: "",
-  height: "",
-  weight: "",
-  exerciseType: "",
+  email: null,
+  name: null,
+  nickname: null,
+  gender: null,
+  birthDate: null,
+  height: null,
+  weight: null,
+  exerciseType: null,
   memberType: "DEFAULT",
 }
 
@@ -20,11 +22,11 @@ const formState = {
   passwordConfirm: { value: "", valid: true },
   name: { value: "", valid: true },
   nickname: { value: "", valid: true, checked: true },
-  gender: "",
-  birthDate: { value: "", valid: true },
-  height: { value: "", valid: true },
-  weight: { value: "", valid: true },
-  exerciseType: "",
+  gender: null,
+  birthDate: { value: null, valid: true },
+  height: { value: null, valid: true },
+  weight: { value: null, valid: true },
+  exerciseType: null,
   memberType: "DEFAULT",
 }
 
@@ -38,10 +40,7 @@ const $ = window.jQuery
  */
 async function getMemberInfoAPI() {
   try {
-    const response = await $.ajax({
-      url: "/api/account/member",
-      type: "GET",
-      dataType: "json",
+    const response = await axios.get("/api/account/member", {
       timeout: 10000,
       headers: {
         Accept: "application/json",
@@ -49,8 +48,8 @@ async function getMemberInfoAPI() {
       },
     })
 
-    console.log("회원 정보 조회 응답:", response)
-    return response
+    console.log("회원 정보 조회 응답:", response.data)
+    return response.data
   } catch (error) {
     console.error("회원 정보 로드 실패:", error)
     $(".info-value").text("정보를 불러올 수 없습니다.")
@@ -69,20 +68,17 @@ async function checkNicknameDuplicateAPI(nickname) {
   console.log("닉네임 중복확인 요청:", requestData)
 
   try {
-    const response = await $.ajax({
-      url: `${API_BASE_URL}/check-nickname`,
-      type: "POST",
-      contentType: "application/json",
-      data: JSON.stringify(requestData),
+    const response = await axios.post(`${API_BASE_URL}/check-nickname`, requestData, {
       timeout: 10000,
       headers: {
         Accept: "application/json",
         "X-Requested-With": "XMLHttpRequest",
+        "Content-Type": "application/json",
       },
     })
 
-    console.log("닉네임 중복확인 응답:", response)
-    return response
+    console.log("닉네임 중복확인 응답:", response.data)
+    return response.data
   } catch (error) {
     console.error("닉네임 중복확인 API 오류:", error)
     return null
@@ -93,22 +89,18 @@ async function checkNicknameDuplicateAPI(nickname) {
  * 회원정보 수정 API
  */
 async function updateMemberAPI(userData) {
-
   try {
-    const response = await $.ajax({
-      url: "/api/account/member",
-      type: "PUT",
-      contentType: "application/json",
-      data: JSON.stringify(userData),
+    const response = await axios.put("/api/account/member", userData, {
       timeout: 15000,
       headers: {
         Accept: "application/json",
         "X-Requested-With": "XMLHttpRequest",
+        "Content-Type": "application/json",
       },
     })
 
-    console.log("회원정보 수정 응답:", response)
-    return response
+    console.log("회원정보 수정 응답:", response.data)
+    return response.data
   } catch (error) {
     console.error("회원정보 수정 API 오류:", error)
     return null
@@ -269,7 +261,7 @@ async function loadMemberData() {
     }
   } catch (error) {
     console.error("회원 데이터 로드 오류:", error)
-    alert("회원 정보를 불러오는 중 오류가 발생했습니다.")
+    showAlertModal("회원 정보를 불러오는 중 오류가 발생했습니다.")
   }
 }
 
@@ -592,7 +584,7 @@ function validateWeight() {
 
 async function handleNicknameDuplicateCheck() {
   if (!formState.nickname.valid) {
-    alert("올바른 닉네임을 입력해주세요.")
+    showAlertModal("올바른 닉네임을 입력해주세요.")
     return
   }
 
@@ -633,9 +625,7 @@ function handleProfileImageChange(e) {
 }
 
 function handleCancel() {
-  if (confirm("수정을 취소하시겠습니까? 변경사항이 저장되지 않습니다.")) {
-    window.location.href = "/account/mypage"
-  }
+showAlertModal("수정을 취소하시겠습니까? 변경사항이 저장되지 않습니다.", "/account/mypage")
 }
 
 async function handleSave() {
@@ -664,7 +654,7 @@ async function handleSave() {
     if (!formState.nickname.valid || !formState.nickname.checked) {
       hasValidationErrors = true
       if (!formState.nickname.checked) {
-        alert("변경된 닉네임의 중복확인을 해주세요.")
+      showAlertModal("변경된 닉네임의 중복확인을 해주세요.")
         return
       }
     }
@@ -698,7 +688,7 @@ async function handleSave() {
   }
 
   if (hasValidationErrors) {
-    alert("입력 정보를 확인해주세요.")
+    showAlertModal("입력 정보를 확인해주세요.")
     return
   }
 
@@ -711,12 +701,15 @@ async function handleSave() {
       name: isFieldChanged("name", currentName) ? currentName : originalData.name,
       nickname: isFieldChanged("nickname", currentNickname) ? currentNickname : originalData.nickname,
       gender: formState.gender, // 성별은 현재 선택된 값
-      birthday: isFieldChanged("birthDate", currentBirthDate) ? currentBirthDate : originalData.birthDate,
+      birthday: isFieldChanged("birthDate", currentBirthDate)
+        ? (currentBirthDate === "" ? null : currentBirthDate)
+        : originalData.birthDate,
       height: isFieldChanged("height", currentHeight) ? currentHeight : originalData.height,
       weight: isFieldChanged("weight", currentWeight) ? currentWeight : originalData.weight,
       goal: formState.exerciseType, // 운동 목적은 현재 선택된 값
     }
-
+    console.log(currentBirthDate);
+    console.log(originalData.birthDate)
     // 비밀번호는 입력되고 검증된 경우에만 포함
     if (isFieldBeingEdited(currentPassword) && formState.password.valid && formState.passwordConfirm.valid) {
       userData.pw = currentPassword
@@ -728,14 +721,13 @@ async function handleSave() {
     const response = await updateMemberAPI(userData)
 
     if (response && response.success) {
-      alert("회원정보가 수정되었습니다.")
-      window.location.href = "/account/mypage"
+      showSuccessModal("회원정보가 수정되었습니다.", "/account/mypage", true )
     } else {
-      alert("수정에 실패했습니다. 다시 시도해주세요.")
+        showAlertModal("수정에 실패했습니다. 다시 시도해주세요.")
     }
   } catch (error) {
     console.error("회원정보 수정 오류:", error)
-    alert("수정 중 오류가 발생했습니다.")
+    showErrorModal("수정 중 오류가 발생했습니다.")
   } finally {
     toggleButtonLoading($saveBtn, false)
   }
@@ -780,17 +772,3 @@ function handleBirthDateKeydown(e) {
     }
   }
 }
-
-// =========================== jQuery AJAX 전역 설정 ===========================
-
-$.ajaxSetup({
-  error: (xhr, status, error) => {
-    console.error("AJAX 오류:", {
-      status: xhr.status,
-      statusText: xhr.statusText,
-      error: error,
-    })
-  },
-})
-
-console.log("mypage-update.js 로드 완료")
