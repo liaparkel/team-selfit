@@ -81,11 +81,12 @@ public class UIController {
 
 	@GetMapping("board/write")
 	public String write() {
-		return "board/boardWrite";
+		return "board/boardForm";
 	}
 
-	@GetMapping("baord/set")
-	public String set() {
-		return "board/boardWrite";
+	@GetMapping("/board/edit/{boardId}")
+	public String edit(@PathVariable int boardId, Model model) {
+		model.addAttribute("boardId", boardId);
+		return "board/boardForm";
 	}
 }
