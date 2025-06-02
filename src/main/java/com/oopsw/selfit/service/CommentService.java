@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,27 +31,27 @@ public class CommentService {
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
 
 		// 엔티티 가져오기
-		List<Comments> commentEntities = commentRepository.findByBoardIdOrderByCommentCreatedDateDesc((long)boardId,
-			pageable);
+		Page<Comments> commentEntities = commentRepository
+			.findByBoardIdOrderByCommentCreatedDateDesc((long)boardId, pageable);
+
+		long totalComments = commentEntities.getTotalElements(); // 전체 댓글 개수
 
 		if (commentEntities.isEmpty()) {
 			return Collections.emptyList();
 		}
-
-		System.out.println("service : " + commentEntities.get(0).getMemberId());
 
 		return commentEntities.stream()
 			.map(entity -> {
 				Member memberInfo = commentsRepository.getMemberImg(
 					Member.builder().memberId(entity.getMemberId()).build()
 				);
-				System.out.println("memberId : " + entity.getMemberId());
 				return Comment.builder()
 					.commentId(entity.getCommentId())
 					.commentContent(entity.getCommentContent())
 					.commentDate(entity.getCommentCreatedDate())
 					.nickName(memberInfo.getNickname())
 					.profileImg(memberInfo.getProfileImg())
+					.totalCount((int)totalComments)
 					.build();
 			})
 			.collect(Collectors.toList());

@@ -1,4 +1,4 @@
-package com.oopsw.selfit.auth;
+package com.oopsw.selfit.auth.user;
 
 import java.util.Collection;
 import java.util.List;
@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.oopsw.selfit.auth.AuthenticatedUser;
 
 import lombok.RequiredArgsConstructor;
 

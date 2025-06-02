@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.oopsw.selfit.auth.AuthenticatedUser;
-import com.oopsw.selfit.auth.CustomOAuth2User;
-import com.oopsw.selfit.auth.CustomOAuth2UserService;
-import com.oopsw.selfit.auth.CustomUserDetailsService;
+import com.oopsw.selfit.auth.service.CustomOAuth2UserService;
+import com.oopsw.selfit.auth.service.CustomUserDetailsService;
+import com.oopsw.selfit.auth.user.CustomOAuth2User;
 import com.oopsw.selfit.dto.Bookmark;
 import com.oopsw.selfit.dto.Member;
 import com.oopsw.selfit.service.MemberService;
@@ -53,34 +53,14 @@ public class MemberRestController {
 	public ResponseEntity<Map<String, Boolean>> addMember(@RequestBody Member member, HttpServletRequest request) {
 
 		memberService.addMember(member);
-		Authentication authentication;
-
-		if (member.getMemberType().equals("DEFAULT")) {
-			UserDetails userDetails = customUserDetailsService.loadUserByUsername(member.getEmail());
-			authentication = new UsernamePasswordAuthenticationToken(
-				userDetails, null, userDetails.getAuthorities()
-			);
-
-		} else {
-			Map<String, Object> attributes = Map.of("email", member.getEmail());
-			CustomOAuth2User oAuth2User = customOAuth2UserService.convertToCustomOAuth2User(attributes);
-
-			authentication = new UsernamePasswordAuthenticationToken(
-				oAuth2User, null, oAuth2User.getAuthorities()
-			);
-
-		}
-
-		HttpSession session = request.getSession(true);
-		session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-			SecurityContextHolder.getContext());
-		SecurityContextHolder.getContext().setAuthentication(authentication);
+		saveSession(member, request);
 
 		return ResponseEntity.ok(Map.of("success", true));
 	}
 
 	@PutMapping("/member")
-	public ResponseEntity<Map<String, Boolean>> setMember(@AuthenticationPrincipal AuthenticatedUser loginUser, @RequestBody Member member) {
+	public ResponseEntity<Map<String, Boolean>> setMember(@AuthenticationPrincipal AuthenticatedUser loginUser,
+		@RequestBody Member member) {
 		member.setMemberId(loginUser.getMemberId());
 		return ResponseEntity.ok(Map.of("success", memberService.setMember(member)));
 	}
@@ -132,4 +112,28 @@ public class MemberRestController {
 		return ResponseEntity.ok(memberService.getBookmarks(loginUser.getMemberId(), PAGE_LIMIT, offset));
 	}
 
+	private void saveSession(Member member, HttpServletRequest request) {
+		Authentication authentication;
+
+		if (member.getMemberType().equals("DEFAULT")) {
+			UserDetails userDetails = customUserDetailsService.loadUserByUsername(member.getEmail());
+			authentication = new UsernamePasswordAuthenticationToken(
+				userDetails, null, userDetails.getAuthorities()
+			);
+
+		} else {
+			Map<String, Object> attributes = Map.of("email", member.getEmail());
+			CustomOAuth2User oAuth2User = customOAuth2UserService.convertToCustomOAuth2User(attributes);
+
+			authentication = new UsernamePasswordAuthenticationToken(
+				oAuth2User, null, oAuth2User.getAuthorities()
+			);
+
+		}
+
+		HttpSession session = request.getSession(true);
+		session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+			SecurityContextHolder.getContext());
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+	}
 }

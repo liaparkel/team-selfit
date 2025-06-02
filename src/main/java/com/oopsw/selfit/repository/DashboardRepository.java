@@ -98,5 +98,5 @@ public interface DashboardRepository {
 
 	int getFoodNoteId(Food food);
 
-	int getExerciseNoteId(Exercise exercise);
+	Integer getExerciseNoteId(Exercise exercise);
 }
