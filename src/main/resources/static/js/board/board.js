@@ -13,16 +13,60 @@ document.addEventListener('DOMContentLoaded', () => {
         '조회순': 'views',
     };
 
-    document.querySelectorAll('input[name="sort"]').forEach(radio => {
-        radio.addEventListener('click', function () {
-            const selectedSort = sortMap[this.value] || 'recent';
+    // --- 게시글 추가 (Add) – AJAX POST 처리 ----
+    const postForm = document.getElementById('postForm');
+    if (postForm) {
+        postForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-            // 정렬 기준이 바뀐 경우만 fetch
+            const titleInput = postForm.querySelector('input[name="postTitle"]');
+            const contentInput = postForm.querySelector('textarea[name="postContents"]');
+            const selectEl = postForm.querySelector('select[name="categoryId"]');
+
+            const payload = {
+                boardTitle: titleInput.value.trim(),
+                boardContent: contentInput.value.trim(),
+                categoryId: parseInt(selectEl.value)
+            };
+
+            if (!payload.boardTitle) {
+                alert('제목을 입력해주세요.');
+                return;
+            }
+            if (!payload.boardContent) {
+                alert('내용을 입력해주세요.');
+                return;
+            }
+            if (!payload.categoryId) {
+                alert('카테고리를 선택해주세요.');
+                return;
+            }
+
+            try {
+                await axios.post('/api/board/add', payload, {
+                    headers: {'Content-Type': 'application/json'}
+                });
+                alert('게시글 등록 성공');
+                window.location.href = `/board/list?categoryId=${payload.categoryId}`;
+            } catch (err) {
+                console.error('게시글 등록 실패', err);
+                if (err.response) {
+                    alert('등록 실패: ' + err.response.status);
+                } else {
+                    alert('등록 중 네트워크 오류가 발생했습니다.');
+                }
+            }
+        });
+    }
+
+    // 정렬 옵션 변경 시 처리
+    document.querySelectorAll('input[name="sort"]').forEach(radio => {
+        radio.addEventListener('click', () => {
+            const selectedSort = sortMap[radio.value] || 'recent';
             if (currentSort !== selectedSort) {
                 currentSort = selectedSort;
                 fetchAndRender(currentPage);
             }
-            // 동일한 정렬일 경우 아무 동작하지 않음
         });
     });
 
@@ -37,33 +81,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            const boards = res.data;
-            console.log(boards.sortOrder);
+            const boards = res.data; // List<Board>
+            let totalItems = 0;
+            if (boards.length > 0) {
+                totalItems = boards[0].totalCount || 0;
+            }
 
             const titleElement = document.querySelector('.board-title p');
             if (titleElement && boards.length > 0) {
                 titleElement.textContent = boards[0].categoryName;
             }
-            renderPage(boards, page);
+
+            renderPage(boards);
+            renderPagination(page, totalItems);
         } catch (err) {
             console.error('데이터 불러오기 실패', err);
         }
     }
 
-
-    // 페이지 렌더링
-    function renderPage(boards, page) {
+    function renderPage(boards) {
         const list = document.querySelector('.board-list');
         list.innerHTML = '';
 
-        const slice = boards.slice(0, pageSize);
-        slice.forEach(board => {
+        boards.forEach(board => {
             const item = document.createElement('div');
             item.className = 'board-list';
             item.innerHTML = `
                 <div class="board-title">
                     <a href="/board/detail/${board.boardId}">
-                     ${board.boardTitle}
+                        ${board.boardTitle}
                     </a>
                 </div>
                 <div class="board-author">${board.nickName}</div>
@@ -72,24 +118,30 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             list.appendChild(item);
         });
-
-        renderPagination(page, boards.length);
     }
 
-    // 페이지네이션 렌더링
     function renderPagination(page, totalItems) {
         const totalPages = Math.ceil(totalItems / pageSize);
         const pagination = document.querySelector('.board-pagination');
         pagination.innerHTML = '';
 
         if (page > 1) {
-            pagination.innerHTML += `<button onclick="goPage(1)">&lt;&lt;</button><button onclick="goPage(${page - 1})">&lt;</button>`;
+            pagination.innerHTML += `
+                <button onclick="goPage(1)">&lt;&lt;</button>
+                <button onclick="goPage(${page - 1})">&lt;</button>
+            `;
         }
         for (let i = 1; i <= totalPages; i++) {
-            pagination.innerHTML += `<button class="${i === page ? 'current' : ''}" onclick="goPage(${i})">${i}</button>`;
+            pagination.innerHTML += `
+                <button class="${i === page ? 'current' : ''}"
+                        onclick="goPage(${i})">${i}</button>
+            `;
         }
         if (page < totalPages) {
-            pagination.innerHTML += `<button onclick="goPage(${page + 1})">&gt;</button><button onclick="goPage(${totalPages})">&gt;&gt;</button>`;
+            pagination.innerHTML += `
+                <button onclick="goPage(${page + 1})">&gt;</button>
+                <button onclick="goPage(${totalPages})">&gt;&gt;</button>
+            `;
         }
     }
 
@@ -98,12 +150,5 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchAndRender(page);
     };
 
-    // // 페이지 이동
-    // function goPage(page) {
-    //     currentPage = page;
-    //     renderPage(page);
-    // }
-
-    // 초기 실행
     fetchAndRender(currentPage);
 });

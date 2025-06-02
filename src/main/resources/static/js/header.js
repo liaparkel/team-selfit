@@ -125,6 +125,17 @@ function fetchCategoryList() {
                 });
                 communityMenu.appendChild(div);
             });
+            const selectEl = document.getElementById('categorySelect');
+            if (selectEl) {
+                // 기본 옵션만 남기고 초기화
+                selectEl.innerHTML = '<option value="">카테고리 선택</option>';
+                categoryList.forEach(cat => {
+                    const opt = document.createElement('option');
+                    opt.value = cat.categoryId;
+                    opt.textContent = cat.categoryName;
+                    selectEl.appendChild(opt);
+                });
+            }
         })
         .catch(err => {
             console.error('카테고리 불러오기 실패:', err);

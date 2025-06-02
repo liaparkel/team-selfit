@@ -19,4 +19,5 @@ public class Comment {
 	private String commentContent;
 	private String nickName;
 	private String profileImg;
+	private int totalCount;
 }
