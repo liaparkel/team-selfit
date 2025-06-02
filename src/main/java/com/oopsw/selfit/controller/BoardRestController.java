@@ -122,4 +122,22 @@ public class BoardRestController {
 		boardService.setBoard(board);
 		return ResponseEntity.ok("게시글 수정 성공");
 	}
+
+	@PostMapping("/bookmark/{boardId}")
+	public ResponseEntity<Boolean> toggleBookmark(
+		@AuthenticationPrincipal AuthenticatedUser loginUser,
+		@PathVariable("boardId") int boardId
+	) {
+		if (loginUser == null) {
+			return ResponseEntity.status(401).build();
+		}
+
+		Board board = Board.builder()
+			.boardId(boardId)
+			.memberId(loginUser.getMemberId())  // ← 반드시 추가
+			.build();
+
+		boolean nowBookmarked = boardService.toggleBookmark(board);
+		return ResponseEntity.ok(nowBookmarked);
+	}
 }
