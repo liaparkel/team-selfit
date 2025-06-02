@@ -23,4 +23,5 @@ public class Board {
 	private int viewCount;
 	private int bookmarkCount;
 	private int commentCount;
+	private int totalCount;
 }
