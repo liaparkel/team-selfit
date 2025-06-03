@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const bookmarkBtn = document.getElementById('bookmarkBtn');
     const bookmarkIcon = document.getElementById('bookmarkIcon');
     // ─── 게시글 정보 불러오기 ───────────────────────────────────────────
-    axios.get(`/api/board/detail/${boardId}`)
+    axios.get(`/api/board/${boardId}`)
         .then(response => {
             const board = response.data.board;
             const currentUserId = response.data.currentUserId;
@@ -97,28 +97,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ─── 댓글 가져오기 + 렌더링 ─────────────────────────────────────────
     function fetchAndRenderComments(page) {
-        axios.get('/api/board/detail', {
+        axios.get('/api/board/comments', {
             params: {
-                boardId: boardId,
+                boardId: boardId, // 이제 쿼리 파라미터로 boardId 전달
                 page: page
             }
         })
             .then(response => {
                 const comments = response.data;
-                if (comments.length === 0) {
+                if (!Array.isArray(comments) || comments.length === 0) {
                     renderComments([]);
                     renderCommentPagination(0);
                     return;
                 }
 
-                // 전체 댓글 수: 첫 번째 요소의 totalCount 사용
+                // 전체 댓글 수: 첫 요소의 totalCount 사용
                 const totalComments = comments[0].totalCount;
-
                 renderComments(comments);
                 renderCommentPagination(totalComments);
                 elCommentCount.innerHTML = `<i class="bi bi-chat-dots"></i> ${totalComments}`;
-
-                console.log("댓글 로드 성공:", comments);
             })
             .catch(error => {
                 console.error("댓글 데이터를 불러오는 데 실패했습니다.", error);
@@ -168,6 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
         comments.forEach(comment => {
             // (1) ISO 형식 날짜에서 'T'를 공백으로 바꾸고
             // (2) '.' 이후 마이크로초 부분을 잘라낸다.
+            const imgSrc = comment.profileImg ? comment.profileImg : '/img/memberImg.png'
             let formattedDate = comment.commentDate || '';
             if (formattedDate.includes('.')) {
                 formattedDate = formattedDate.split('.')[0];
@@ -177,9 +175,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const div = document.createElement('div');
             div.className = 'comment';
             div.innerHTML = `
-            <img src="${comment.profileImg}" 
-                 onerror="this.onerror=null; this.src='/img/memberImg.png';" 
-                 alt="프로필 이미지" class="comment-profile-img">
+            <img src="${imgSrc}" 
+                alt="프로필 이미지" class="comment-profile-img">
             <div class="comment-right">
                 <div class="comment-nickName-date">
                     <div class="comment-nickName">${comment.nickName || ''}</div>
