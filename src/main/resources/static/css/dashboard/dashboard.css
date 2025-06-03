@@ -5,6 +5,7 @@
     display: flex;
     flex: 1;
     height: 100vh; /* 전체 화면 높이로 설정 */
+
 }
 
 /* ========== 콘텐츠 영역 ========== */
@@ -15,6 +16,7 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
+
 }
 
 /* ========== 콘텐츠 헤더 ========== */
@@ -57,10 +59,11 @@
     box-shadow: 0 4px 8px rgba(34, 223, 205, 0.3);
 }
 
+
 /* ========== 상단 영역 (간격 증가) ========== */
 .top-section {
     flex-shrink: 0;
-    margin-bottom: 5rem; /* 2rem→5rem으로 간격을 더 늘림 */
+    margin-bottom: 5rem; /* 2rem에서 5rem으로 증가 */
 }
 
 /* ========== 하단 영역 ========== */
@@ -72,15 +75,16 @@
 /* ========== 그리드 (동적 변경) ========== */
 .grid {
     display: grid;
-    grid-template-columns: 1fr 300px 0fr; /* 기본: 1fr(칼로리) + 300px(오른쪽 식단+운동) + 0fr(숨겨진 체크리스트) */
+    grid-template-columns: 1fr 300px 0fr; /* 기본: 2-column + 숨겨진 체크리스트 */
     gap: 1.5rem;
     transition: grid-template-columns 0.3s ease;
+    height: 400px;
     position: relative;
 }
 
 /* 체크리스트가 열렸을 때 3-column */
 .grid.checklist-open {
-    grid-template-columns: 1fr 280px 350px; /* 1fr(칼로리) + 280px(식단+운동) + 350px(체크리스트) */
+    grid-template-columns: 1fr 280px 350px; /* 3-column 레이아웃 */
 }
 
 .right-cards {
@@ -148,8 +152,8 @@
 .checklist-content {
     flex: 1;
     padding: 1.5rem;
-    overflow-y: auto; /* 스크롤 가능 */
-    max-height: 300px;
+    overflow-y: auto; /* 고정 높이 설정 */
+    max-height: 300px; /* 고정 높이 설정 */
 }
 
 .checklist-item {
@@ -245,7 +249,7 @@
 }
 
 .card-header {
-    padding: 1.5rem 1.5rem 0.5rem;
+    padding: 1.5rem 1.5rem 0.5rem; /* 하단 패딩 줄임 */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -259,7 +263,7 @@
 }
 
 .card-content {
-    padding: 0.5rem 1.5rem 1.5rem;
+    padding: 0.5rem 1.5rem 1.5rem; /* 상단 패딩 줄임 */
 }
 
 /* ========== Circular Progress Chart ========== */
@@ -269,8 +273,6 @@
     gap: 1rem;
     padding: 0.5rem;
     min-height: 280px;
-    min-width: 280px;
-    max-width: 480px;
     flex-wrap: wrap;
     position: relative;
     transition: all 0.3s ease;
@@ -292,7 +294,7 @@
 }
 
 .grid.checklist-open .chart-area {
-    /* 체크리스트 열렸을 때 차트 너비 조정 로직 필요 시 여기에 추가 */
+
 }
 
 .progress-info {
@@ -313,7 +315,6 @@
     gap: 1rem;
     align-items: center;
 }
-
 
 .progress-item {
     display: flex;
