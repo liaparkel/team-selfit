@@ -151,17 +151,27 @@ async function onCheckboxChange(e) {
 // 패널 닫기
 document.getElementById('close-panel-btn').addEventListener('click', async () => {
     document.getElementById('check-panel').style.display = 'none';
+
+    // 체크 항목이 없고 checklistId가 있을 경우만 삭제
     if (checklistList.length === 0 && currentChecklistId) {
-        await axios.delete('/api/dashboard/checklist', {
-            data: {
-                memberId,
-                checkDate: currentSelectedDate,
-                checklistId: currentChecklistId
-            }
-        });
-        delete checklistData[currentSelectedDate];
-        calendar.refetchEvents();
+        try {
+            await axios.delete('/api/dashboard/checklist', {
+                data: { checklistId: currentChecklistId }  // ✅ 객체로 감싸서 보냄
+            });
+
+            // 프론트에서 데이터 제거
+            delete checklistData[currentSelectedDate];
+            delete checklistIdMap[currentSelectedDate];
+
+            // 달력 리렌더링
+            calendar.refetchEvents();
+        } catch (err) {
+            console.error('체크리스트 삭제 실패:', err);
+            alert('체크리스트 삭제 중 오류가 발생했습니다.');
+        }
     }
+
+    // 상태 초기화
     currentSelectedDate = null;
     currentChecklistId = null;
 });
