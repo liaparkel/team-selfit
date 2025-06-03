@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.innerText = '수정하기';
 
         // 기존 데이터 로드
-        axios.get(`/api/board/detail/${boardId}`)
+        axios.get(`/api/board/${boardId}`)
             .then(res => {
                 const board = res.data.board;
                 titleInput.value = board.boardTitle || '';

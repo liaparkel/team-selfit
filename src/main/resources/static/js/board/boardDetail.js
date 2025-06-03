@@ -13,21 +13,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const editBtn = document.getElementById('editBtn');
     const deleteBtn = document.getElementById('deleteBtn');
 
-
+    const bookmarkBtn = document.getElementById('bookmarkBtn');
+    const bookmarkIcon = document.getElementById('bookmarkIcon');
     // ─── 게시글 정보 불러오기 ───────────────────────────────────────────
-    axios.get(`/api/board/detail/${boardId}`)
+    axios.get(`/api/board/${boardId}`)
         .then(response => {
             const board = response.data.board;
             const currentUserId = response.data.currentUserId;
+            const myBookmarkCount = response.data.myBookmarkCount || 0;
 
             // 작성자 ID(board.memberId)와 로그인 사용자 ID 비교
             if (board.memberId === currentUserId) {
                 ownerButtons.style.display = 'block';
             }
 
+            // 수정 버튼 이벤트
             editBtn.addEventListener('click', () => {
                 window.location.href = `/board/edit/${boardId}`;
             });
+
+            // 삭제 버튼 이벤트
             deleteBtn.addEventListener('click', async () => {
                 if (!confirm('정말 삭제하시겠습니까?')) return;
                 try {
@@ -40,37 +45,77 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
+            // 게시글 상세 렌더링
             renderBoardDetail(board);
+
+            // 댓글 렌더링
             fetchAndRenderComments(currentCommentPage);
+
+            // ─── 북마크 초기화 ─────────────────────────────────────────────
+            if (bookmarkBtn && bookmarkIcon) {
+                initBookmarkButton(boardId, myBookmarkCount > 0);
+            }
         })
         .catch(error => {
             console.error("게시글 데이터를 불러오는 데 실패했습니다.", error);
         });
 
+    function initBookmarkButton(boardId, isBookmarked) {
+        // 아이콘 초기 설정
+        setBookmarkIcon(isBookmarked);
+
+        // 클릭 시 토글 API 호출
+        bookmarkBtn.addEventListener('click', async () => {
+            try {
+                const res = await axios.post(`/api/board/bookmark/${boardId}`);
+                const nowBookmarked = res.data; // true: 추가됨, false: 삭제됨
+                setBookmarkIcon(nowBookmarked);
+            } catch (err) {
+                console.error('북마크 토글 실패', err);
+                if (err.response && err.response.status === 401) {
+                    alert('로그인이 필요합니다.');
+                    window.location.href = '/login';
+                } else {
+                    alert('북마크 처리 중 오류가 발생했습니다.');
+                }
+            }
+        });
+
+        // 아이콘 상태에 따라 클래스 토글
+        function setBookmarkIcon(bookmarked) {
+            if (bookmarked) {
+                bookmarkIcon.classList.remove('bi-bookmark');
+                bookmarkIcon.classList.add('bi-bookmark-fill');
+                bookmarkBtn.setAttribute('title', '북마크 해제');
+            } else {
+                bookmarkIcon.classList.remove('bi-bookmark-fill');
+                bookmarkIcon.classList.add('bi-bookmark');
+                bookmarkBtn.setAttribute('title', '북마크 추가');
+            }
+        }
+    }
+
     // ─── 댓글 가져오기 + 렌더링 ─────────────────────────────────────────
     function fetchAndRenderComments(page) {
-        axios.get('/api/board/detail', {
+        axios.get('/api/board/comments', {
             params: {
-                boardId: boardId,
+                boardId: boardId, // 이제 쿼리 파라미터로 boardId 전달
                 page: page
             }
         })
             .then(response => {
                 const comments = response.data;
-                if (comments.length === 0) {
+                if (!Array.isArray(comments) || comments.length === 0) {
                     renderComments([]);
                     renderCommentPagination(0);
                     return;
                 }
 
-                // 전체 댓글 수: 첫 번째 요소의 totalCount 사용
+                // 전체 댓글 수: 첫 요소의 totalCount 사용
                 const totalComments = comments[0].totalCount;
-
                 renderComments(comments);
                 renderCommentPagination(totalComments);
                 elCommentCount.innerHTML = `<i class="bi bi-chat-dots"></i> ${totalComments}`;
-
-                console.log("댓글 로드 성공:", comments);
             })
             .catch(error => {
                 console.error("댓글 데이터를 불러오는 데 실패했습니다.", error);
@@ -84,6 +129,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.nickName').textContent = board.nickName || '';
         document.querySelector('.board-body').textContent = board.boardContent || '';
 
+        let created = board.createdDate || '';
+        if (created.includes('.')) {
+            created = created.split('.')[0];  // 점(.) 뒤를 전부 잘라낸다
+        }
+        document.querySelector('.board-date').innerHTML =
+            `<i class="bi bi-clock"></i> ${created}`;
+
         // 이미지 처리: board.boardImg가 유효할 때만 src 설정
         const imgEl = document.querySelector('.board-image img');
         if (board.boardImg && board.boardImg !== 'null') {
@@ -92,8 +144,6 @@ document.addEventListener('DOMContentLoaded', () => {
             imgEl.removeAttribute('src');
         }
 
-        document.querySelector('.board-date').innerHTML =
-            `<i class="bi bi-clock"></i> ${board.createdDate || ''}`;
         document.querySelector('.view-count').innerHTML =
             `<i class="bi bi-eye"></i> ${board.viewCount || 0}`;
         document.querySelector('.comment-count').innerHTML =
@@ -113,26 +163,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         comments.forEach(comment => {
-            const formattedDate = comment.commentDate
-                ? comment.commentDate.replace('T', ' ')
-                : '';
+            // (1) ISO 형식 날짜에서 'T'를 공백으로 바꾸고
+            // (2) '.' 이후 마이크로초 부분을 잘라낸다.
+            const imgSrc = comment.profileImg ? comment.profileImg : '/img/memberImg.png'
+            let formattedDate = comment.commentDate || '';
+            if (formattedDate.includes('.')) {
+                formattedDate = formattedDate.split('.')[0];
+            }
+            formattedDate = formattedDate.replace('T', ' ');
 
             const div = document.createElement('div');
             div.className = 'comment';
             div.innerHTML = `
-                <img src="${comment.profileImg}" 
-                     onerror="this.onerror=null; this.src='/img/memberImg.png';" 
-                     alt="프로필 이미지" class="comment-profile-img">
-                <div class="comment-right">
-                    <div class="comment-nickName-date">
-                        <div class="comment-nickName">${comment.nickName || ''}</div>
-                        <div class="comment-date">${formattedDate}</div>
-                    </div>
-                    <div class="comment-box">
-                        <div class="comment-text">${comment.commentContent || ''}</div>
-                    </div>
+            <img src="${imgSrc}" 
+                alt="프로필 이미지" class="comment-profile-img">
+            <div class="comment-right">
+                <div class="comment-nickName-date">
+                    <div class="comment-nickName">${comment.nickName || ''}</div>
+                    <div class="comment-date">${formattedDate}</div>
                 </div>
-            `;
+                <div class="comment-box">
+                    <div class="comment-text">${comment.commentContent || ''}</div>
+                </div>
+            </div>
+        `;
             commentList.appendChild(div);
         });
     }

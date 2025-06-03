@@ -69,6 +69,9 @@ public class BoardService {
 	}
 
 	public boolean toggleBookmark(Board board) {
+		if (board.getBoardId() <= 0 || board.getMemberId() <= 0) {
+			throw new IllegalArgumentException("boardId와 memberId는 0보다 커야 합니다.");
+		}
 		int count = boardRepository.getBookmarkCount(board);
 
 		if (count == 0) {

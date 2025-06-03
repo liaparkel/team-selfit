@@ -63,6 +63,7 @@ public interface DashboardRepository {
 
 	int addChecklist(Checklist checklist);
 
+	int removeChecklist(Checklist checklist);
 	// int addCheckItem(Checklist checklist);
 
 	String getGoal(int memberId);

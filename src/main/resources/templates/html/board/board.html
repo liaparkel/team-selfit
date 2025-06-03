@@ -33,7 +33,7 @@
                         <input type="radio" name="sort" value="조회순">조회순
                     </div>
                     <div class="latest">
-                        <input type="radio" name="sort" value="최신순">최신순
+                        <input type="radio" name="sort" value="최신순" checked>최신순
                     </div>
                 </div>
             </div>
@@ -46,12 +46,28 @@
             </div>
             <div class="board-list">
             </div>
-            <div class="search-result">
-                <input type="text" placeholder="검색어를 입력하세요." class="searchTotal">
-            </div>
-            <div class="board-pagination">
 
+            <!-- 검색 결과가 없을 때 보여줄 메시지 영역 -->
+            <div class="no-results-message">
+                <!-- 1) 돋보기 아이콘 -->
+                <div class="no-results-icon">
+                    <i class="bi bi-search"></i>
+                </div>
+                <!-- 2) 텍스트 -->
+                <div class="no-results-text">
+                    검색 결과가 없습니다.
+                </div>
             </div>
+
+            <!-- 검색창 (아래쪽) -->
+            <div class="search-result">
+                <input
+                        type="text"
+                        placeholder="검색어를 입력하세요."
+                        class="searchTotal"
+                >
+            </div>
+            <div class="board-pagination"></div>
         </div>
     </div>
 </div>

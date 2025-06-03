@@ -47,7 +47,7 @@ public class BoardRestController {
 
 	}
 
-	@GetMapping("detail/{boardId}")
+	@GetMapping("/{boardId}")
 	public ResponseEntity<Map<String, Object>> getBoard(@AuthenticationPrincipal AuthenticatedUser loginUser,
 		@PathVariable int boardId) {
 		log.info("getBoard - boardId: {}", boardId);
@@ -65,10 +65,10 @@ public class BoardRestController {
 		return ResponseEntity.ok(resp);
 	}
 
-	@GetMapping("/detail")
-	public ResponseEntity<List<Comment>> getCommnets(@RequestParam int boardId, @RequestParam int page) {
-		log.info("getCommnets - boardId: {}, page: {}", boardId, page);
-
+	@GetMapping("/comments")
+	public ResponseEntity<List<Comment>> getComments(
+		@RequestParam("boardId") int boardId,
+		@RequestParam(name = "page", defaultValue = "1") int page) {
 		List<Comment> comments = commentService.getComments(boardId, page);
 		return ResponseEntity.ok(comments);
 	}
@@ -121,5 +121,23 @@ public class BoardRestController {
 
 		boardService.setBoard(board);
 		return ResponseEntity.ok("게시글 수정 성공");
+	}
+
+	@PostMapping("/bookmark/{boardId}")
+	public ResponseEntity<Boolean> toggleBookmark(
+		@AuthenticationPrincipal AuthenticatedUser loginUser,
+		@PathVariable("boardId") int boardId
+	) {
+		if (loginUser == null) {
+			return ResponseEntity.status(401).build();
+		}
+
+		Board board = Board.builder()
+			.boardId(boardId)
+			.memberId(loginUser.getMemberId())  // ← 반드시 추가
+			.build();
+
+		boolean nowBookmarked = boardService.toggleBookmark(board);
+		return ResponseEntity.ok(nowBookmarked);
 	}
 }

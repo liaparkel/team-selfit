@@ -59,7 +59,6 @@ async function getMemberInfoAPI() {
             },
         })
 
-        console.log("회원 정보 조회 응답:", response.data)
         return response.data
     } catch (error) {
         console.error("회원 정보 로드 실패:", error)
@@ -73,7 +72,6 @@ async function checkNicknameDuplicateAPI(nickname) {
         nickname: nickname,
     }
 
-    console.log("닉네임 중복확인 요청:", requestData)
 
     try {
         const response = await axios.post(`${API_BASE_URL}/check-nickname`, requestData, {
@@ -85,7 +83,6 @@ async function checkNicknameDuplicateAPI(nickname) {
             },
         })
 
-        console.log("닉네임 중복확인 응답:", response.data)
         return response.data
     } catch (error) {
         console.error("닉네임 중복확인 API 오류:", error)
@@ -104,7 +101,7 @@ async function updateMemberAPI(userData) {
             },
         })
 
-        console.log("회원정보 수정 응답:", response.data)
+
         return response.data
     } catch (error) {
         console.error("회원정보 수정 API 오류:", error)
@@ -617,7 +614,6 @@ function handleProfileImageChange(e) {
     if (file) {
         const reader = new FileReader()
         reader.onload = (e) => {
-            console.log("프로필 이미지 선택됨:", file.name)
         }
         reader.readAsDataURL(file)
     }
@@ -704,7 +700,6 @@ async function handleSave() {
             userData.pw = currentPassword
         }
 
-        console.log("전송할 데이터:", userData)
 
         const response = await updateMemberAPI(userData)
 
@@ -1042,7 +1037,6 @@ function initProfileImageUpload() {
             $modal.modal('hide');
             resetUpload();
 
-            console.log('Profile image updated:', downloadURL);
 
         } catch (error) {
             console.error('Error uploading image:', error);

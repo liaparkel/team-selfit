@@ -517,6 +517,8 @@ function renderExerciseList() {
 
     document.getElementById('total-cal').innerText = total;
 
+    renderKcalEvents(window.calendar);
+
 }
 
 

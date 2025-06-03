@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -55,8 +56,9 @@ public class MemberService {
 		}
 		member.setPw(encoder.encode(member.getPw()));
 
-		if (!validateMember(member)) {
-			throw new IllegalArgumentException("잘못된 회원가입 요청입니다.");
+		String errorMessage = validateMember(member);
+		if (errorMessage != null) {
+			throw new DataIntegrityViolationException(errorMessage);
 		}
 
 		return memberRepository.addMember(member) > 0;
@@ -87,26 +89,26 @@ public class MemberService {
 		return currentTime + "_" + randomNumber;
 	}
 
-	private boolean validateMember(Member member) {
+	private String validateMember(Member member) {
 
 		if (memberRepository.checkExistEmail(member.getEmail()) != null) {
-			return false;
+			return "Email is duplicated";
 		}
 
 		if (member.getPw() == null) {
-			return false;
+			return "Password is null";
 		}
 
 		if (member.getName() == null) {
-			return false;
+			return "Name is null";
 		}
 
 		if (memberRepository.checkExistNickname(member.getNickname()) != null) {
-			return false;
+			return "Nickname is duplicated";
 		}
 
 		if (member.getGender() != null && !genders.contains(member.getGender())) {
-			return false;
+			return "gender is invalid";
 		}
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
@@ -114,31 +116,31 @@ public class MemberService {
 			try {
 				LocalDate.parse(member.getBirthday(), formatter);
 			} catch (DateTimeParseException e) {
-				return false;
+				return "Birthday is invalid format";
 			}
 		}
 
 		if (member.getHeight() < 0 || member.getHeight() > 250) {
-			return false;
+			return "Height is invalid";
 		}
 
 		if (member.getWeight() < 0 || member.getWeight() > 300) {
-			return false;
+			return "Weight is invalid";
 		}
 
 		if (member.getGoal() != null && !goals.contains(member.getGoal())) {
-			return false;
+			return "Goal is invalid";
 		}
 
 		if (member.getJoinDate() != null) {
-			return false;
+			return "joinDate must be null";
 		}
 
 		if (member.getMemberType() == null || !memberTypes.contains(member.getMemberType())) {
-			return false;
+			return "memberType is invalid";
 		}
 
-		return true;
+		return null;
 	}
 
 }
