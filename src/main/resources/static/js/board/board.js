@@ -6,8 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentSort = 'recent';
     let currentKeyword = '';
 
-    console.log("board.js 진입");
-
     const sortMap = {
         '최신순': 'recent',
         '조회순': 'views',
