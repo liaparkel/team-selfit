@@ -81,18 +81,20 @@ async function fetchMemberInfo() {
 
 document.addEventListener('DOMContentLoaded', () => {
     fetchMemberInfo();
-    // 모든 메뉴 아이템 중 자식이 있는 것들
-    document.querySelectorAll('.menu-item.has-children').forEach(item => {
-        item.addEventListener('click', () => {
-            // 열린 아이템이 다른 그룹이면 닫고
+
+    // 메뉴 레이블(.menu-label)만 토글 이벤트 걸기
+    document.querySelectorAll('.menu-item.has-children .menu-label').forEach(label => {
+        label.addEventListener('click', () => {
+            const item = label.closest('.menu-item.has-children');
+
             document.querySelectorAll('.menu-item.has-children').forEach(i => {
                 if (i !== item) {
                     i.classList.remove('open', 'active');
-                    i.querySelector('.submenu').style.maxHeight = null;
+                    const otherSub = i.querySelector('.submenu');
+                    if (otherSub) otherSub.style.maxHeight = null;
                 }
             });
 
-            // 자신 토글
             item.classList.toggle('open');
             item.classList.toggle('active');
             const submenu = item.querySelector('.submenu');
@@ -103,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
     fetchCategoryList();
 });
 
