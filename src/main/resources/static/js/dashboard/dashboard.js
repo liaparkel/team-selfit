@@ -608,18 +608,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ------------------------------
     // 13) 체크박스 상태 변경 처리
-    //      (체크 시 라벨에 취소선, 색상 회색 처리)
+    //      (체크 시 라벨에 취소선, 색상 회색 처리) — 이벤트 리스너 내부에서 처리
     // ------------------------------
     document.addEventListener("change", (e) => {
         if (e.target.type === "checkbox" && e.target.closest(".checklist-item")) {
-            const label = e.target.nextElementSibling;
-            if (e.target.checked) {
-                label.style.textDecoration = "line-through";
-                label.style.color = "#9ca3af";
-            } else {
-                label.style.textDecoration = "none";
-                label.style.color = "#374151";
-            }
+            // 별도 로직 없음, 개별 체크박스에 붙은 이벤트 내부에서 처리
         }
     });
 
@@ -647,7 +640,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ------------------------------
-    // 16) 체크리스트 가져온 뒤 DOM에 렌더링
+    // 16) 체크리스트 가져온 뒤 DOM에 렌더링 + 체크 상태 변경 시 서버에 반영
     // ------------------------------
     async function renderCheckList() {
         let items = [];
@@ -661,7 +654,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const checklistContent = document.querySelector(".checklist-content");
         if (!checklistContent) return;
 
-        // 기존에 하드코딩된 항목 및 이전 데이터를 모두 삭제
+        // 기존 항목 삭제
         checklistContent.innerHTML = "";
 
         if (items.length === 0) {
@@ -679,8 +672,28 @@ document.addEventListener("DOMContentLoaded", () => {
             // 체크박스 생성
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
-            checkbox.id = `check-${item.checkId}`; // checkId 사용
-            if (item.isCheck === 1) checkbox.checked = true;
+            checkbox.id = `check-${item.checkId}`;
+            checkbox.checked = item.isCheck === 1;
+
+            // 체크/해제 시 서버로 PUT 요청
+            checkbox.addEventListener("change", async () => {
+                const newValue = checkbox.checked ? 1 : 0;
+                try {
+                    await axios.put(
+                        "/api/dashboard/checklist/item/check",
+                        {
+                            checkId: item.checkId,
+                            isCheck: newValue
+                        },
+                        { headers: JSON_HEADERS }
+                    );
+                    console.log(`checkId=${item.checkId} 상태 변경: ${newValue}`);
+                } catch (err) {
+                    console.error("체크 상태 업데이트 실패:", err);
+                    // 업데이트 실패 시 다시 이전 상태로 되돌리기
+                    checkbox.checked = !checkbox.checked;
+                }
+            });
 
             // 라벨 생성
             const label = document.createElement("label");
@@ -690,6 +703,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 label.style.textDecoration = "line-through";
                 label.style.color = "#9ca3af";
             }
+
+            // 체크 상태 변화에 따라 라벨 스타일 동기화
+            checkbox.addEventListener("change", () => {
+                if (checkbox.checked) {
+                    label.style.textDecoration = "line-through";
+                    label.style.color = "#9ca3af";
+                } else {
+                    label.style.textDecoration = "none";
+                    label.style.color = "#374151";
+                }
+            });
 
             itemDiv.appendChild(checkbox);
             itemDiv.appendChild(label);
