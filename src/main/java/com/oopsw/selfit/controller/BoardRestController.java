@@ -47,7 +47,7 @@ public class BoardRestController {
 
 	}
 
-	@GetMapping("detail/{boardId}")
+	@GetMapping("/{boardId}")
 	public ResponseEntity<Map<String, Object>> getBoard(@AuthenticationPrincipal AuthenticatedUser loginUser,
 		@PathVariable int boardId) {
 		log.info("getBoard - boardId: {}", boardId);
@@ -65,10 +65,10 @@ public class BoardRestController {
 		return ResponseEntity.ok(resp);
 	}
 
-	@GetMapping("/detail")
-	public ResponseEntity<List<Comment>> getCommnets(@RequestParam int boardId, @RequestParam int page) {
-		log.info("getCommnets - boardId: {}, page: {}", boardId, page);
-
+	@GetMapping("/comments")
+	public ResponseEntity<List<Comment>> getComments(
+		@RequestParam("boardId") int boardId,
+		@RequestParam(name = "page", defaultValue = "1") int page) {
 		List<Comment> comments = commentService.getComments(boardId, page);
 		return ResponseEntity.ok(comments);
 	}
