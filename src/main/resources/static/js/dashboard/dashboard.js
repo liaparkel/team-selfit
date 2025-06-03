@@ -1,12 +1,13 @@
 // dashboard.js
 document.addEventListener("DOMContentLoaded", () => {
     const ApexCharts = window.ApexCharts;
+    // axios가 전역에 import/로드되어 있다고 가정합니다.
 
     let radialChart = null;
     let lineChart = null;
 
     // ------------------------------
-    // 공통: fetch 요청 시 사용하는 헤더
+    // 공통: Axios 요청 시 사용하는 헤더
     // ------------------------------
     const JSON_HEADERS = {
         "Content-Type": "application/json"
@@ -32,90 +33,103 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ------------------------------
-    // 2) 오늘 BMR / 오늘 섭취 합계 / 오늘 운동 합계 조회 함수
+    // 2) 오늘 BMR / 오늘 섭취 합계 / 오늘 운동 합계 조회 함수 (Axios 사용)
     // ------------------------------
     async function fetchTodayBmr() {
-        const res = await fetch("/api/dashboard/bmr", {
-            method: "POST",
-            headers: JSON_HEADERS,
-            body: JSON.stringify({})
-        });
-        if (!res.ok) throw new Error("BMR 조회 실패");
-        const data = await res.json();
-        return data.bmr;
+        try {
+            const response = await axios.post(
+                "/api/dashboard/bmr",
+                {},
+                { headers: JSON_HEADERS }
+            );
+            return response.data.bmr;
+        } catch (err) {
+            throw new Error("BMR 조회 실패");
+        }
     }
 
     async function fetchIntakeForDate(dateStr) {
-        const res = await fetch("/api/dashboard/food/kcal", {
-            method: "POST",
-            headers: JSON_HEADERS,
-            body: JSON.stringify({ intakeDate: dateStr })
-        });
-        if (!res.ok) throw new Error("오늘 섭취 합계 조회 실패");
-        const data = await res.json();
-        // 실제 DTO가 { intakeSum: #### } 형태로 넘어온다고 가정
-        return data.intakeSum ?? 0;
+        try {
+            const response = await axios.post(
+                "/api/dashboard/food/kcal",
+                { intakeDate: dateStr },
+                { headers: JSON_HEADERS }
+            );
+            return response.data.intakeSum ?? 0;
+        } catch (err) {
+            throw new Error("오늘 섭취 합계 조회 실패");
+        }
     }
 
     async function fetchExerciseForDate(dateStr) {
-        const res = await fetch("/api/dashboard/exercise/kcal", {
-            method: "POST",
-            headers: JSON_HEADERS,
-            body: JSON.stringify({ exerciseDate: dateStr })
-        });
-        if (!res.ok) throw new Error("오늘 운동 합계 조회 실패");
-        const data = await res.json();
-        return data.exerciseSum ?? 0;
+        try {
+            const response = await axios.post(
+                "/api/dashboard/exercise/kcal",
+                { exerciseDate: dateStr },
+                { headers: JSON_HEADERS }
+            );
+            return response.data.exerciseSum ?? 0;
+        } catch (err) {
+            throw new Error("오늘 운동 합계 조회 실패");
+        }
     }
 
     // ------------------------------
-    // 3) 오늘 먹은 음식 목록 / 오늘 한 운동 목록 조회
+    // 3) 오늘 먹은 음식 목록 / 오늘 한 운동 목록 조회 (Axios 사용)
     // ------------------------------
     async function fetchTodayFoodList(dateStr) {
-        const res = await fetch("/api/dashboard/foods", {
-            method: "POST",
-            headers: JSON_HEADERS,
-            body: JSON.stringify({ intakeDate: dateStr })
-        });
-        if (!res.ok) throw new Error("오늘 음식 리스트 조회 실패");
-        return await res.json();
-        // 예: [ { foodName:"햇반", intake:1, unitKcal:350, totalKcal:350, intakeDate:"2025-06-11" }, … ]
+        try {
+            const response = await axios.post(
+                "/api/dashboard/foods",
+                { intakeDate: dateStr },
+                { headers: JSON_HEADERS }
+            );
+            return response.data;
+        } catch (err) {
+            throw new Error("오늘 음식 리스트 조회 실패");
+        }
     }
 
     async function fetchTodayExerciseList(dateStr) {
-        const res = await fetch("/api/dashboard/exercises", {
-            method: "POST",
-            headers: JSON_HEADERS,
-            body: JSON.stringify({ exerciseDate: dateStr })
-        });
-        if (!res.ok) throw new Error("오늘 운동 리스트 조회 실패");
-        return await res.json();
-        // 예: [ { exerciseName:"벤치 프레스", exerciseMin:30, exerciseKcal:350, totalKcal:350, exerciseDate:"2025-06-11" }, … ]
+        try {
+            const response = await axios.post(
+                "/api/dashboard/exercises",
+                { exerciseDate: dateStr },
+                { headers: JSON_HEADERS }
+            );
+            return response.data;
+        } catch (err) {
+            throw new Error("오늘 운동 리스트 조회 실패");
+        }
     }
 
     // ------------------------------
-    // 4) 연간 기록 비교 데이터 조회
+    // 4) 연간 기록 비교 데이터 조회 (Axios 사용)
     // ------------------------------
     async function fetchYearIntakeCompare(year) {
-        const res = await fetch("/api/dashboard/food/kcal/avg/year", {
-            method: "POST",
-            headers: JSON_HEADERS,
-            body: JSON.stringify({ intakeYear: parseInt(year) })
-        });
-        if (!res.ok) throw new Error("연간 섭취 비교 조회 실패");
-        return await res.json();
-        // 예: [ { intakeDate:"2025-05-28", intakeTotal:2300, avgTotal:2500 }, … ]
+        try {
+            const response = await axios.post(
+                "/api/dashboard/food/kcal/avg/year",
+                { intakeYear: parseInt(year) },
+                { headers: JSON_HEADERS }
+            );
+            return response.data;
+        } catch (err) {
+            throw new Error("연간 섭취 비교 조회 실패");
+        }
     }
 
     async function fetchYearExerciseCompare(year) {
-        const res = await fetch("/api/dashboard/exercise/kcal/avg/year", {
-            method: "POST",
-            headers: JSON_HEADERS,
-            body: JSON.stringify({ exerciseYear: parseInt(year) })
-        });
-        if (!res.ok) throw new Error("연간 운동 비교 조회 실패");
-        return await res.json();
-        // 예: [ { exerciseDate:"2025-05-28", exerciseTotal:800, avgTotal:950 }, … ]
+        try {
+            const response = await axios.post(
+                "/api/dashboard/exercise/kcal/avg/year",
+                { exerciseYear: parseInt(year) },
+                { headers: JSON_HEADERS }
+            );
+            return response.data;
+        } catch (err) {
+            throw new Error("연간 운동 비교 조회 실패");
+        }
     }
 
     // -------------------------------------------------
@@ -123,7 +137,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // -------------------------------------------------
     async function createRadialOptions(size = 330) {
         const today = getTodayString();
-        let bmr = 0, intakeValue = 0, exerciseValue = 0;
+        let bmr = 0,
+            intakeValue = 0,
+            exerciseValue = 0;
 
         try {
             [bmr, intakeValue, exerciseValue] = await Promise.all([
@@ -143,8 +159,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         return {
             series: [
-                valueToPercent(intakeValue),   // 섭취 비율
-                valueToPercent(exerciseValue)  // 운동 비율
+                valueToPercent(intakeValue), // 섭취 비율
+                valueToPercent(exerciseValue) // 운동 비율
             ],
             chart: {
                 height: size,
@@ -226,10 +242,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 }
             ],
-            colors: [
-                intakeExceeded ? "#f59e0b" : "#33C181",
-                exerciseExceeded ? "#ec4899" : "#11C6CF"
-            ],
+            colors: [intakeExceeded ? "#f59e0b" : "#33C181", exerciseExceeded ? "#ec4899" : "#11C6CF"],
             labels: ["섭취", "운동"],
             legend: { show: false },
             stroke: { lineCap: "round" }
@@ -242,7 +255,8 @@ document.addEventListener("DOMContentLoaded", () => {
     async function renderTodayCards() {
         const today = getTodayString();
 
-        let foodList = [], exerciseList = [];
+        let foodList = [],
+            exerciseList = [];
         try {
             [foodList, exerciseList] = await Promise.all([
                 fetchTodayFoodList(today),
@@ -263,8 +277,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 li.innerText = "오늘 먹은 음식이 없습니다.";
                 foodListUl.appendChild(li);
             } else {
-                foodList.forEach(item => {
+                foodList.forEach((item) => {
                     const li = document.createElement("li");
+                    // intake, unitKcal 필드를 곱해서 총 kcal 계산
                     const totalKcal = (item.intake ?? 1) * (item.unitKcal ?? 0);
                     li.innerHTML = `<strong>${item.foodName}</strong> ${item.intake}개 (${totalKcal} kcal)`;
                     foodListUl.appendChild(li);
@@ -281,7 +296,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 li.innerText = "오늘 한 운동이 없습니다.";
                 exerciseListUl.appendChild(li);
             } else {
-                exerciseList.forEach(item => {
+                exerciseList.forEach((item) => {
                     const li = document.createElement("li");
                     li.innerHTML = `<strong>${item.exerciseName}</strong> ${item.exerciseMin}분 (${item.exerciseKcal} kcal)`;
                     exerciseListUl.appendChild(li);
@@ -311,62 +326,60 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // -------------------------------------------------
-    // ───────────────────────────────────────────────────────────
-// 7) 연간 기록 비교 라인 차트 옵션 생성 함수
-// ───────────────────────────────────────────────────────────
+    // 7) 연간 기록 비교 라인 차트 옵션 생성 함수
+    // -------------------------------------------------
     async function fetchYearIntakeMy(year) {
-        const res = await fetch("/api/dashboard/food/kcal/year", {
-            method: "POST",
-            headers: JSON_HEADERS,
-            body: JSON.stringify({ intakeYear: parseInt(year) })
-        });
-        if (!res.ok) throw new Error("나의 섭취 합계 조회 실패");
-        // 리턴값: List<Food> 형태. 예를 들어:
-        // [ { intakeDate:"2025-05-28", intakeTotal: 2300 }, { intakeDate:"2025-06-03", intakeTotal:1500 }, … ]
-        return await res.json();
+        try {
+            const response = await axios.post(
+                "/api/dashboard/food/kcal/year",
+                { intakeYear: parseInt(year) },
+                { headers: JSON_HEADERS }
+            );
+            return response.data;
+        } catch (err) {
+            throw new Error("나의 섭취 합계 조회 실패");
+        }
     }
 
     async function fetchYearIntakeAvg(year) {
-        const res = await fetch("/api/dashboard/food/kcal/avg/year", {
-            method: "POST",
-            headers: JSON_HEADERS,
-            body: JSON.stringify({ intakeYear: parseInt(year) })
-        });
-        if (!res.ok) throw new Error("평균 섭취 합계 조회 실패");
-        // 리턴값: List<Map<String,Object>> 형태. 예시:
-        // [ { "intakeDate":"2025-05-28", "avgIntakeKcal": 2200 }, { "intakeDate":"2025-06-03","avgIntakeKcal":1800 }, … ]
-        return await res.json();
+        try {
+            const response = await axios.post(
+                "/api/dashboard/food/kcal/avg/year",
+                { intakeYear: parseInt(year) },
+                { headers: JSON_HEADERS }
+            );
+            return response.data;
+        } catch (err) {
+            throw new Error("평균 섭취 합계 조회 실패");
+        }
     }
 
     async function fetchYearExerciseMy(year) {
-        const res = await fetch("/api/dashboard/exercise/kcal/year", {
-            method: "POST",
-            headers: JSON_HEADERS,
-            body: JSON.stringify({ exerciseYear: parseInt(year) })
-        });
-        if (!res.ok) throw new Error("나의 운동 합계 조회 실패");
-        // 리턴값: List<Exercise> 형태. 예:
-        // [ { exerciseDate:"2025-05-14", exerciseTotal: 800 }, { exerciseDate:"2025-06-03", exerciseTotal: 1200 }, … ]
-        return await res.json();
+        try {
+            const response = await axios.post(
+                "/api/dashboard/exercise/kcal/year",
+                { exerciseYear: parseInt(year) },
+                { headers: JSON_HEADERS }
+            );
+            return response.data;
+        } catch (err) {
+            throw new Error("나의 운동 합계 조회 실패");
+        }
     }
 
     async function fetchYearExerciseAvg(year) {
-        const res = await fetch("/api/dashboard/exercise/kcal/avg/year", {
-            method: "POST",
-            headers: JSON_HEADERS,
-            body: JSON.stringify({ exerciseYear: parseInt(year) })
-        });
-        if (!res.ok) throw new Error("평균 운동 합계 조회 실패");
-        // 리턴값: List<Map<String,Object>> 형태. 예:
-        // [ { "EXERCISE_DATE":"2025-05-14", "avgKcal": 180 }, { "EXERCISE_DATE":"2025-06-03","avgKcal": 352.5}, … ]
-        return await res.json();
+        try {
+            const response = await axios.post(
+                "/api/dashboard/exercise/kcal/avg/year",
+                { exerciseYear: parseInt(year) },
+                { headers: JSON_HEADERS }
+            );
+            return response.data;
+        } catch (err) {
+            throw new Error("평균 운동 합계 조회 실패");
+        }
     }
 
-// ───────────────────────────────────────────────────────────
-// createLineOptions(compareType, year)
-//   - compareType = "섭취" 또는 "운동"
-//   - year = 2025 (숫자 형태로 넘긴다고 가정)
-// ───────────────────────────────────────────────────────────
     async function createLineOptions(compareType, year) {
         const myData = [];
         const avgData = [];
@@ -386,31 +399,27 @@ document.addEventListener("DOMContentLoaded", () => {
                 avgList = [];
             }
 
-            // 2) 두 리스트를 날짜별로 합쳐서 맵 형태로 만든 뒤, x축 카테고리 순으로 뽑아내자.
+            // 2) 두 리스트를 날짜별로 합쳐서 맵 형태로 만든 뒤, x축 카테고리 순으로 뽑아낸다.
             //    Map key = "YYYY-MM-DD", value = { my: ###, avg: ### }
             const mapByDate = {};
-            myList.forEach(item => {
-                // item.intakeDate, item.intakeTotal
+            myList.forEach((item) => {
                 mapByDate[item.intakeDate] = {
-                    my: item.intakeSum ?? 0,
+                    my: item.intakeTotal ?? 0,
                     avg: 0
                 };
             });
-            avgList.forEach(item => {
-                // item.intakeDate, item.avgIntakeKcal
+            avgList.forEach((item) => {
                 if (!mapByDate[item.intakeDate]) {
                     mapByDate[item.intakeDate] = { my: 0, avg: 0 };
                 }
                 mapByDate[item.intakeDate].avg = item.avgIntakeKcal ?? 0;
             });
 
-            // 3) mapByDate의 키(날짜)들을 **정렬**된 배열로 뽑아 오자.
-            //    예: ["2025-05-01","2025-05-02",...,"2025-12-31"]
-            //    여기서는 예시로 “mapByDate”에 들어 있는 날짜만 기준으로 정렬하도록.
+            // 3) mapByDate의 키(날짜)들 정렬
             const sortedDates = Object.keys(mapByDate).sort((a, b) => new Date(a) - new Date(b));
 
-            // 4) 정렬된 날짜 배열 순서대로 myData, avgData, categories 채우기
-            sortedDates.forEach(dateStr => {
+            // 4) 정렬된 날짜 순서대로 myData, avgData, categories 채우기
+            sortedDates.forEach((dateStr) => {
                 const { my, avg } = mapByDate[dateStr];
                 myData.push(my);
                 avgData.push(avg);
@@ -420,7 +429,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 categories.push(`${mm}-${dd}`);
             });
         } else {
-            // ─ “운동” 분기 ─
+            // “운동” 분기
             let [myList, avgList] = [[], []];
             try {
                 [myList, avgList] = await Promise.all([
@@ -434,16 +443,13 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const mapByDate = {};
-            // myList: [ { exerciseDate:"2025-05-14", exerciseTotal: 800 }, … ]
-            myList.forEach(item => {
+            myList.forEach((item) => {
                 mapByDate[item.exerciseDate] = {
                     my: item.exerciseSum ?? 0,
                     avg: 0
                 };
             });
-            // avgList: [ { EXERCISE_DATE:"2025-05-14", avgKcal: 180 }, … ]
-            avgList.forEach(item => {
-                // 서버 응답 키가 "EXERCISE_DATE" 이므로 item.EXERCISE_DATE
+            avgList.forEach((item) => {
                 const dtKey = item.EXERCISE_DATE;
                 if (!mapByDate[dtKey]) {
                     mapByDate[dtKey] = { my: 0, avg: 0 };
@@ -452,7 +458,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             const sortedDates = Object.keys(mapByDate).sort((a, b) => new Date(a) - new Date(b));
-            sortedDates.forEach(dateStr => {
+            sortedDates.forEach((dateStr) => {
                 const { my, avg } = mapByDate[dateStr];
                 myData.push(my);
                 avgData.push(avg);
@@ -463,7 +469,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
-        // 5) 정리된 myData, avgData, categories 를 ApexCharts 옵션에 넣어서 리턴
         return {
             series: [
                 { name: "나의 기록", data: myData },
@@ -521,7 +526,6 @@ document.addEventListener("DOMContentLoaded", () => {
         };
     }
 
-
     // ------------------------------
     // 8) 실제 렌더링 작업
     // ------------------------------
@@ -543,101 +547,153 @@ document.addEventListener("DOMContentLoaded", () => {
         const compareSelector = document.querySelector(".compare-selector");
         const yearSelector = document.querySelector(".year-selector");
         const compareType = compareSelector.value; // "섭취" or "운동"
-        const year = yearSelector.value;           // "2025년" 등
+        const year = yearSelector.value; // "2025년" 등
 
         if (lineChart) lineChart.destroy();
 
         const opts = await createLineOptions(compareType, year);
-        lineChart = new ApexCharts(
-            document.querySelector(".chart-container"),
-            opts
-        );
+        lineChart = new ApexCharts(document.querySelector(".chart-container"), opts);
         lineChart.render();
     }
 
     // ------------------------------
     // 9) 페이지 로드 시 초기 실행
+    //    - 차트, 오늘 카드 목록, 라인차트 렌더링
+    //    - 체크리스트 조회/렌더링 (오늘 날짜 기준)
     // ------------------------------
     (async function initDashboard() {
-        // 오늘 원형 차트 + 카드 목록(식단/운동) 렌더링
         await renderChart();
         await renderTodayCards();
-
-        // 연간 기록 비교 라인 차트 렌더링
         await renderLineChart();
+        await renderCheckList(); // ↙ 수정된 체크리스트 렌더링 호출
     })();
 
+    // =============================================================
+    //            ★★★ 수정된 부분: 토글 로직 전역 등록 순서 ★★★
+    // =============================================================
+
     // ------------------------------
-    // 10) 체크리스트 토글 시 원형 차트 크기 재조정
+    // 10) (수정) 실제 토글 로직을 전역에 먼저 등록
     // ------------------------------
-    const originalToggleChecklist = window.toggleChecklist;
-    window.toggleChecklist = () => {
-        originalToggleChecklist();
-        window.requestAnimationFrame(() => {
-            renderChart();
-        });
+    window.toggleChecklist = function () {
+        const panel = document.getElementById("checklistPanel");
+        const grid = document.querySelector(".grid");
+
+        if (panel.classList.contains("open")) {
+            panel.classList.remove("open");
+            grid.classList.remove("checklist-open");
+        } else {
+            panel.classList.add("open");
+            grid.classList.add("checklist-open");
+        }
     };
 
     // ------------------------------
-    // 11) 기록 비교 옵션 변경 리스너
+    // 11) (수정) 전역 함수를 래핑해서 “원본 호출 → 차트 재렌더링” 흐름 만들기
     // ------------------------------
-    document
-        .querySelector(".compare-selector")
-        .addEventListener("change", renderLineChart);
-    document
-        .querySelector(".year-selector")
-        .addEventListener("change", renderLineChart);
-});
+    const originalToggleChecklist = window.toggleChecklist; // (10)에서 등록한 실제 로직
+    window.toggleChecklist = () => {
+        originalToggleChecklist(); // 실제 패널 토글
+        window.requestAnimationFrame(() => {
+            renderChart(); // 차트 크기 재조정
+        });
+    };
+    // =============================================================
 
-// ------------------------------
-// 12) 체크리스트 토글 함수
-// ------------------------------
-function toggleChecklist() {
-    const panel = document.getElementById("checklistPanel");
-    const grid = document.querySelector(".grid");
+    // ------------------------------
+    // 12) 기록 비교 옵션 변경 리스너
+    // ------------------------------
+    document.querySelector(".compare-selector").addEventListener("change", renderLineChart);
+    document.querySelector(".year-selector").addEventListener("change", renderLineChart);
 
-    if (panel.classList.contains("open")) {
-        panel.classList.remove("open");
-        grid.classList.remove("checklist-open");
-    } else {
-        panel.classList.add("open");
-        grid.classList.add("checklist-open");
-    }
-}
+    // ------------------------------
+    // 13) 체크박스 상태 변경 처리
+    //      (체크 시 라벨에 취소선, 색상 회색 처리)
+    // ------------------------------
+    document.addEventListener("change", (e) => {
+        if (e.target.type === "checkbox" && e.target.closest(".checklist-item")) {
+            const label = e.target.nextElementSibling;
+            if (e.target.checked) {
+                label.style.textDecoration = "line-through";
+                label.style.color = "#9ca3af";
+            } else {
+                label.style.textDecoration = "none";
+                label.style.color = "#374151";
+            }
+        }
+    });
 
-// ------------------------------
-// 13) 체크박스 상태 변경 처리
-// ------------------------------
-document.addEventListener("change", (e) => {
-    if (e.target.type === "checkbox" && e.target.closest(".checklist-item")) {
-        const label = e.target.nextElementSibling;
-        if (e.target.checked) {
-            label.style.textDecoration = "line-through";
-            label.style.color = "#9ca3af";
-        } else {
-            label.style.textDecoration = "none";
-            label.style.color = "#374151";
+    // ------------------------------
+    // 14) **새 체크리스트 항목 추가 기능 제거**
+    //      (요청대로 삭제했으므로 여기에 아무 코드를 두지 않음)
+    // ------------------------------
+    // -- 제거됨 --
+
+    // ------------------------------
+    // 15) 체크리스트 조회 함수 (오늘 날짜 기준, Axios 사용)
+    // ------------------------------
+    async function fetchCheckList() {
+        const today = getTodayString(); // 오늘 날짜를 구해서
+        try {
+            const response = await axios.post(
+                "/api/dashboard/checklist/items",
+                { checkDate: today },
+                { headers: JSON_HEADERS }
+            );
+            return response.data;
+        } catch (err) {
+            throw new Error("체크리스트 조회 실패");
         }
     }
-});
 
-// ------------------------------
-// 14) 새 체크리스트 항목 추가
-// ------------------------------
-document.addEventListener("click", (e) => {
-    if (e.target.classList.contains("add-item-btn")) {
-        const newItem = prompt("새로운 체크리스트 항목을 입력하세요:");
-        if (newItem && newItem.trim()) {
-            const checklistContent = document.querySelector(".checklist-content");
-            const itemCount = checklistContent.children.length + 1;
-
-            const newItemDiv = document.createElement("div");
-            newItemDiv.className = "checklist-item";
-            newItemDiv.innerHTML = `
-                <input type="checkbox" id="check${itemCount}">
-                <label for="check${itemCount}">${newItem.trim()}</label>
-            `;
-            checklistContent.appendChild(newItemDiv);
+    // ------------------------------
+    // 16) 체크리스트 가져온 뒤 DOM에 렌더링
+    // ------------------------------
+    async function renderCheckList() {
+        let items = [];
+        try {
+            items = await fetchCheckList();
+        } catch (e) {
+            console.error("체크리스트 로딩 실패:", e);
+            items = [];
         }
+
+        const checklistContent = document.querySelector(".checklist-content");
+        if (!checklistContent) return;
+
+        // 기존에 하드코딩된 항목 및 이전 데이터를 모두 삭제
+        checklistContent.innerHTML = "";
+
+        if (items.length === 0) {
+            const emptyDiv = document.createElement("div");
+            emptyDiv.className = "no-items";
+            emptyDiv.innerText = "체크리스트 항목이 없습니다.";
+            checklistContent.appendChild(emptyDiv);
+            return;
+        }
+
+        items.forEach((item) => {
+            const itemDiv = document.createElement("div");
+            itemDiv.className = "checklist-item";
+
+            // 체크박스 생성
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = `check-${item.checkId}`; // checkId 사용
+            if (item.isCheck === 1) checkbox.checked = true;
+
+            // 라벨 생성
+            const label = document.createElement("label");
+            label.setAttribute("for", `check-${item.checkId}`);
+            label.innerText = item.checkContent || "내용 없음";
+            if (item.isCheck === 1) {
+                label.style.textDecoration = "line-through";
+                label.style.color = "#9ca3af";
+            }
+
+            itemDiv.appendChild(checkbox);
+            itemDiv.appendChild(label);
+            checklistContent.appendChild(itemDiv);
+        });
     }
 });
