@@ -140,11 +140,17 @@ public class DashboardService {
 	// }
 
 	public int addExerciseList(Exercise exercise) {
-		int exists = dashboardRepository.isChecklist(exercise.getMemberId(), exercise.getExerciseDate());
-		isAlreadyExists(exists, "운동 기록", exercise.getExerciseDate());
+		// 1) 먼저, 해당 memberId + exerciseDate 조합으로 이미 노트가 있는지 조회
+		Integer existingNoteId = dashboardRepository.getExerciseNoteId(Exercise.builder().memberId(
+			exercise.getMemberId()).exerciseDate(exercise.getExerciseDate()).build());
+		if (existingNoteId != null && existingNoteId > 0) {
+			// 이미 노트가 있다면 예외를 던지지 않고, 그냥 그 ID를 바로 반환
+			return existingNoteId;
+		}
 
+		// 2) 노트가 없으면 새로 insert
 		dashboardRepository.addExerciseList(exercise);
-		return exercise.getExerciseNoteId();
+		return exercise.getExerciseNoteId();  // (useGeneratedKeys로 PK가 채워진 상태)
 	}
 
 	public boolean removeExerciseList(Exercise exercise) {
@@ -244,6 +250,10 @@ public class DashboardService {
 
 		dashboardRepository.addChecklist(checklist);
 		return checklist.getChecklistId();
+	}
+
+	public boolean removeChecklist(Checklist checklist) {
+		return dashboardRepository.removeChecklist(checklist) > 0;
 	}
 
 	// public boolean addCheckItem(Checklist checklist) {

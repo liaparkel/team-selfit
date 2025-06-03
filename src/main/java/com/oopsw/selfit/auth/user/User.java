@@ -1,4 +1,4 @@
-package com.oopsw.selfit.auth;
+package com.oopsw.selfit.auth.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

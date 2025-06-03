@@ -20,9 +20,9 @@ public class CheckService {
 		int count = checkRepository.countByChecklistId((long)checklist.getChecklistId());
 
 		if (count >= 5) {
-			// RuntimeException의 하위 클래스 어떤 상태 조건이 충족되지 않았을 때 던지는 예외
 			throw new IllegalStateException("체크리스트 항목은 최대 5개까지만 등록할 수 있습니다.");
 		}
+
 		CheckItem checkItem = CheckItem.builder()
 			.checkContent(checklist.getCheckContent())
 			.isCheck(false)
