@@ -279,9 +279,9 @@ document.addEventListener("DOMContentLoaded", () => {
             } else {
                 foodList.forEach((item) => {
                     const li = document.createElement("li");
-                    // intake, unitKcal 필드를 곱해서 총 kcal 계산
-                    const totalKcal = (item.intake ?? 1) * (item.unitKcal ?? 0);
-                    li.innerHTML = `<strong>${item.foodName}</strong> ${item.intake}개 (${totalKcal} kcal)`;
+                    // ✱ 백엔드에서 계산해준 intakeKcal 사용 (unitKcal×intake 계산 생략)
+                    const totalKcal = item.intakeKcal ?? 0;
+                    li.innerHTML = `<strong>${item.foodName}</strong> ${item.intake}g (${totalKcal} kcal)`;
                     foodListUl.appendChild(li);
                 });
             }
@@ -498,7 +498,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 title: { text: "kcal", rotate: -90, style: { fontSize: "14px", color: "#6b7280", fontWeight: 500 } }
             },
             title: {
-                text: `기록 비교 - ${compareType} (${year}년)`,
+                text: `기록 비교 - ${compareType} (${year})`,
                 align: "left",
                 style: { fontSize: "16px", color: "#666" }
             },
@@ -616,11 +616,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // ------------------------------
-    // 14) **새 체크리스트 항목 추가 기능 제거**
-    //      (요청대로 삭제했으므로 여기에 아무 코드를 두지 않음)
-    // ------------------------------
-    // -- 제거됨 --
 
     // ------------------------------
     // 15) 체크리스트 조회 함수 (오늘 날짜 기준, Axios 사용)
