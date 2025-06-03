@@ -257,8 +257,8 @@ public class DashboardService {
 		return checklist.getChecklistId();
 	}
 
-	public boolean removeChecklist(Checklist checklist) {
-		return dashboardRepository.removeChecklist(checklist) > 0;
+	public boolean removeChecklist(int checklistId) {
+		return dashboardRepository.removeChecklist(checklistId) > 0;
 	}
 
 	// public boolean addCheckItem(Checklist checklist) {
