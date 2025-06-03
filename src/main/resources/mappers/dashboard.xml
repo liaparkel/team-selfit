@@ -146,6 +146,7 @@
     <select id="getCheckList" parameterType="com.oopsw.selfit.dto.Checklist"
             resultType="com.oopsw.selfit.dto.Checklist">
         SELECT CI.CHECK_ID      AS checkId,
+               CI.CHECKLIST_ID  AS checklistId,
                CI.CHECK_CONTENT AS checkContent,
                CI.IS_CHECK      AS isCheck
         FROM CHECKLIST CL
@@ -319,7 +320,6 @@
         WHERE EXERCISE_DATE=#{exerciseDate} AND MEMBER_ID=#{memberId}
         LIMIT 1
     </select>
-
     <!--    <select id="getExercisesByIds" parameterType="list" resultType="com.oopsw.selfit.dto.Exercise">-->
     <!--        SELECT-->
     <!--        EXERCISE_ID AS exerciseId,-->
@@ -342,6 +342,12 @@
     <!--            #{id}-->
     <!--        </foreach>-->
     <!--    </select>-->
-
-
+    <delete id="removeChecklist" parameterType="int">
+        DELETE
+        FROM CHECKLIST
+        WHERE CHECKLIST_ID = #{checklistId}
+          AND NOT EXISTS (SELECT 1
+                          FROM check_items
+                          WHERE checklist_id = #{checklistId})
+    </delete>
 </mapper>
