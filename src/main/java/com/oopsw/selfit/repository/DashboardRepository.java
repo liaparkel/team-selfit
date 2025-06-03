@@ -96,7 +96,7 @@ public interface DashboardRepository {
 
 	// List<Food> getFoodsByIds(List<Integer> foodIds);
 
-	int getFoodNoteId(Food food);
+	Integer getFoodNoteId(Food food);
 
 	Integer getExerciseNoteId(Exercise exercise);
 }
