@@ -171,7 +171,8 @@ public class DashboardRestController {
 	}
 
 	@DeleteMapping("/checklist")
-	public ResponseEntity<Map<String, Boolean>> removeChecklist(@RequestBody Checklist checklist) {
+	public ResponseEntity<Map<String, Boolean>> removeChecklist(@RequestBody Checklist checklist, @AuthenticationPrincipal AuthenticatedUser loginUser) {
+		checklist.setMemberId(loginUser.getMemberId());
 		return ResponseEntity.ok(Map.of("success", dashboardService.removeChecklist(checklist)));
 	}
 
