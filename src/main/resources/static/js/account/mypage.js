@@ -2,7 +2,7 @@ import {showAlertModal, showSuccessModal, showErrorModal} from './basic-modal.js
 
 $(() => {
     // API 기본 경로 설정
-    var board_api_base = '/api/board';
+    var board_api_base = '/board/detail';
 
     // 북마크 데이터와 페이지네이션 변수
     let bookmarkData = [];
