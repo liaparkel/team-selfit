@@ -379,7 +379,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 { exerciseYear: parseInt(year) },
                 { headers: JSON_HEADERS }
             );
-            // 백엔드에서 [{ exerciseDate: "YYYY-MM-DD", avgKcal: number }, …] 형태로 응답한다고 가정
+            // 백엔드에서 [{ EXERCISE_DATE: "YYYY-MM-DD", avgKcal: number }, …] 형태로 응답한다고 가정
             return response.data;
         } catch (err) {
             throw new Error("평균 운동 합계 조회 실패");
@@ -412,7 +412,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             myList.forEach((item) => {
                 // item.intakeDate, item.intakeSum 사용
-                mapByDate[item.intakeDate] = {
+                const dateKey = item.intakeDate;
+                if (!dateKey) return;
+                mapByDate[dateKey] = {
                     my: item.intakeSum ?? 0,
                     avg: 0
                 };
@@ -420,6 +422,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             avgList.forEach((item) => {
                 const dateKey = item.intakeDate;
+                if (!dateKey) return;
                 if (!mapByDate[dateKey]) {
                     mapByDate[dateKey] = { my: 0, avg: 0 };
                 }
@@ -459,19 +462,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // JSON 필드 이름에 맞춰 매핑
             // - myList: [{ exerciseDate, exerciseSum }, …]
-            // - avgList: [{ exerciseDate, avgKcal }, …]
+            // - avgList: [{ EXERCISE_DATE, avgKcal }, …]
             const mapByDate = {};
 
             myList.forEach((item) => {
-                // item.exerciseDate, item.exerciseSum 사용
-                mapByDate[item.exerciseDate] = {
+                const dateKey = item.exerciseDate;
+                if (!dateKey) return;
+                mapByDate[dateKey] = {
                     my: item.exerciseSum ?? 0,
                     avg: 0
                 };
             });
 
             avgList.forEach((item) => {
-                const dateKey = item.exerciseDate;
+                // NOTE: avgList 배열의 키: EXERCISE_DATE
+                const dateKey = item.EXERCISE_DATE;
+                if (!dateKey) return;
+
                 if (!mapByDate[dateKey]) {
                     mapByDate[dateKey] = { my: 0, avg: 0 };
                 }
