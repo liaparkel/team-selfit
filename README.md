@@ -31,6 +31,7 @@
 
 ## 개발 환경
 ### BACKEND
+![Java](https://img.shields.io/badge/Java-007396?style=flat-square&logo=openjdk&logoColor=white)![버전](https://img.shields.io/badge/22.0.2-555555?style=flat-square)
 ![SpringBoot](https://img.shields.io/badge/SpringBoot-6DB33F?style=flat-square&logo=spring&logoColor=white)![버전](https://img.shields.io/badge/3.4.5-555555?style=flat-square)
 ![SpringSecurity](https://img.shields.io/badge/Security-6DB33F?style=flat-square&logo=springsecurity&logoColor=white)![버전](https://img.shields.io/badge/Module-555555?style=flat-square)
 ![JPA](https://img.shields.io/badge/JPA-FF7F50?style=flat-square)![버전](https://img.shields.io/badge/Hibernate-555555?style=flat-square)
