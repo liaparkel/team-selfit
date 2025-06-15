@@ -28,6 +28,7 @@
 - 자유게시판 형식으로 소통 공간 제공
 
 ## 아키텍처
+![Image](https://github.com/user-attachments/assets/9105cbab-ba96-4b25-b67b-a29fd35c2f4b)
 
 ## 개발 환경
 ### BACKEND
