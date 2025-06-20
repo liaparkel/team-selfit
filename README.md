@@ -5,6 +5,7 @@
 - 프로젝트명: Selfit  
 - 기간: 2025.05.12 ~ 2025.06.01 _(약 3주)_  
 - 소개: **Selfit**은 스스로 **운동을 계획하고 기록**하며, 건강한 루틴을 만들어가는 사람들을 위한  **동기부여 중심 커뮤니티 플랫폼**입니다.
+
 <br/>
 
 ## 👥 팀 구성 및 역할
@@ -16,10 +17,12 @@
 | 박희수         | 대시보드               | 회의록 작성, 업무상세 설계서 관리  |
 | 이재원         | 커뮤니티          | Firebase 관리      |
 | 이창훈         | 대시보드     | 통합 테스트  |
+
 <br/>
 
 ## 🏗️ 아키텍처
 ![Image](https://github.com/user-attachments/assets/9105cbab-ba96-4b25-b67b-a29fd35c2f4b)
+
 <br/>
 
 ## 💻 개발 환경
@@ -33,6 +36,7 @@
 ![Thymeleaf](https://img.shields.io/badge/Thymeleaf-8BC34A?style=flat-square&logo=thymeleaf)![버전](https://img.shields.io/badge/3.1.1-555555?style=flat-square)
 ![Gson](https://img.shields.io/badge/Gson-FF6F00?style=flat-square)![버전](https://img.shields.io/badge/2.8.9-555555?style=flat-square)
 ![Lombok](https://img.shields.io/badge/Lombok-800080?style=flat-square)![버전](https://img.shields.io/badge/1.18.30-555555?style=flat-square)
+
 <br/>
 
 ### 🎨 FRONTEND
@@ -44,6 +48,7 @@
 ![Axios](https://img.shields.io/badge/Axios-5A29E4?style=flat-square)![버전](https://img.shields.io/badge/1.10.0-555555?style=flat-square)
 ![ApexCharts](https://img.shields.io/badge/ApexCharts.js-FF4560?style=flat-square)![버전](https://img.shields.io/badge/4.7.0-555555?style=flat-square)
 ![FullCalendar](https://img.shields.io/badge/FullCalendar.js-00CED1?style=flat-square)![버전](https://img.shields.io/badge/6.1.11-555555?style=flat-square)
+
 <br/>
 
 ### 🛠️ 개발 도구
@@ -52,6 +57,7 @@
 ![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=flat-square&logo=mariadb)![버전](https://img.shields.io/badge/10.6.22-555555?style=flat-square)
 ![JUnit5](https://img.shields.io/badge/JUnit5-25A162?style=flat-square&logo=junit5&logoColor=white)
 ![Postman](https://img.shields.io/badge/Postman-FF6C37?style=flat-square&logo=postman&logoColor=white)
+
 <br/>
 
 ## 🤝 협업 환경
