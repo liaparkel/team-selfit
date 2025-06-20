@@ -37,8 +37,6 @@
 ![Gson](https://img.shields.io/badge/Gson-FF6F00?style=flat-square)![버전](https://img.shields.io/badge/2.8.9-555555?style=flat-square)
 ![Lombok](https://img.shields.io/badge/Lombok-800080?style=flat-square)![버전](https://img.shields.io/badge/1.18.30-555555?style=flat-square)
 
-<br/>
-
 ### 🎨 FRONTEND
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)
 ![CSS](https://img.shields.io/badge/CSS-1572B6?style=flat-square&logo=css3&logoColor=white)
@@ -49,8 +47,6 @@
 ![ApexCharts](https://img.shields.io/badge/ApexCharts.js-FF4560?style=flat-square)![버전](https://img.shields.io/badge/4.7.0-555555?style=flat-square)
 ![FullCalendar](https://img.shields.io/badge/FullCalendar.js-00CED1?style=flat-square)![버전](https://img.shields.io/badge/6.1.11-555555?style=flat-square)
 
-<br/>
-
 ### 🛠️ 개발 도구
 ![IntelliJ](https://img.shields.io/badge/IDEA-000000?style=flat-square&logo=intellijidea)![버전](https://img.shields.io/badge/2025.1.1.1-555555?style=flat-square)
 ![Maven](https://img.shields.io/badge/Maven-C71A36?style=flat-square&logo=apachemaven)![버전](https://img.shields.io/badge/3.9.6-555555?style=flat-square)
@@ -58,9 +54,7 @@
 ![JUnit5](https://img.shields.io/badge/JUnit5-25A162?style=flat-square&logo=junit5&logoColor=white)
 ![Postman](https://img.shields.io/badge/Postman-FF6C37?style=flat-square&logo=postman&logoColor=white)
 
-<br/>
-
-## 🤝 협업 환경
+### 🤝 협업 환경
 ![Jira](https://img.shields.io/badge/Jira-0052CC?style=flat-square&logo=jira&logoColor=white)
 ![Confluence](https://img.shields.io/badge/Confluence-172B4D?style=flat-square&logo=confluence&logoColor=white)
 ![Google Sheets](https://img.shields.io/badge/Google_Sheets-34A853?style=flat-square&logo=googlesheets&logoColor=white)
