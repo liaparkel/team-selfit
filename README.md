@@ -1,9 +1,10 @@
+<br/>
+
 ## 📌 프로젝트 개요
 
 - 프로젝트명: Selfit  
 - 기간: 2025.05.12 ~ 2025.06.01 _(약 3주)_  
 - 소개: **Selfit**은 스스로 **운동을 계획하고 기록**하며, 건강한 루틴을 만들어가는 사람들을 위한  **동기부여 중심 커뮤니티 플랫폼**입니다.
-<br/>
 <br/>
 
 ## 👥 팀 구성 및 역할
@@ -16,11 +17,9 @@
 | 이재원         | 커뮤니티          | Firebase 관리      |
 | 이창훈         | 대시보드     | 통합 테스트  |
 <br/>
-<br/>
 
 ## 🏗️ 아키텍처
 ![Image](https://github.com/user-attachments/assets/9105cbab-ba96-4b25-b67b-a29fd35c2f4b)
-<br/>
 <br/>
 
 ## 💻 개발 환경
@@ -65,7 +64,6 @@
 ![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white)
 ![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)
 
-<br/>
 <br/>
 
 ## ✨ 핵심 기능
